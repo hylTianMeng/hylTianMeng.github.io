@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>原根 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">原根</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 28, 2022&nbsp;&nbsp;15:10:26</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="原根"><a href="#原根" class="headerlink" title="原根"></a>原根</h1><h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><ol>
+<li>令 $p\in Prime$ 表示 $p$ 是一个素数。</li>
+</ol>
+<h2 id="一些定义"><a href="#一些定义" class="headerlink" title="一些定义"></a>一些定义</h2><ol>
+<li><p>由欧拉定理可以知道，对于 $a\in Z,m\in Z^+,(a,m)&#x3D;1$，则：<br>$$<br>a^{\phi(m)}\equiv 1\bmod m<br>$$<br>因此，<strong>对于假设</strong>（即在 $a$ 和 $m$ 互素的前提下），满足同余式 $a^n\equiv 1\bmod m$ 的最小正整数 $n$ 存在，这个数称为 $a$ 模 $m$ 的阶，记作 $\delta_m(a)$。</p>
+</li>
+<li><p>若 $m\in Z^+,a\in Z,(a,m)&#x3D;1,\delta_m(a)&#x3D;\phi(m)$，则称 $a$ 为模 $m$ 的原根。</p>
+</li>
+</ol>
+<h2 id="一些性质"><a href="#一些性质" class="headerlink" title="一些性质"></a>一些性质</h2><ol>
+<li>若 $a^n\equiv 1\bmod m$，则 $\delta_m(a)|n$。</li>
+</ol>
+<ul>
+<li><p>证明：设 $n&#x3D;\delta_m(a)\times q+r,0\leq r&lt;\delta_m(a)$，若 $r&gt;0$ ，则<br>$$<br>a^r\equiv a^r(a^{\delta_m(a)})^q\equiv a^n\equiv 1\bmod m<br>$$<br>与阶的定义矛盾。所以 $r&#x3D;0$ 。</p>
+</li>
+<li><p>证毕。</p>
+</li>
+</ul>
+<ol start="2">
+<li>设 $m\in Z^+,a,b\in Z,\gcd(a,m)&#x3D;\gcd(b,m)&#x3D;1$，则 $\delta_m(ab)&#x3D;\delta_m(a)\delta_m(b)$ 的充分必要条件是 $\gcd(\delta_m(a),\delta_m(b))&#x3D;1$</li>
+</ol>
+<ul>
+<li><p>必要性：$a^{\delta_m(a)}\equiv 1\bmod m,b^{\delta_m(b)}\equiv 1\bmod m \Rightarrow (ab)^{lcm(\delta_m(a),\delta_m(b))}\equiv 1\bmod m$。</p>
+<p>性质 $1$ 可以得到：<br>$$<br>\delta_m(ab)|lcm(\delta_m(a),\delta_m(b))\Rightarrow \delta_m(a)\delta_m(b)|lcm(\delta_m(a),\delta_m(b))\Rightarrow \gcd(\delta_m(a),\delta_m(b))&#x3D;1<br>$$</p>
+</li>
+<li><p>充分性：<br>$$<br>(ab)^{\delta_m(ab)}\equiv 1\bmod m\Rightarrow 1\equiv (ab)^{\delta_m(ab)\delta_m(b)}\equiv a^{\delta_m(ab)}\bmod m\Rightarrow\delta_m(a)|\delta_m(ab)<br>$$<br>同理，我们可以得到：<br>$$<br>\delta_m(b)|\delta_m(ab)<br>$$<br>所以：<br>$$<br>\delta_m(a)\delta_m(b)|\delta_m(ab)<br>$$<br>因为：<br>$$<br>(ab)^{\delta_m(a)\delta_m(b)}\equiv (a^{\delta_m(a)})^{\delta_m(b)}\times (b^{\delta_m(b)})^{\delta_m(a)}\equiv 1\bmod m\Rightarrow \delta_m(ab)|\delta_m(a)\delta_m(b)<br>$$<br>所以：<br>$$<br>\delta_m(ab)&#x3D;\delta_m(a)\delta_m(b)<br>$$</p>
+</li>
+<li><p>证毕。</p>
+</li>
+</ul>
+<ol start="3">
+<li>设 $k\in N,m\in N^+,a\in Z,\gcd(a,m)&#x3D;1$，则：<br>$$<br>\delta_m(a^k)&#x3D;\dfrac{\delta_m(a)}{\gcd(\delta_m(a),k)}<br>$$</li>
+</ol>
+<ul>
+<li><p>证明：</p>
+</li>
+<li><p>注意到：<br>$$<br>a^{k\delta_m(a^k)}&#x3D;(a^k)^{\delta_m(a^k)}\equiv 1\bmod m\Rightarrow \delta_m(a)|k\delta_m(a^k)\Rightarrow \dfrac{\delta_m(a)}{\gcd(\delta_m(a),k)}|\delta_m(a^k)<br>$$<br>另一方面，由 $a^{\delta_m(a)}\equiv 1\bmod m$ ，可以知道<br>$$<br>(a^k)^{\frac{\delta_m(a)}{\gcd(\delta_m(a),k)}}&#x3D;(a^{\delta_m(a)})^{\frac{k}{\gcd(\delta_m(a),k)}}\equiv 1\bmod m<br>$$<br>所以：<br>$$<br>\delta_m(a^k)|\dfrac{\delta_m(a)}{\gcd(\delta_m(a),k)}<br>$$<br>所以有：<br>$$<br>\delta_m(a^k)&#x3D;\dfrac{\delta_m(a)}{\gcd(\delta_m(a),k)}<br>$$</p>
+</li>
+<li><p>证毕。</p>
+</li>
+</ul>
+<h3 id="一些定理"><a href="#一些定理" class="headerlink" title="一些定理"></a>一些定理</h3><ol>
+<li><p>（欧拉定理）$m\in Z^+,\forall a\in Z^+,(a,m)&#x3D;1,s.t.a^{\phi(m)}\equiv1\bmod m$</p>
+</li>
+<li><p>（费马小定理）$p\in Prime\Rightarrow \forall a\in Z^+,(a,p)&#x3D;1,s.t.a^{p-1}\equiv 1\bmod p$</p>
+</li>
+<li><p>（拉格朗日定理）设 $p$ 为素数，对于模 $p$ 意义下的整系数多项式：<br>$$<br>f(x)&#x3D;a_nx^n+a_{n-1}x^{n-1}+…+a_0(p\nmid a_n)<br>$$<br>的同余方程 $f(x)\equiv 0\bmod p$ 在模 $p$ 意义下至多有 $n$ 个不同解。</p>
+</li>
+</ol>
+<ul>
+<li><p>证明：</p>
+</li>
+<li><p>对 $n$ 使用数学归纳法。当 $n&#x3D;0$ 时，因为 $p\nmid a_n$ 定理显然成立。</p>
+<p>若定理对于 $\deg f&lt;n$ 都成立，假设存在一个 $f,\deg f&#x3D;n$，且 $f$ 至少有 $n+1$ 个不同的解：$x_0,x_1,x_2,…x_n$</p>
+<p>设 $f(x)-f(x_0)&#x3D;(x-x_0)g(x)$，则 $g(x)$ 在模 $p$ 意义下是一个至多 $n-1$ 次的多项式。注意到：<br>$$<br>\forall i,1\le i\le n,s.t.(x_i-x_0)g(x_i)\equiv f(x_i)-f(x_0)\equiv 0 \bmod p<br>$$<br>而 $x_i\not\equiv x_0\bmod p$，所以 $g(x_i)\equiv 0\bmod p$，所以 $g(x)\equiv 0\bmod p$ 有至少 $n$ 个根，与假设矛盾。</p>
+</li>
+<li><p>证毕。</p>
+</li>
+</ul>
+<ol start="4">
+<li>设 $a$ 与 $b$ 是与 $p$ 互素的两个整数，则存在 $c\in Z$ 使得 $\delta_p(c)&#x3D;lcm(\delta_p(a),\delta_p(b))$</li>
+</ol>
+<ul>
+<li>证明：</li>
+<li>设 $r&#x3D;\delta_p(a),t&#x3D;\delta_p(b),r&#x3D;\prod\limits_{j&#x3D;1}^{s}p_j^{\alpha_j},t&#x3D;\prod\limits_{j&#x3D;1}^{s}p_j^{\beta_j},\max(\alpha_j,\beta_j)&gt;0$</li>
+</ul>
+<blockquote>
+<p>注：这里可能会有读者疑惑于为什么 $r$ 和 $s$ 的质因数种类是一样的，实际上并不是这样，我们可以通过给另一个补 $0$ 来完成上面的式子的补全。</p>
+</blockquote>
+<p>​		令 $l&#x3D;\prod\limits_{j&#x3D;1}^sp_j^{\alpha_j}\times[\alpha_j\le\beta_j],m&#x3D;\prod\limits_{j&#x3D;1}^sp_j^{\beta_j}\times[\alpha_j&gt;\beta_j]$，记 $r&#x3D;lx,t&#x3D;my$，则我们有：$\gcd(x,y)&#x3D;1,lcm(r,t)&#x3D;xy$。 </p>
+<p>​		由性质 $3$ ，我们得到 $\delta_p(a^l)&#x3D;x,\delta_p(b^m)&#x3D;y$，则由性质 $2$，$\delta_p(a^lb^m)&#x3D;xy&#x3D;lcm(\delta_p(a),\delta_m(b))$，即取 $c&#x3D;a^lb^m$ 即可。</p>
+<ol start="5">
+<li><p>存在模 $p$ 的原根 $g$ ，使得 $g^{p-1}\not\equiv 1\bmod p^2$</p>
+<p>易知，$g+p$ 也是原根，设 $p$ 满足条件，否则那么定理成立。</p>
+<p>我们有 $(g+p)^{p-1}\equiv C_{p-1}^0g^{p-1}+C_{p-1}^1pg^{p-2}\equiv1-pg^{p-2}\not\equiv 1\bmod p^2$</p>
+</li>
+<li><p>对于奇素数 $p$ ，$p$ 有原根。</p>
+</li>
+</ol>
+<ul>
+<li><p>证明：</p>
+</li>
+<li><p>对 $1$ 到 $(p-1)$ 依次两两使用定理 $4$ ，可以知道存在 $g\in Z$ 有：<br>$$<br>\delta_p(g)&#x3D;lcm(\delta_p(1),\delta_p(2),…,\delta_p(p-1))<br>$$<br>这说明 $\delta_p(j)|\delta_p(g),j&#x3D;1,2,…p-1$，所以 $j&#x3D;1,2,…p-1$ 都是同余方程：<br>$$<br>x^{\delta_p(g)}\equiv 1\bmod p<br>$$<br>的解。由拉格朗日定理，可以知道 $\delta_p(g)\geq p-1$，由费马小定理，易知 $\delta_p(g)\le p-1$ 所以 $\delta_p(g)&#x3D;p-1&#x3D;\phi(p)$</p>
+<p>所以 $g$ 为 $p$ 的原根。</p>
+</li>
+</ul>
+<ol start="7">
+<li><p>设 $g$ 满足定理 $5$ ，那么对任意的 $\beta\in \Bbb{N}^*$ 都可以设：$g^{\phi(p^{\beta})}\equiv 1+p^\beta\times k_{\beta}\bmod p^{\beta+1}$，其中 $p\not|k_\beta$</p>
+<p>证明：$\beta&#x3D;1$ 是平凡的。设上式对 $\beta$ 成立，则<br>$$<br>g^{\phi(p^{\beta+1})}&#x3D;(g^{\phi(p^\beta)})^p&#x3D;(1+p^\beta\times k_\beta)^p\equiv1+p^{\beta+1}\times k_\beta\bmod p^{\beta+2}<br>$$</p>
+</li>
+<li><p>对于奇素数 $p,\alpha \in \Bbb{N}^*,p^{\alpha}$ 有原根。</p>
+<p> 证明：设 $g$ 是一个满足定理 $5$ 的一个模 $p$ 的原根，记 $\delta&#x3D;\delta_{p^\alpha}(g)$ ，那么由欧拉定理有：<br>$$<br>\phi(p^\alpha)&#x3D;p^{\alpha-1}(p-1)\<br>$$<br>由性质 $1$ 可以得到：<br>$$<br>\delta|p^{\alpha-1}(p-1)<br>$$<br>而 $g^\delta\equiv 1\bmod p^\alpha\Rightarrow g^\delta\equiv 1\bmod p$ ，所以 $g^\delta\equiv 1\bmod p,g^{p-1}\equiv 1\bmod p$ ，由性质 $1$ 可以得到 $(p-1)|\delta$ ，所以有 $\delta&#x3D;p^{\beta-1}(p-1)&#x3D;\phi(p^\beta),1\le \beta\le \alpha$。</p>
+<p>由定理 $7$ 我们知道：<br>$$<br>g^{\phi(p^\beta)}\not\equiv 1\bmod p^{\beta+1}\Rightarrow g^\beta\not\equiv 1\bmod p^{\beta+1}<br>$$<br>又因为 $p^\beta\equiv 1\bmod p^\alpha \Rightarrow \beta\ge \alpha$，所以 $\beta&#x3D;\alpha$。所以 $g$ 是 $p^\alpha$ 的原根。</p>
+</li>
+<li><p>对于奇素数 $p,\alpha \in \Bbb{N}^*,2p^{\alpha}$ 有原根。</p>
+<p>证明：设 $g$ 是模 $p^\alpha$ 的原根，那么 $g+p^\alpha$ 也是模 $p^\alpha$ 的原根。设 $G$ 是这两者的奇数，则根据原根的定义，由 $\gcd(G,2p^\alpha)&#x3D;1$ 。由欧拉定理和性质 $1$ ，设 $\delta&#x3D;\delta_{2p^\alpha}(G)$，则有 $\delta|\phi(2p^\alpha)$。</p>
+<p>而 $G^{\delta}\equiv 1\bmod 2p^\alpha$ ，故 $G^{\delta}\equiv 1\bmod p^\alpha$ 。利用 $G$ 为模 $p^\alpha$ 的原根可以知道 $\phi(p^\alpha)|\delta$，又因为 $\phi(p^\alpha)&#x3D;\phi(2p^\alpha)$，所以可以知道 $G$ 为模 $2p^\alpha$ 的原根。</p>
+</li>
+<li><p>对于奇数 $a$ ，总存在 $m&#x3D;2^\alpha,\alpha \ge 3,s.t.a^{2^{\alpha-2}}\equiv 1\bmod m$</p>
+<p>设 $a&#x3D;2k+1$，令 $\alpha &#x3D;3$ 则：<br>$$<br>a^{2}&#x3D;(2k+1)^2&#x3D;4k^2+4k+1&#x3D;4k(k+1)+1\bmod 8<br>$$<br> 通过对 $k$ 的奇偶性讨论可以知道当 $\alpha&#x3D;3$ 时定理成立。</p>
+<p>设定理对 $\alpha$ 成立，那么：<br>$$<br>a^{2^{\alpha-2}}&#x3D;k2^\alpha+1\<br>a^{2^{\alpha-1}}&#x3D;(k2^\alpha+1)^2&#x3D;k^22^{2\alpha}+k2^{\alpha+1}+1\equiv 1\bmod 2^{\alpha+1}<br>$$<br>归纳可知，定理成立。</p>
+</li>
+<li><p>对于所有 $m\not\in{1,2,4,p^\alpha,2p^\alpha},(\alpha\in\Bbb{N}^*)$，对于任意 $a\in \Bbb{Z},\gcd(a,m)&#x3D;1$ ，都有 $\delta_m(a)&lt;\phi(m)$ ，即模 $m$ 的原根不存在。</p>
+<p>如果 $m$ 是 $2$ 的幂，根据定理 $10$ 可以知道原根不存在。</p>
+<p>否则，令 $m&#x3D;rt,(r,t)&#x3D;1,2&lt;r&lt;t$ ，则 $\phi(m)&#x3D;\phi(r)\phi(t)$ 因为当 $n&gt;2$ 时 $\phi(n)$ 为偶数，所以有 $a^{\frac 12 \phi(r)\phi(t)}&#x3D;(a^{\frac 14\phi(r)\phi(t)})^2,a^{\phi(r)\phi(t)}&#x3D;(a^{\frac 12\phi(r)\phi(t)})^2\equiv 1\bmod m$</p>
+<p>经过讨论后不难发现，$a^{\frac 12\phi(r)\phi(t)}\equiv 1\bmod m$</p>
+<p>所以 $\delta_m(a)\le \frac 12\phi(m)$</p>
+<p>所以定理得证。</p>
+</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/blog/codecodeakioi/solution-p6091">题解 P6091 模板原根</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://hyltianmeng.github.io/2022/07/28/%E5%8E%9F%E6%A0%B9/">https://hyltianmeng.github.io/2022/07/28/%E5%8E%9F%E6%A0%B9/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%95%B0%E8%AE%BA/"># 数论</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC/">拉格朗日插值</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/28/%E6%96%AF%E7%89%B9%E6%9E%97%E6%95%B0%E4%B8%8E%E6%96%AF%E7%89%B9%E6%9E%97%E5%8F%8D%E6%BC%94/">斯特林数与斯特林反演</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

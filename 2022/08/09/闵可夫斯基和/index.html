@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>闵可夫斯基和学习笔记 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">闵可夫斯基和学习笔记</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 9, 2022&nbsp;&nbsp;8:30:35</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>对于两个点集 $A,B$ 来说，把其中的每一个点都看做是对应向量，则这两个集合的闵可夫斯基和定义为 $C&#x3D;{ a+b|a\in A,b\in B }$。</p>
+<h1 id="凸包的闵可夫斯基和"><a href="#凸包的闵可夫斯基和" class="headerlink" title="凸包的闵可夫斯基和"></a>凸包的闵可夫斯基和</h1><p>考虑 $C$ 为凸包 $A,B$ 的闵可夫斯基和，那么 $C$ 的大小应该为 $|A||B|$，但是如果考虑 $C$ 的凸包，那么点数应该是 $O(|A|+|B|)$ 的。</p>
+<p>如图：</p>
+<p><img src="https://pic.imgdb.cn/item/62f1ad3416f2c2beb1a896ef.png"></p>
+<p>至于为什么是这样，我们以上凸壳为例，考虑两个上凸壳的闵可夫斯基和其实是两个上凸壳的归并排序，</p>
+<p>如图：</p>
+<p><img src="https://s2.loli.net/2022/08/09/5EfbsZTFwQWequo.png"></p>
+<p>易发现最终凸包上的边都是原来的边，这一点就足以充分说明上面的结论。</p>
+<p>所以两个凸包的闵可夫斯基和可以做到 $O(size)$。利用类似归并排序即可。具体实现中，我们考虑用一个数组表示一个凸壳，$a_i$ 表示横坐标为 $i$ 时凸壳上对应点的纵坐标。</p>
+<p>注意到一个凸壳相当于是若干一次函数的复合，则两个上凸壳的合并相当于它们做 $(\max,+)$ 卷积，即加起来的结果取 $\max$。这是因为我们考虑 $(\max,+)$ 卷积的形式：</p>
+<p>$$<br>c_k&#x3D;\max\limits_{i+j&#x3D;k}{ a_i+b_j }<br>$$</p>
+<p>如果把 $i,j$ 看做横坐标，把 $a_i,b_j$ 看做两个凸壳的纵坐标，那么这和 $C&#x3D;A+B$ 的定义不谋而合，在 $C$ 中选的那些最优的点一定构成一个凸壳，而这个凸壳就是我们合并得到的凸壳。</p>
+<p>同样的，取 $\min$ 就是做 $(\min,+)$ 卷积。</p>
+<h1 id="闵可夫斯基和与-wqs-二分"><a href="#闵可夫斯基和与-wqs-二分" class="headerlink" title="闵可夫斯基和与 wqs 二分"></a>闵可夫斯基和与 wqs 二分</h1><p>wqs 二分可以在 $O(n\log n)$ 的时间复杂度内求出某一个点值的最优值，但是如果我们的询问变成所有的横坐标，该怎么做？</p>
+<p>考虑 wqs 二分的一个经典问题：给定长度为 $n$ 的序列 $a_i$，要求对于每个 $k&#x3D;1,2,\cdots,n$，恰好选出 $k$ 个不相交的子区间，最大化所有不相交子区间内权值和的和。</p>
+<p>显然这个问题可以构建一个费用流模型，如图：</p>
+<p><img src="https://s2.loli.net/2022/08/09/rFBghXKHGfOMJWE.png"></p>
+<p>所以这是一个凸函数，可以用 wqs 二分来解决单个值的问题。考虑加强版的问题。</p>
+<p>首先考虑一个 DP，设 $f_{l,r,k,0&#x2F;1,0&#x2F;1}$ 表示 $[l,r]$ 中选 $k$ 个区间，左端点有没有被覆盖，右端点有没有被覆盖。加上后两维的原因是可以合并相邻的两个区间。</p>
+<p>考虑这个函数显然关于 $k$ 是一个凸函数，所以我们任意去一个分界点，总可以在 $r-l$ 的时间内求出。考虑闵可夫斯基和类似于归并，我们可以取分界点为区间中点，类似分治，求出答案。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://hyltianmeng.github.io/2022/08/09/%E9%97%B5%E5%8F%AF%E5%A4%AB%E6%96%AF%E5%9F%BA%E5%92%8C/">https://hyltianmeng.github.io/2022/08/09/%E9%97%B5%E5%8F%AF%E5%A4%AB%E6%96%AF%E5%9F%BA%E5%92%8C/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E9%97%B5%E5%8F%AF%E5%A4%AB%E6%96%AF%E5%9F%BA%E5%92%8C/"># 闵可夫斯基和</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/16/%E5%88%86%E6%B2%BBFFT/">分治FFT</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/03/%E6%8A%BD%E8%B1%A1%E4%BB%A3%E6%95%B0%201/">抽象代数 1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

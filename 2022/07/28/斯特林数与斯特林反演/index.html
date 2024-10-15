@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>斯特林数与斯特林反演 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">斯特林数与斯特林反演</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 28, 2022&nbsp;&nbsp;15:07:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>首先我们先来了解什么叫做斯特林数。</p>
+<h1 id="第一类斯特林数"><a href="#第一类斯特林数" class="headerlink" title="第一类斯特林数"></a>第一类斯特林数</h1><p>$\left[n\atop m \right]$ 或者 $s(n,m)$ 表示从 $n$ 个元素中选出 $m$ 个圆排列的方案数。</p>
+<p>什么是圆排列，对于两个排列，如果循环相同，那么这两个排列就被视为相同的圆排列，不难发现，$n$ 个元素的圆排列个数为 $(n-1)!$。</p>
+<h2 id="递推式"><a href="#递推式" class="headerlink" title="递推式"></a>递推式</h2><p>考虑递推斯特林数。我们考虑第 $n$ 个元素放在哪个圆排列中，首先是考虑新放一个圆排列，这样的方案数为 $s(n-1,m-1)$，考虑把第 $n$ 个元素放进之前的某个圆排列中，不难发现，把一个元素放入一个 $4$ 个元素的圆排列中有 $4$ 种放法，所以我们把第 $n$ 个元素放在之前的某个圆排列中一共有 $n-1$ 中放法，由此可以得到这样一个式子：</p>
+<p>$$<br>\begin{bmatrix}n\m\end{bmatrix}&#x3D;\begin{bmatrix}n-1\m-1\end{bmatrix}+(n-1)\begin{bmatrix}n-1\m\end{bmatrix}<br>$$</p>
+<p>这就是第一类斯特林数的递推式。</p>
+<p>递推边界：$s(n,n)&#x3D;1(n\ge 0),s(n,0)&#x3D;0(n\ge 1)$</p>
+<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><ul>
+<li>$s(n,1)&#x3D;(n-1)!$</li>
+</ul>
+<p>由 $n$ 个元素的圆排列个数为 $(n-1)!$ 可以得到。</p>
+<ul>
+<li>$s(n,n-1)&#x3D;\binom{n}{2}$</li>
+</ul>
+<p>让 $n$ 个元素组成 $n-1$ 个圆排列，实际上是从这 $n$ 个元素里面选出来两个组成一个大小为 $2$ 的圆排列，其余元素单独组成员排列。由此可知，性质成立。</p>
+<ul>
+<li>$s(n,2)&#x3D;(n-1)!\sum_{i&#x3D;1}^{n-1}\frac{1}{i}$</li>
+</ul>
+<p>首先我们考虑设第一个圆排列的元素个数为 $i$ ，第二个圆排列的元素个数为 $n-i$，那么根据 $s(n,1)&#x3D;(n-1)!$ 我们可以得到 $\binom{n}{i}(i-1)!(n-i-1)!$，同时我们需要注意到，因为在第一类斯特林数的定义中圆排列相互之间是没有顺序的，但是我们在计数的过程中却区分了第一个圆排列，第二个圆排列，所以我们算重了 $2$ 遍，由此我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  s(n,2)&amp;&#x3D;\sum\limits_{i&#x3D;1}^{n-1}\frac{\binom{n}{i}(i-1)!(n-i-1)!}{2}\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;1}^{n-1}\frac 12 \frac{n!}{i!(n-i)!}\times (i-1)!\times (n-i-1)!\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;1}^{n-1}\frac 12 \frac{n!}{i(n-i)}&#x3D;(n-1)!\sum\limits_{i&#x3D;1}^{n-1}\frac{1}{2}(\frac{1}{i}+ \frac{1}{n-i})<br>\end{aligned}<br>$$</p>
+<p>容易发现 $\frac{1}{i}$ 与 $\frac{1}{n-i}$ 的贡献相同，所以原式得证。</p>
+<ul>
+<li>$s(n,n-2)&#x3D;2\times \binom{n}{3}+3\times \binom{n}{4}$</li>
+</ul>
+<p>我们分两种情况讨论：第一种情况，我们把 $n-3$ 个元素分给 $n-3$ 个圆排列，其余 $3$ 个元素自成一个排列，这样的方案数为 $2\times \binom{n}{3}$，前者是 $3$ 元素圆排列个数，后者是从 $n$ 个元素中选出三个当圆排列。</p>
+<p>第二种情况，我们把 $n-4$ 个元素分给 $n-4$ 个圆排列，然后剩下两个圆排列每个圆排列两个元素，首先 $\binom{n}{4}$ 选出 $4$ 个元素，然后再 $\binom{4}{2}$ 选出两个元素给第一个圆排列，考虑到我们又给排列定了顺序，所以乘上 $\frac 12$ 。由此可以得到原式。</p>
+<ul>
+<li>$\sum_{k&#x3D;0}^ns(n,k)n^k&#x3D;n!$</li>
+</ul>
+<p>通过下文中的第一类斯特林数的生成函数可以得到这个性质。</p>
+<h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><p>第一类斯特林数分为有符号斯特林数和无符号斯特林数，有符号斯特林数通常表示为 $s_s$，无符号斯特林数通常表示为 $s_u$，我们有 $s_s(n,k)&#x3D;(-1)^{n-k}s_u(n,k)$，在本文中，若无特殊说明，第一类斯特林数通常都指的是无符号斯特林数。</p>
+<h1 id="第二类斯特林数"><a href="#第二类斯特林数" class="headerlink" title="第二类斯特林数"></a>第二类斯特林数</h1><p>$\left{n\atop m\right}$ 或 $S(n,m)$ 表示把 $n$ 个元素划分成 $m$ 个非空集合的方案数，其中 $m$ 个集合两两相同。</p>
+<h2 id="通项公式"><a href="#通项公式" class="headerlink" title="通项公式"></a>通项公式</h2><p>我们考虑容斥来计算第二类斯特林数的通项公式，首先不管两个限制：非空和集合两两相同。</p>
+<p>我们钦定有 $i$ 个集合是空的，然后把所有的球随意的放进剩下的盒子，这里盒子两两不同，这样的方案数应该为 $\binom{n}{i}(m-i)^n$，然后我们容斥一下，就可以得到非空的方案数，再乘上 $\frac{1}{m!}$ 就可以得到盒子两两相同的方案数。由此，我们可以得到：</p>
+<p>$$<br>\begin{Bmatrix}n\m\end{Bmatrix}&#x3D;\frac{1}{m!}\sum\limits_{i&#x3D;0}^m(-1)^i\binom{m}{i}(m-i)^n<br>$$</p>
+<h2 id="递推式-1"><a href="#递推式-1" class="headerlink" title="递推式"></a>递推式</h2><p>我们一样考虑第 $n$ 个元素怎么放。</p>
+<p>第一种情况，把第 $n$ 个元素放在最后一个盒子里，其余的元素放在其他的盒子里，这样的方案数为 $S(n-1,m-1)$。第二种情况，把第 $n$ 个元素和其他元素放在一起，注意这里元素两两不同而盒子两两相同，所以说我们关注的是元素的组合情况，对于每一种方案，我们把第 $n$ 个元素加入一个新的组合都会产生一种情况，所以方案数为 $mS(n-1,m)$，由此，我们可以得到 $S(n,m)&#x3D;S(n-1,m-1)+mS(n-1,m)$。</p>
+<p>边界条件：$S(n,n)&#x3D;1(n\ge 0),S(n,0)&#x3D;0(n&gt;1)$。</p>
+<h2 id="性质-1"><a href="#性质-1" class="headerlink" title="性质"></a>性质</h2><ul>
+<li>$S(n,1)&#x3D;1$</li>
+</ul>
+<p>根据第二类斯特林数的定义不难的出这个结论。</p>
+<ul>
+<li><p>$S(n,2)&#x3D;2^{n-1}-1$</p>
+<p>两个集合我们考虑第一个集合放哪些数，这样的计数结果为 $\sum_{i&#x3D;1}^{n-1}\binom ni$，考虑到我们给集合定顺序但集合间并没有顺序，所以我们算重了两边，最终结果为：</p>
+</li>
+</ul>
+<p>$$<br>\frac 12\sum\limits_{i&#x3D;1}^{n-1}\binom ni&#x3D;\frac 12(2^n-2)&#x3D;2^{n-1}-1<br>$$</p>
+<ul>
+<li>$S(n,n-1)&#x3D;\binom n2$</li>
+</ul>
+<p>不难想到这个东西实际上是从 $n$ 个元素中选出 $2$ 个放到一个集合里去，由此可以得到上面这个式子。</p>
+<ul>
+<li>$\left{ n\atop m \right}\equiv 0\bmod n$ 当 $n$ 是质数且 $1&lt;m&lt;n$ 时成立。</li>
+</ul>
+<p>证明：</p>
+<p>当 $n$ 是质数且 $1&lt;m&lt;n$ 时，我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  \left{ n\atop m \right}&amp;&#x3D; \frac{1}{m!}\sum\limits_{i&#x3D;0}^m(-1)^i\binom{m}{i}(m-i)^n\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;0}^m(-1)^i \frac{(m-i)^n}{i!(m-i)!}\<br>  &amp;\equiv \sum\limits_{i&#x3D;0}^m(-1)^i\frac{m-i}{i!(m-i)!}<br>\end{aligned}<br>$$</p>
+<p>我们对上面这个东西建立生成函数：</p>
+<p>$$<br>F(x)&#x3D;\sum\limits_{m\ge0}(\sum\limits_{i&#x3D;0}^m(-1)^i\frac{m-i}{i!(m-i)!})x^m<br>$$</p>
+<p>发现这个东西是由两个生成函数卷积得到：</p>
+<p>$$<br>F(x)&#x3D;(\sum\limits_{i\ge0}\frac{(-1)^i}{i!}x^i) \times (\sum\limits_{i\ge0}\frac{i}{i!}x^i)<br>$$</p>
+<p>发现这个是因为关注到 $F(x)$ 的系数本身就是一个卷积形式。</p>
+<p>发现前面这个东西的封闭形式是 $e^{-x}$，证明可以通过写出 $e^ {-x}$ 在原点处的泰勒展开得到。</p>
+<p>而后面那个式子，不难发现 $i&#x3D;0$ 时式子值为 $0$，所以能够得到：</p>
+<p>$$<br>\begin{aligned}<br>  \sum\limits_{i\ge0}\frac{i}{i!}x^i&amp;&#x3D;\sum\limits_{i\ge 1}\frac{i}{i!}x^i\<br>  &amp;&#x3D;\sum\limits_{i\ge 1} \frac{1}{(i-1)!}x^i&#x3D;\sum\limits_{i\ge 0} \frac{x^{i+1}}{i!}\<br>  &amp;&#x3D;x\sum\limits_{i\ge0}\frac{x^i}{i!}&#x3D;xe^x<br>\end{aligned}<br>$$</p>
+<p>由此我们可以得到 $F(x)$ 的封闭形式 $F(x)&#x3D;x$。</p>
+<p>注意到 $F(x)$ 的第 $m$ 次项为 $0$ ，而第 $m$ 项的系数为 $\left{ n\atop m \right}$，由此可知原式成立。</p>
+<ul>
+<li>$n^k&#x3D;\sum_{i&#x3D;0}^kS(k,i)i!\binom ni$</li>
+</ul>
+<h1 id="第三类斯特林数"><a href="#第三类斯特林数" class="headerlink" title="第三类斯特林数"></a>第三类斯特林数</h1><p>第三类斯特林数也称作拉赫数，因为和第一二类斯特林数比较类似，所以有这两个名字。<br>拉赫数可以通过上升幂与下降幂之间的转化来定义，即：</p>
+<p>$$<br>\begin{aligned}<br>  x^{\overline{n}}&amp;&#x3D;\sum\limits_{k&#x3D;0}^nL(n,k)x^{\underline{k}}\<br>  x^{\underline{n}}&amp;&#x3D;\sum\limits_{k&#x3D;0}^n(-1)^{n-k}L(n,k)x^{\overline{k}}<br>\end{aligned}<br>$$</p>
+<p>由此我们可以得到 $L(n,k)$ 的通项公式：</p>
+<p>$$<br>L(n,k)&#x3D;\binom{n-1}{k-1}\frac{n!}{k!}<br>$$</p>
+<p>有这个通项公式可以知道第三类斯特林数的递推公式：</p>
+<p>$$<br>L(n,k)&#x3D;(n+k-1)L(n-1,k)+L(n-1,k-1)<br>$$</p>
+<p>这个定西可以简单的通过代入来证明。</p>
+<h1 id="各种幂之间的转换"><a href="#各种幂之间的转换" class="headerlink" title="各种幂之间的转换"></a>各种幂之间的转换</h1><p>这里先给出上升幂与下降幂的公式：</p>
+<p>$$<br>\begin{aligned}<br>  x^{\overline{n}}&#x3D;x(x+1)…(x+n-1)\<br>  x^{\underline{n}}&#x3D;x(x-1)…(x-n+1)<br>\end{aligned}<br>$$</p>
+<p>上升幂与下降幂之间的转换关系：</p>
+<p>$$<br>(-x)^{\underline{n}}&#x3D;(-1)^nx^{\overline{n}}\<br>(-x)^{\overline{n}}&#x3D;(-1)^nx^{\underline{n}}<br>$$</p>
+<p>二项式系数与下降幂之间的关系：</p>
+<p>$$<br>\binom nk&#x3D;\frac{n^{\underline{k}}}{k!}<br>$$</p>
+<p>证明比较显然，这里不再赘述。</p>
+<ul>
+<li>上升幂与通常幂之间的转换：</li>
+</ul>
+<p>$$<br>\begin{aligned}<br>  x^{\overline{n}}&amp;&#x3D;\sum\limits_{i&#x3D;0}^ns(n,i)x^i\<br>  x^n&amp;&#x3D;\sum\limits_{i&#x3D;0}^n(-1)^{n-i}S(n,i)x^{\overline{i}}\<br>\end{aligned}<br>$$</p>
+<p>证明：</p>
+<ul>
+<li>通常幂与下降幂之间的转换：</li>
+</ul>
+<p>$$<br>\begin{aligned}<br>  x^{\underline n}&amp;&#x3D;\sum\limits_{i&#x3D;0}^n(-1)^{n-i}s(n,i)x^i\<br>  x^n&amp;&#x3D;\sum\limits_{i&#x3D;0}^nS(n,i)x^{\underline{i}}\<br>\end{aligned}<br>$$</p>
+<ul>
+<li>上升幂与下降幂之间的转换：</li>
+</ul>
+<p>$$<br>\begin{aligned}<br>  x^{\overline{n}}&amp;&#x3D;\sum\limits_{k&#x3D;0}^nL(n,k)x^{\underline{k}}\<br>  x^{\underline{n}}&amp;&#x3D;\sum\limits_{k&#x3D;0}^n(-1)^{n-k}L(n,k)x^{\overline{k}}<br>\end{aligned}<br>$$</p>
+<p>以上性质可以通过归纳以及上升幂与下降幂之间的转换来证明，这里不再赘述。</p>
+<p>记忆上面的实际只需要注意什么时候添加 $-1$，给定序列 $x^{\underline{n}},x^n,x^{\overline{n}}$，从左往右转换时需要加，从右往左转换时不需要加，然后注意从上升下降幂转换到通常幂用第一类斯特林数，从通常幂转换到上升下降幂用第二类斯特林数。</p>
+<p>通过以上式子，我们通过把上升幂用第三类斯特林数直接转化成下降幂，和先用第一类斯特林数转化成通常幂，再用第二类斯特林数转化成下降幂两种方式，通过比较下降幂系数，我们可以得到第三类斯特林数和两个斯特林数之间的关系：</p>
+<p>$$<br>L(n,k)&#x3D;\sum\limits_{k&#x3D;0}^ns(n,k)S(k,i)<br>$$</p>
+<h1 id="生成函数"><a href="#生成函数" class="headerlink" title="生成函数"></a>生成函数</h1><p>第一类斯特林数的生成函数就是上升幂。</p>
+<p>设 $B_k(x)&#x3D;\sum_{i\ge k} S(i,k)x^i$，通过观察，我们可以知道：</p>
+<p>$$<br>B_k(x)&#x3D;xB_{k-1}(x)+kxB_{k}(x)<br>$$</p>
+<p>由此我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  B_k(x)&amp;&#x3D;\frac{xB_{k-1}(x)}{1-kx}\<br>  &amp;&#x3D;\frac{x^2B_{k-2}(x)}{(1-kx)(1-(k-1)x)}\<br>  &amp;&#x3D;\frac{x^k}{\prod_{r&#x3D;1}^k(1-rx)}<br>\end{aligned}<br>$$</p>
+<p>设 $F_k(x)&#x3D;\sum_{i\ge k}S(i,k)\frac{x^i}{i!}$ 则我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  F_k(x)&amp;&#x3D;\sum\limits_{i\ge 0}\frac{1}{k!}\sum\limits_{j&#x3D;0}^k(-1)^{k-j}\binom kj j^i\frac{x^i}{i!}\<br>  &amp;&#x3D;\frac{1}{k!}\sum\limits_{j&#x3D;0}^k(-1)^{k-j}\binom kj\sum\limits_{i\ge 0}j^i\frac{x^i}{i!}\<br>  &amp;&#x3D;\frac{1}{k!}\sum\limits_{j&#x3D;0}^k(-1)^{k-j}\binom kje^{jx}\<br>  &amp;&#x3D;\frac{(e^x-1)^k}{k!}<br>\end{aligned}<br>$$</p>
+<h1 id="斯特林反演"><a href="#斯特林反演" class="headerlink" title="斯特林反演"></a>斯特林反演</h1><p>斯特林反演公式：</p>
+<p>$$<br>f(n)&#x3D;\sum\limits_{i&#x3D;0}^nS(n,i)g(i)\Leftrightarrow g(n)&#x3D;\sum\limits_{i&#x3D;0}^n(-1)^{n-i}s(n,i)f(i)<br>$$</p>
+<p>要证明上面这个式子，我们首先引入一个反转公式：</p>
+<p>$$<br>\begin{aligned}<br>  x^n&amp;&#x3D;\sum\limits_{i&#x3D;0}^nS(n,i)x^{\underline{i}}\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;0}^nS(n,i)(-1)^i(-x)^{\overline{i}}\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;0}^nS(n,i)(-1)^i\sum\limits_{j&#x3D;0}^is(i,j)(-x)^j\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^nx^j\sum\limits_{i&#x3D;j}^nS(n,i)s(i,j)(-1)^{i-j}\<br>\end{aligned}<br>$$</p>
+<p>比较两边系数你就可以得到：</p>
+<p>$$<br>\sum\limits_{i&#x3D;m}^nS(n,i)s(i,m)(-1)^{i-m}&#x3D;[n&#x3D;m]<br>$$</p>
+<p>注意这里 $-1$ 的系数也可以是 $n-i$，容易发现当 $n-m&#x3D;0$ 时这两个数奇偶性相同，当奇偶性不同的时候这两个数绝对不相等，也就是说是 $0$，这并不影响我们这个式子的恒等。</p>
+<p>用同样的方法，我们可以得到另一个反转公式：</p>
+<p>$$<br>\sum\limits_{i&#x3D;m}^ns(n,i)S(i,m)(-1)^{i-m}&#x3D;[n&#x3D;m]<br>$$</p>
+<p>现在我们来证明斯特林反演。</p>
+<p>$$<br>\begin{aligned}<br>  g(n)&amp;&#x3D;\sum\limits_{i&#x3D;0}^n[i&#x3D;n]g(i)\<br>  &amp;&#x3D;\sum\limits_{i&#x3D;0}^ng(i)\sum\limits_{j&#x3D;i}^n s(n,j)S(j,i)(-1)^{n-j}\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^ns(n,j)(-1)^{n-j}\sum\limits_{i&#x3D;0}^jS(j,i)g(i)\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^ns(n,j)(-1)^{n-j}f(j)<br>\end{aligned}<br>$$</p>
+<p>同理，从右往左也可以证明，于是原式得证。</p>
+<p>和二项式反演一样，这个式子也有许多变式。由反转公式对称性可以知道，我们交换等号两边的斯特林数仍然成立。我们让和式从 $n$ 开始枚举，枚举的量变成第一个数，式子仍然成立。只需要注意证明的时候不用 $n-j$ 而是用 $j-m$。这里不再赘述其他的几种斯特林反演。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://hyltianmeng.github.io/2022/07/28/%E6%96%AF%E7%89%B9%E6%9E%97%E6%95%B0%E4%B8%8E%E6%96%AF%E7%89%B9%E6%9E%97%E5%8F%8D%E6%BC%94/">https://hyltianmeng.github.io/2022/07/28/%E6%96%AF%E7%89%B9%E6%9E%97%E6%95%B0%E4%B8%8E%E6%96%AF%E7%89%B9%E6%9E%97%E5%8F%8D%E6%BC%94/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%BB%84%E5%90%88%E6%95%B0%E5%AD%A6/"># 组合数学</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/%E5%8E%9F%E6%A0%B9/">原根</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/28/%E5%8D%95%E4%BD%8D%E6%A0%B9%E5%8F%8D%E6%BC%94/">单位根反演</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

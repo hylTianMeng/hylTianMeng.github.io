@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>拉格朗日反演 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">拉格朗日反演</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 28, 2022&nbsp;&nbsp;14:57:50</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="前置引理"><a href="#前置引理" class="headerlink" title="前置引理"></a>前置引理</h2><p>首先设 $\Bbb{C}[[x]]&#x3D;{ \sum\limits_{i\ge 0}a_ix^i|a_i\in \Bbb{C} },\Bbb{C}((x))&#x3D;{\sum\limits_{i\ge -N}a_ix^i|N\in Z,a_i\in \Bbb{C}}$<br>有以下引理：</p>
+<ul>
+<li>$f(x)\in \Bbb{C}((x)),[x^{-1}]f’(x)&#x3D;0$</li>
+</ul>
+<p>显然，因为没有一个幂次项求导后是 $-1$ 次项。</p>
+<ul>
+<li>$f(x)\in x\Bbb{C}[[x]],[x^{-1}]f(x)^if’(x)&#x3D;[x&#x3D;-1]$</li>
+</ul>
+<p>首先考虑 $x\not&#x3D;-1$，我们可以得到 $f(x)^if’(x)&#x3D;\frac{1}{i+1}(f(x)^{i+1})’$，根据引理一可知成立。<br>然后考虑 $x&#x3D;-1$，我们可以得到：</p>
+<p>$$<br>\frac{f’(x)}{f(x)}&#x3D;\frac{a_0+2a_1x+3a_2x^2+…}{a_0x+a_1x^2+a_2x^3}\<br>&#x3D;\frac{a_0+2a_1x +3a_2x+…}{a_0x}\times \frac{1}{1+\frac{a_1}{a_0}x+\frac{a_2}{a_0}x^2+…}\<br>$$</p>
+<p>我们知道：</p>
+<p>$$<br>\frac{1}{1+x}&#x3D;\sum\limits_{i\ge 0} (-1)^ix^i<br>$$</p>
+<p>所以我们可以得到原式&#x3D;</p>
+<p>$$<br>(x^{-1}+…)(1-x(1+\frac{a_1}{a_0}x+\frac{a_2}{a_0}x^2+…)+…)<br>$$</p>
+<p>由此我们可以得到原式成立。</p>
+<h2 id="拉格朗日反演证明"><a href="#拉格朗日反演证明" class="headerlink" title="拉格朗日反演证明"></a>拉格朗日反演证明</h2><p>设 $F(x)$ 的逆为 $G(x)$ 且 $F(x),G(x)\in x\Bbb{C}[[x]]$，则我们有：</p>
+<p>$$<br>[x^n]F(x)&#x3D;\frac{1}{n}<a href="%5Cfrac%7B1%7D%7BG(x)%7D">x^{-1}</a>^n&#x3D;\frac{1}{n}<a href="%5Cfrac%7Bx%7D%7BG(x)%7D">x^{n-1}</a>^n<br>$$</p>
+<p>证明：</p>
+<p>$$<br>F(G(x))&#x3D;x\Rightarrow \sum\limits_{i\ge1}a_iG(x)^i&#x3D;x<br>$$</p>
+<p>两边求导可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  \sum\limits_{i\ge1}ia_iG(x)^{i-1}G’(x)&amp;&#x3D;1\<br>  \Leftrightarrow \sum\limits_{i\ge1}ia_iG(x)^{i-n-1}G’(x)&amp;&#x3D;\frac{1}{G(x)^n}<br>\end{aligned}<br>$$</p>
+<p>所以我们现在关注一下左边式子 $x^{-1}$ 的系数，容易发现：</p>
+<p>$$<br>[x^{-1}]\sum\limits_{i\ge 1}ia_iG(x)^{i-n-1}G’(x)<br>$$</p>
+<p>当 $i\not&#x3D;n$ 的时候，贡献是 $0$，当且仅当 $i&#x3D;n$ 的时候才有意义。<br>所以我们可以得到：</p>
+<p>$$<br>na_n&#x3D;\frac{1}{G(x)^n}<br>$$</p>
+<p>由此可知结论成立。</p>
+<h2 id="拉格朗日反演扩展证明"><a href="#拉格朗日反演扩展证明" class="headerlink" title="拉格朗日反演扩展证明"></a>拉格朗日反演扩展证明</h2><p>对于任意的 $h(x)$ 满足 $h(0)&#x3D;0$，以及有 $f(g(x))&#x3D;x$，我们可以得到：</p>
+<p>$$<br>[x^n]h(g(x))&#x3D;\frac{1}{n}[x^{-1}]\frac{h’(x)}{f(x)^n}<br>$$</p>
+<p>我们有：</p>
+<p>$$<br>h(g(f(x)))&#x3D;h(x)\Leftrightarrow \sum\limits_{i\ge 1}a_if(x)^i&#x3D;h(x)<br>$$</p>
+<p>进行和上面类似的推导就可以得到这个式子。不难发现上面的拉格朗日反演就是 $h(x)&#x3D;x$ 的扩展。</p>
+<p>整个推广定理还可以有另一种方式说明，即令 $F(G(x))&#x3D;H(x)$，其实就是令 $F(x)&#x3D;h(g(x)),G(x)&#x3D;f(x),H(x)&#x3D;h(x)$，就可以得到这个形式。而 $H(x)$ 仍然要满足 $H(x)&#x3D;0$。整个扩展定理变成如下形式：</p>
+<p>$$<br>[x^n]F(x)&#x3D;\frac{1}{n}[x^{-1}]\frac{H’(x)}{G(x)^n}<br>$$</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://hyltianmeng.github.io/2022/07/28/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%8F%8D%E6%BC%94/">https://hyltianmeng.github.io/2022/07/28/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%8F%8D%E6%BC%94/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E5%A4%9A%E9%A1%B9%E5%BC%8F/"># 多项式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/min-max-%E5%AE%B9%E6%96%A5/">min-max 容斥</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/28/Prufer%20%E5%BA%8F%E5%88%97%E6%B5%85%E8%B0%88/">Prufer 序列浅谈</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

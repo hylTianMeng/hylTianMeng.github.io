@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>后缀自动机 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">后缀自动机</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 27, 2022&nbsp;&nbsp;7:50:54</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="自动机入门——后缀自动机"><a href="#自动机入门——后缀自动机" class="headerlink" title="自动机入门——后缀自动机"></a>自动机入门——后缀自动机</h1><h2 id="数据结构简介"><a href="#数据结构简介" class="headerlink" title="数据结构简介"></a>数据结构简介</h2><p>后缀自动机是一个可以解决许多字符串相关问题的有力的数据结构，字符串的 SAM 可以理解为给定字符串的所有子串的压缩形式，SAM 的空间复杂度和构造的时间复杂度均为线性的，准确的说，一个 SAM 最多有 $2n-1$ 个节点和 $3n-4$ 条转移边。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>字符串 $s$ 的 SAM 是一个接受 $s$ 的所有后缀的最小 <strong>DFA</strong>（确定性有限自动机或确定性有限状态自动机）。</p>
+<p>换句话说：</p>
+<ul>
+<li>SAM 是一张有向无环图。结点被称作 <strong>状态</strong>，边被称作状态间的 <strong>转移</strong>。</li>
+<li>图存在一个源点 $t_0$，称作 <strong>初始状态</strong>，其它各结点均可从 $t_0$ 出发到达。</li>
+<li>每个 <strong>转移</strong> 都标有一些字母。从一个结点出发的所有转移均 <strong>不同</strong>。</li>
+<li>存在一个或多个 <strong>终止状态</strong>。如果我们从初始状态 $t_0$ 出发，最终转移到了一个终止状态，则路径上的所有转移连接起来一定是字符串 $s$ 的一个后缀。$s$ 的每个后缀均可用一条从 $t_0$ 到某个终止状态的路径构成。</li>
+<li>在所有满足上述条件的自动机中，SAM 的结点数是最少的。</li>
+</ul>
+<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><p>SAM 包含关于字符串 $s$ 的所有子串的信息，任意从初始状态开始的路径，如果我们将转移路径上的字符写下来都会形成一个 $s$ 的子串，反之每一个 $s$ 的子串对应从 $t_0$ 开始的某条路径。</p>
+<p>为了简化表达，我们称子串对应一条路径，反过来，一条路径也可以对应一个子串。</p>
+<p>到达某个状态的路径可能不止一条，因此我们说一个状态对应一个字符串的集合，这个集合的每一个元素对应这些路径。</p>
+<h2 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h2><h3 id="结束位置"><a href="#结束位置" class="headerlink" title="结束位置"></a>结束位置</h3><p>结束位置 $endpos$ 是一个比较重要的概念。</p>
+<p>考虑字符串 $s$ 的任意非空子串 $t$ ，我们记 $endpos(t)$ 为在字符串 $s$ 中 $t$ 出现的所有位置（用右端点的结束位置来代表），例如串 $\text{abbaabab}$ 中 $\text{ab}$ 的结束位置为 $1,5,7$。两个子串的 $t_1$，$t_2$ 的 $endpos$ 集合可能相等，这种二元关系显然是等价关系。我们可以根据它们的 $endpos$ 集合把所有子串划分为若干等价类。</p>
+<p>SAM 中的每一个状态都对应一个等价类，也就是说 SAM 的状态总数为等价类的个数 $+1$（初始节点）。</p>
+<ul>
+<li><p>引理 $1$ </p>
+<p>字符串 $s$ 的两个不同的非空子串 $u,w$ ，（假设 $|u|&lt;|w|$）的 $endpos$ 相同，当且仅当字符串 $u$ 在 $s$ 中的每次出现，都是以 $w$ 的后缀形式存在的。</p>
+<p>证明：引理显然成立。</p>
+</li>
+<li><p>引理 $2$ </p>
+<p>考虑两个非空子串 $u,w$ （假设 $|u|\le |w|$），那么要么 $endpos(u)\cap endpos(w)&#x3D;\varnothing$ ，要么 $endpos(w)\subseteq endpos(u)$ ，这取决与 $u$ 是否为 $w$ 的一个后缀，如果不是，就是前者，否则就是后者。</p>
+<p>证明：其实也比较显然，因为如果不是后缀，显然 $w$ 出现的地方 $u$ 不可能出现，所以是空集，如果是后缀，那么长度小的有可能出现在更多地方，并且一定在 $w$ 都出现的地方出现过。</p>
+</li>
+<li><p>引理 $3$ </p>
+<p>考虑一个 $endpos$ 等价类，对于同一等价类中的任意两个子串，较短者为较长者的后缀，且该等价类中的子串长度是连续的。</p>
+<p>证明：前面这个后缀关系是显然的，我们来证明它们是连续的。如果不连续，那么设字符串 $q$ 为夹在两个属于同一等价类的字符串 $s,t(|s|&lt;|t|)$ 之间的一个字符串，且 $q$ 为 $t$ 的后缀，$s$ 是 $q$ 的后缀，根据引理 $2$ ，不难推出矛盾。</p>
+</li>
+</ul>
+<p>通过 SAM 的转移，即一些有向边，通过不同的方式走到状态 $u$ ，我们就可以得到状态 $u$ 对应的等价类所对应的所有字符串。</p>
+<h3 id="后缀链接-link"><a href="#后缀链接-link" class="headerlink" title="后缀链接 link"></a>后缀链接 link</h3><p>考虑 SAM 中某一个不是 $t_0$ 的状态 $v$ ，我们已经知道，状态 $v$ 对应于具有相同 $endpos$ 的等价类，设 $w$ 是最长的一个，那么所有等价类中的字符串都是 $w$ 的后缀。</p>
+<p>我们还知道字符串 $w$ 的前几个后缀全部包含于这个等价类，且所有其它后缀都在其他的等价类中，我们记 $t$ 为最长的一个后缀，包含 $t$ 的等价类不是 $v$。然后将 $v$ 的后缀链接连到 $t$ 的等价类所代表的状态上。</p>
+<p>为了方便，我们规定：$endpos(t_0)&#x3D;{-1,0,…,|s|-1}$ 。</p>
+<ul>
+<li><p>引理 $4$ </p>
+<p>所有的后缀链接构成一棵根节点为 $t_0$ 的树。</p>
+<p>比较显然，首先一定有 $n-1$ 条边，其次因为字符串长度递减，所以不会出现环。然后一直递减，一定会到达初始状态 $t_0$ 。</p>
+</li>
+<li><p>引理 $5$ </p>
+<p>通过 $endpos$ 集合构造的树（每个子节点的 $subset$ 都包含在父节点的 $subset$ 中）与通过后缀链接 $link$ 构造的树相同。</p>
+<p>由引理 $2$ ，这种实质是后缀关系的 $endpos$ 能够形成一棵树。我们考虑不是 $t_0$ 的状态 $v$ ，显然有 $endpos(v)\subsetneq endpos(link(v))$。所以定理成立。</p>
+<p>但是需要注意的是，这棵树上，儿子节点的 $endpos$ 集合不一定是父亲节点的一个划分，反例就是父亲节点的状态包含原字符串上的一个前缀。如果不包含前缀的话，性质是成立的。</p>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul>
+<li>$s$ 的子串可以被划分成多个等价类。</li>
+<li>SAM 由若干状态构成，其中每一个状态对应一个等价类。对于每一个状态 $v$ ，一个或多个子串与之匹配，我们记 $longest(v)$ 为里面最长的一个，记 $len(v)$ 为它的长度，记 $shortest(v)$ 为最短的子串，它的长度为 $minlen(v)$ ，那么所有字符串的长度恰好覆盖 $[minlen(v),len(v)]$ 中的每一个整数。</li>
+<li>后缀链接可以定义为连接到对应某个状态满足 $longest(v)$ 的长度为 $minlen(u)-1$ 且是后缀关系的一条从 $u$ 到 $v$ 的边。后缀链接形成了一棵以 $t_0$ 为根节点的内向树。这棵树也表示 $endpos$ 集合间的包含关系。</li>
+<li>我们有 $minlen(v)&#x3D;len(link(v))+1$</li>
+<li>如果我们从 $v_0$ 开始一直走到 $t_0$ ，那么沿途所有字符串的长度形成了连续的区间 $[0,len(v_0)]$。</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><p>这个算法是一个在线算法，可以逐个加入字符串中的每个字符并在每一步维护 SAM。</p>
+<p>一开始 SAM 只包含一个状态 $t_0$ ，编号为 $0$ ，对于状态 $t_0$ 我们指定 $len&#x3D;0,link&#x3D;-1$ 。（这里 $-1$ 就是一个虚拟状态）</p>
+<p>现在任务转化为实现给当前字符串添加一个字符 $c$ 的过程，算法流程如下：</p>
+<ul>
+<li>令 $last$ 为添加字符 $c$ 之前，整个字符串对应的状态。</li>
+<li>创建一个新的状态 $cur$ ，并将 $len(cur)$ 赋值为 $len(last)+1$ 。</li>
+<li>现在我们从状态 $last$ 开始按以下流程进行：如果没有字符 $c$ 的转移，我们就添加一个到状态 $cur$ 的转移，遍历后缀链接，如果在某个点已经存在字符 $c$ 的转移，我们就停下来，并将这个状态标记为 $p$ 。</li>
+<li>如果没有找到这样的状态 $p$ ，我们就到达了虚拟状态 $-1$ ，我们将 $link(cur)$ 赋值为 $0$ 并退出。</li>
+<li>假设现在我们找到了一个状态 $p$ ，其可以通过字符 $c$ 转移，我们将转移到的状态记为 $q$ 。</li>
+<li>如果 $len(p)+1&#x3D;len(q)$ ，我们只需要将 $link(cur)$ 赋值为 $q$  并退出。</li>
+<li>否则，我们需要复制状态 $q$ ，我们创建一个新的状态 $clone$ ，复制 $q$ 的除了 $len$ 的值以外的所有信息（后缀链接和转移）。我们将 $len(clone)$ 赋值为 $len(p)+1$ 。复制之后，我们将后缀链接从 $cur$ 指向 $clone$ ，也从 $q$ 指向 $clone$  。最终我们需要使用后缀链接从状态 $p$ 往回走，只要存在一条通过 $p$ 到状态 $q$ 的转移，就将该转移重新定向到状态 $clone$ 。</li>
+<li>以上三种情况，在完成这个过程之后，我们将 $last$ 的值更新为 $cur$。</li>
+</ul>
+<p>因为我们只对 $s$ 的每一个字符建立一个或两个新状态，所以 SAM 只包括线性个状态。</p>
+<h3 id="正确性证明"><a href="#正确性证明" class="headerlink" title="正确性证明"></a>正确性证明</h3><ul>
+<li><p>如果一个转移 $(p,q)$ 满足 $len(p)+1&#x3D;len(q)$ ，则我们称这个转移是连续的。否则，即当 $len(p)+1&lt;len(q)$ 时称其为不连续的。连续的转移是固定的，而不连续的转移可能会改变。</p>
+</li>
+<li><p>为了避免引起歧义，我们称 SAM 中插入当前字符 $c$ 之前的字符串为 $s$ 。</p>
+</li>
+<li><p>算法从创建一个新状态 $cur$ 开始，对应于整个字符串 $s+c$ ，我们创建一个新的节点的原因很清楚，就是要创建一个包含 $endpos(s+c)$  的等价类。</p>
+</li>
+<li><p>在创建一个新的状态之后，我们会从对应整个字符串 $s$ 的状态通过后缀链接进行遍历，对于每一个状态，我们尝试添加一个通过字符 $c$ 到新状态 $cur$ 的转移。然而我们只能添加原有转移不冲突的转移。因此我们只要找到已存在的 $c$ 的转移，我们就必须停止。</p>
+</li>
+<li><p>换句话说，当我们加入一个字符 $c$ 的时候，会产生 $|s|$ 个新的后缀，我们不断跳后缀链接，其实就是不断跳 $s$ 的后缀，然后如果不冲突我们就连一条到 $cur$ 的边。</p>
+</li>
+<li><p>如果不存在冲突，也就是说我们到达了虚拟状态 $-1$ ，那意味着我们为所有 $s$ 的后缀所对应的状态添加了转移 $c$ ，这同时也意味着 $c$ 之前从来没有在字符串中出现过，所以显然 $cur$ 的后缀链接为 $0$ 。</p>
+</li>
+<li><p>否则，存在一个 $p$ 到 $q$ 的转移，如果这个转移连续，这表明这个集合仍然满足是一个等价类，因为 $q$ 中的字符串一定是由 $p$ 和 $p$ 的父亲经过转移得到的。所以我们直接把 $cur$ 的后缀链接连上来就可以。</p>
+</li>
+<li><p>反之，$p$ 一定有多个儿子，且某个儿子能转移到 $q$，这使得 $q$ 中的字符串某些 $endpos$ 会发生变化，某些不会变化，我们要把它分裂成两个状态，一个是变化的，一个是不会变化的，变化的那些就是 $p$ 和 $p$ 的父亲转移得到的字符串，变化的原因是我们往整个字符串 $s$ 的末尾加了一个字符。分裂之后维护后缀链接即可。</p>
+</li>
+</ul>
+<h3 id="对操作次数为线性的证明"><a href="#对操作次数为线性的证明" class="headerlink" title="对操作次数为线性的证明"></a>对操作次数为线性的证明</h3><p>一下我们认为字符集的大小为常数。</p>
+<p>我们考虑算法的各个部分，有三处时间复杂度不明显是线性的：</p>
+<ul>
+<li>第一处是遍历所有状态 $last$ 的后缀链接，添加字符 $c$ 的转移。</li>
+<li>第二处是当状态 $q$ 被复制到一个新的状态 $clone$ 时复制转移的过程。</li>
+<li>第三处修改指向 $q$ 的转移，将它们重定向到 $clone$ 。</li>
+</ul>
+<p>因为 SAM 状态数是线性的，而每个节点最多只有常数个转移，所以转移数也是线性的，所以第一处和第二处是线性的。</p>
+<p>我们接下来证明第三处也是线性的。</p>
+<p>在每一次添加字符时我们不妨关注一下 $shortest(link(last))$ ，在向 $s$ 中添加字符之前，有 $shortest(p)\le shortest(link(last))$ ，这是因为 $link(last)$ 至多是 $p$ ，我们由 $q$ 拷贝得到了节点 $clone$ ，并试图从 $p$ 沿后缀链接上溯，将所有通往 $q$ 的转移重定向为 $clone$ ，这时 $shortest(clone)$ 是严格变小的，加完字符后，我们有 $last&#x3D;cur\rightarrow link(last)&#x3D;link(cur)&#x3D;clone$ ，所以 $shortest(link(last))$ 是在严格变小的，而且减小的幅度和改变转移的次数级别相同，故我们改变转移也是线性的。</p>
+<p><a target="_blank" rel="noopener" href="https://yutong.site/sam/">可以在线构造后缀自动机的神奇网站</a></p>
+<h1 id="其他应用"><a href="#其他应用" class="headerlink" title="其他应用"></a>其他应用</h1><p>对于一个字符串，把所有字符串加进 Trie 里面，然后进行压缩之后得到的树，是后缀树。后缀树上一条边代表的是一个字符串。对于一个串 $s$，我们建出反串的后缀自动机得到的 fail 树就是后缀树。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://oi-wiki.org/string/sam/">OIwiki</a></li>
+</ul>
+<blockquote>
+<p>有一些明显的错误已经在本文改正。</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://hyltianmeng.github.io/2022/07/27/%E5%90%8E%E7%BC%80%E8%87%AA%E5%8A%A8%E6%9C%BA/">https://hyltianmeng.github.io/2022/07/27/%E5%90%8E%E7%BC%80%E8%87%AA%E5%8A%A8%E6%9C%BA/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E5%90%8E%E7%BC%80%E8%87%AA%E5%8A%A8%E6%9C%BA/"># 后缀自动机</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/Prufer%20%E5%BA%8F%E5%88%97%E6%B5%85%E8%B0%88/">Prufer 序列浅谈</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/24/2022%20%E7%9C%81%E9%98%9F%E4%BA%8C%E8%BD%AE%E9%9B%86%E8%AE%AD%E5%9F%B9%E8%AE%AD%E6%97%A5%E8%AE%B0-Day6/">2022 省队二轮集训培训日记 Day6</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
