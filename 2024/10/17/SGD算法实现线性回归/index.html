@@ -13,7 +13,7 @@
 
 
 
-<title>退役感言 | HYL&#39;s BLog</title>
+<title>SGD算法实现线性回归 | HYL&#39;s BLog</title>
 
 
 
@@ -166,11 +166,76 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">退役感言</h1>
+            <h1 class="post-title">SGD算法实现线性回归</h1>
             
                 <div class="post-meta">
                     
@@ -179,14 +244,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">November 25, 2022&nbsp;&nbsp;20:29:17</a>
+                        Date: <a href="#">October 17, 2024&nbsp;&nbsp;16:11:20</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a>
+                                <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
                             
                         </span>
                     
@@ -195,35 +260,34 @@
         </header>
 
         <div class="post-content">
-            <p>上一次更博客已经是上个月以前了，这个月我非常颓废，大概是 11 月 10 号多吧，我突然感觉自己很累，很烦，于是请假回了家，请了大概 10 天的假，但实际上没有放怎么多的假，因为疫情的原因我提前返回了学校。</p>
-<p>不知道为什么，最近的 2 周多的时间我非常颓废，大概是知道自己希望渺茫，大概是对命运和未来产生了妥协了罢。</p>
-<p>终究我发觉自己其实并没有原先想的那么高尚，只是为了以为功利的目标进行的功利性的学习，或许是自己不再欺骗自己了罢。</p>
-<p>亦或许只是自己颓废过头了而已。</p>
-<p>我终究从梦中回到了现实。而此时我已经没有了对抗现实的勇气。</p>
-<p>我始终是平凡的。</p>
-<p>回想自己的奥赛生涯。自己从初一开始接触 C++，因为直到初三没去过很强的培训机构所以与现实脱钩严重，直到初三只有一个普及组一等奖。</p>
-<p>实验班的时候沉浸于学数学和科技，再加上某些不知名教练和不知名校长的迷惑操作，走了很大的弯路。</p>
-<p>初三升高一暑假去了正睿 C 班，打的还不错，当时的 C 班对于我来说强度已经是蛮高的了，但是又是在可以接受的范围内，自己的水平得到了很大的提高。</p>
-<p>然后参加了正睿的各种线上比赛，取得了提高组一等和 NOIP 一等的水平。随后自己参加了 NOI 的各大赛事，WC，APIO，能参加的全部参加了，打的非常垃圾。</p>
-<p>接下来继续停课去打省选，期间我与某不知名教练产生了极大的冲突，并且在下一届实验班来的时候达到了高潮，终于那位教练辞职，被调到初中部去了，不过各届学生对他都有非常大的意见，我只是压死骆驼的最后一根稻草而已。</p>
-<p>这段经历真的让我成长了不少，他让我知道这个人情社会的丑恶，让我明白真正到了某些时刻你连你最亲近的人也不能信任，你不能相信他们的承诺，如果你想做成某件事，或者是促成某个结果，你真正能够依靠的，只能是你自己。而对付这种以利益至上的人最好的办法，就是去损害他的利益，直到对方不能忍受为止。</p>
-<p>于是我开始发觉我的父母，领导对我的控制，我开始反抗，那真是一段峥嵘岁月，我不得不为当时自己的勇气而感叹。现在想起来，我既感到愤怒，又感到物理与感叹。其实那位教练也没有什么，只是一个不该做到某个位置上的人为了钱而做上了这个位置而已。</p>
-<p>真的无聊。</p>
-<p>省选的成绩不怎么样，买了个 D。转眼就来到了下半年。我报了正睿 B 班，去了省集，打了 NOI，最终打铁了，</p>
-<p>下一个赛季，我同样报了正睿的联赛，CSP 因为疫情停掉了，直到现在，明天打 NOIP。</p>
-<p>临近退役的边缘，而我好像已经无力继续走下去了。</p>
-<p>我累了，无论何时我总能回忆起那段各方利益不断拉扯的时光。</p>
-<p>我已经做好退役的准备了，明天拿出自己最好的状态打一下，如果能杀进全省前 20，如果和队线差距不大的话，并且状态能调整好，就继续下去，否则就到此为止了。</p>
-<p>希望我能找到一个值得我托付一生的人，找到一个，也不负此生了，而在这样的一个恶心的社会中，这实在是太难了。</p>
-<p>未来的话，找一份能养活自己的工作，闲暇时做做自己想干的事情，足矣。</p>
-<p><img src="https://pic.imgdb.cn/item/6380c57116f2c2beb1102e10.png"></p>
+            <h1 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h1><p>设 $\bf{X}$ 是大小为 $n\times d$ 的特征矩阵，$\bf{w}$ 是大小为 $d\times 1$ 的张量，表示权重，$b$ 为一个实数，表示偏置，$\bf{y}$ 为标签，$\bf{\epsilon}$ 表示微小扰动（噪声），则有：</p>
+<p>$$<br>\bf{y} &#x3D; \bf{Xw} + \bf{b} + \bf{\epsilon}<br>$$</p>
 <blockquote>
-<p>Update on 2022.12.2</p>
+<p>注意到由于 $b$ 是实数，所以上述等式严格意义上并不成立。这里利用了<strong>广播</strong>机制把实数 $b$ 扩展成为大小为 $n\times 1$ 的向量。</p>
 </blockquote>
-<p>今天接到通知，级部，ysh 校长，以及班主任想把我们赶出实验班。真是让人伤心。但是眼泪早已流不出来了。</p>
-<p>上次哭的很伤心的时候，试一次打完 cf，在床上听着李宗盛的山丘，不知为何就哭了，哭了很久，大概有一个小时多吧。</p>
-<p>再上一次呢，是实验班的时候，有一次在家听追梦赤子心哭了。</p>
-<p>平静下来吧 hyl，这就是你要面对的一切。</p>
+<p>那我们现在的问题是：如何在已知 $\bf{X}$ 和 $\bf{y}$ 的前提下求得 $\bf{w}$ 和 $b$，使得模型 $\hat{y} &#x3D; \bf{Xw+b}$ 能够最大程度上拟合我们的原始标签。</p>
+<p>故我们需要<strong>损失函数</strong>来刻画模型的拟合程度。</p>
+<h2 id="在线性回归中认为-epsilon-符合正态分布的正确性"><a href="#在线性回归中认为-epsilon-符合正态分布的正确性" class="headerlink" title="在线性回归中认为 $\epsilon$ 符合正态分布的正确性"></a>在线性回归中认为 $\epsilon$ 符合正态分布的正确性</h2><ol>
+<li><p><strong>中心极限定理</strong>表明，如果一个变量是由大量独立、相同分布的随机因素之和构成的，那么无论这些因素的单独分布是什么，它们的和都会趋近于正态分布。</p>
+</li>
+<li><p><strong>经验主义</strong>的支持，也即这种假设使得模型在实际生活应用场景中表现优异。</p>
+</li>
+<li><p><strong>具有理论分析的便利性</strong>。可以通过<strong>最小二乘估计</strong>等方法得到线性回归的解析解。</p>
+</li>
+</ol>
+<p>接下来我们引入 <strong>最大似然估计</strong></p>
+<h2 id="最大似然估计"><a href="#最大似然估计" class="headerlink" title="最大似然估计"></a>最大似然估计</h2><p>假设有一组观测数据 $x_1,x_2,\dotsb,x_n$，我们通常假设这些观测数据（也即样本）是独立且同分布的（简称 $\bf{i.i.d.}$ ），假设它们均来自参数为 $\theta$ 的分布，并记概率   密度函数为 $f(x|\theta)$。我们记似然函数为：</p>
+<p>$$<br>L(\theta) &#x3D; \prod_{i&#x3D;1}^n f(x_i|\theta)<br>$$</p>
+<p>我们的目的是找到 $\theta$ 以最大化似然函数。直观上看，也就是最大化样本出现的概率，因为概率密度函数在某一点 $x_0$ 处的值反映了在这一点附近的概率密度大小。</p>
+<blockquote>
+<p>值得一提的是，最大化似然函数的正确性似乎并不依赖于各个观测数据是<strong>同分布</strong>的，也就是说，同样也可以由共同的参数控制一组不同的分布。但是在很多情况下这种假设保证了计算的简洁性。不过下面我们就可以看到在线性回归中的最大似然估计也并非是满足严格同分布的条件的。</p>
+</blockquote>
+<p>现在我们证明：在线性回归下，最大似然估计和<strong>平方损失函数</strong>（也即残差的平方和）等价。</p>
+<h2 id="等价性证明"><a href="#等价性证明" class="headerlink" title="等价性证明"></a>等价性证明</h2><p>我们假设噪声 $\epsilon \sim N(0,\sigma^2)$ </p>
+<p>对于一个观测数据 $y_i$，显然有： </p>
+<p>$$<br>y_i\sim N(\mathbf{x_i^Tw}+b,\sigma^2)<br>$$</p>
+<p>那么我们的最大似然估计可以写为：</p>
+<p>$$<br>L(\mathbf{w},b) &#x3D; \prod_{i&#x3D;1}^n<br>$$</p>
 
         </div>
 
@@ -251,6 +315,10 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/AI/"># AI</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -261,10 +329,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/10/17/SGD%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/">SGD算法实现线性回归</a>
+                <a class="prev" rel="prev" href="/2025/01/14/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
             
             
-            <a class="next" rel="next" href="/2022/10/16/%E6%88%91%E4%BB%AC%E5%88%9A%E5%88%9A%E7%9F%A5%E9%81%93%E9%82%A3%E4%BA%9B%E9%A2%98%E7%9A%84%E8%A7%A3%E6%B3%95-7/">我们刚刚知道那些题的解法#7</a>
+            <a class="next" rel="next" href="/2022/11/25/%E9%80%80%E5%BD%B9%E6%84%9F%E8%A8%80/">退役感言</a>
             
         </section>
 

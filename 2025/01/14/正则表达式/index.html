@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>正则表达式 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">正则表达式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 14, 2025&nbsp;&nbsp;18:38:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="正则表达式的书写"><a href="#正则表达式的书写" class="headerlink" title="正则表达式的书写"></a>正则表达式的书写</h1><p>首先是一些字符的含义：</p>
+<ul>
+<li>‘\w’ 表示数字字母下划线。</li>
+<li>‘\d’ 表示数字。</li>
+<li>. 表示除了换行符以外的所有字符。</li>
+<li>‘\s’ 表示所有空格符</li>
+<li>a|b 表示要么是 a，要么是 b。注意 a b 不一定是单个字符。</li>
+<li>() 除了在 python 中表示组，在实际正则表达式中可以划定范围或优先级。比如搭配 | 来使用。</li>
+<li>^ 表示匹配开头</li>
+<li>$ 表示匹配结尾。</li>
+<li>‘[]’ 表示该位置的字符为字符集（中括号括起来的部分）组成。可以用 [a-z] 表示字母 a 到字母 z。</li>
+<li>[^…] 表示除了字符集中的字符。</li>
+<li>\D, \S 分别表示小写字母的补集。</li>
+</ul>
+<p>下面是一些修饰符：</p>
+<ul>
+<li>‘+’ 表示前面的字符出现一次或多次</li>
+<li>‘*’ 表示前面的字符出现 0 次或多次。</li>
+<li>‘{m}’ 表示前面的字符出现 m 次。</li>
+<li>‘?’ 表示一次或 0 次。</li>
+<li>‘{n,}’ 表示前一个字符出现大于等于 n 次</li>
+<li>‘{n,m}’ 表示前一个字符出现 n 次到 m 次。</li>
+</ul>
+<p>最后是惰性匹配和贪婪匹配：</p>
+<ul>
+<li>*? 表示能匹配到越少越好。</li>
+<li>* 表示匹配越多越好。</li>
+</ul>
+<p>例子：</p>
+<ul>
+<li>text:100100100100100</li>
+<li>pattern1: 1\d*0, answer: 100100100100100</li>
+<li>pattern2: 1\d*?0 answer: 10, 10, 10, 10, 10, 五处匹配。</li>
+</ul>
+<blockquote>
+<p>注解 1：对于上面的特殊字符，例如 +, *, |, \ 等等，匹配这些字符需要在前面加上 ‘\‘。对于这四个符号，即 \+, \*, \|, \</p>
+</blockquote>
+<blockquote>
+<p>注解 2：小括号 () 可以理解为划定了一个子表达式，同样的，中括号 [] 表示一个中括号表达式，故中括号也算特殊字符。大括号自有其含义。</p>
+</blockquote>
+<blockquote>
+<p>注解 3：菜鸟教程中提到：* 和 + 都是贪婪的。都可以通过 ? 来进行修饰。</p>
+</blockquote>
+<blockquote>
+<p>注解 4：正则表达式的匹配不会考虑重叠部分，即两个不同的匹配区间不会有重叠。例如用 ‘a{2}’ 匹配 aaaaaaaaaa，结果会是 5 个匹配。 </p>
+</blockquote>
+<h1 id="用-python-来处理正则表达式"><a href="#用-python-来处理正则表达式" class="headerlink" title="用 python 来处理正则表达式"></a>用 python 来处理正则表达式</h1><p>需要用到的 python 自带的库 re，re 也是正则表达式的英文名称 regular expression。</p>
+<p>以下的函数可以接受一个特殊的参数 <code>flag</code>。</p>
+<blockquote>
+<p>注解 5：<code>flag</code> 参数，起到一个标识符的作用，拥有一些特殊的功能或含义。例如，当 <code>flag = re.S</code> 的时候，表示正则表达式中的 ‘.’ 可以表示换行符。 </p>
+</blockquote>
+<ul>
+<li><code>re.findall()</code></li>
+</ul>
+<p>接受两个参数，第一个是正则表达式（字符串），第二个是需要匹配的字符串（字符串）。返回一个元素是字符串的列表，表示所有可以匹配到的结果。</p>
+<ul>
+<li><code>re.finditer()</code></li>
+</ul>
+<p>接受两个参数，第一个是正则表达式（字符串），第二个是需要匹配的字符串（字符串）。返回一个迭代器，迭代器指向的对象是 <code>re.MatchObject</code> 类，而从此类中提取出匹配到的字符串需要调用 group() 方法。</p>
+<ul>
+<li><code>re.compile()</code></li>
+</ul>
+<p>表示对正则表达式进行预编译，返回一个 <code>re.Pattern</code> 类，这个类中包含 <code>findall(), finditer()</code> 等方法，可以去掉正则表达式参数。这样可以节省代码量与时间。</p>
+<ul>
+<li><code>re.search()</code></li>
+</ul>
+<p>接受两个参数，第一个是正则表达式（字符串），第二个是需要匹配的字符串（字符串）。返回一个 <code>re.MatchObject</code> 实例，只能返回可以匹配到的第一个结果。</p>
+<ul>
+<li><code>re.match()</code></li>
+</ul>
+<p>接受两个参数，第一个是正则表达式（字符串），第二个是需要匹配的字符串（字符串）。不一样的是，<code>match()</code> 函数强制从头开始匹配。等加入正则表达式前面加一个 ‘^’。</p>
+<ul>
+<li><code>group()</code></li>
+</ul>
+<p>返回一个字符串。除了返回匹配结果，<code>group()</code> 函数还用于返回匹配到的特殊部分。对于一个 <code>re.MatchObject</code> 实例，有两种方式：</p>
+<ol>
+<li>对于正则表达式里的组，按照左括号从左往右的顺序从 1 开始进行编号。<code>group(0)</code> 即返回全部的匹配结果，<code>group(1)</code> 表示第一个括号里面的正则表达式匹配到的结果。例子如下：</li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line">reg = <span class="string">&quot;a(b(c))(d)e&quot;</span></span><br><span class="line">pat = re.<span class="built_in">compile</span>(reg);</span><br><span class="line">s = pat.<span class="keyword">match</span>(<span class="string">&quot;abcde&quot;</span>);</span><br><span class="line"><span class="built_in">print</span>(s);</span><br><span class="line"><span class="built_in">print</span>(s.group());</span><br><span class="line"><span class="built_in">print</span>(s.group(<span class="number">0</span>));</span><br><span class="line"><span class="built_in">print</span>(s.group(<span class="number">1</span>));</span><br><span class="line"><span class="built_in">print</span>(s.group(<span class="number">2</span>));</span><br><span class="line"><span class="built_in">print</span>(s.group(<span class="number">3</span>));</span><br><span class="line"><span class="comment"># print(s.group(4));</span></span><br></pre></td></tr></table></figure>
+
+<p>返回结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;re.Match object; span=(0, 5), match=&#x27;abcde&#x27;&gt;</span><br><span class="line">abcde</span><br><span class="line">abcde</span><br><span class="line">bc</span><br><span class="line">c</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注解 6：上述代码实现最后一行如不注释会出错，因为括号只有 3 个。</p>
+</blockquote>
+<ol start="2">
+<li>除了数字编号，还可以对某一组进行自定义命名。格式如：’(?P<name_>…)’。例子如下：</li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line">reg = <span class="string">&quot;a(?P&lt;nametest&gt;b(c))(d)e&quot;</span></span><br><span class="line">pat = re.<span class="built_in">compile</span>(reg);</span><br><span class="line">s = pat.<span class="keyword">match</span>(<span class="string">&quot;abcde&quot;</span>);</span><br><span class="line"><span class="built_in">print</span>(s.group());</span><br><span class="line"><span class="built_in">print</span>(s.group(<span class="string">&quot;nametest&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>返回结果：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abcde</span><br><span class="line">bc</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E7%88%AC%E8%99%AB/"># 正则表达式, 爬虫</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2024/10/17/SGD%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/">SGD算法实现线性回归</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
