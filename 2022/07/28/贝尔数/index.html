@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>贝尔数 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">贝尔数</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 28, 2022&nbsp;&nbsp;15:25:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>$B_n$ 是集合大小为 $n$ 的集合的划分数目，注意这里划分成多少个集合都是可以的。根据贝尔数的定义我们就可以得到贝尔数和第二类斯特林数之间的关系：</p>
+<p>$$<br>\sum\limits_{i&#x3D;0}^nS(n,i)&#x3D;B_n<br>$$</p>
+<h2 id="递推公式"><a href="#递推公式" class="headerlink" title="递推公式"></a>递推公式</h2><p>贝尔数有递推公式：</p>
+<p>$$<br>B_n&#x3D;\sum\limits_{i&#x3D;0}^{n-1}\dbinom{n-1}{i}B_i<br>$$</p>
+<p>考虑如何证明这个式子。我们考虑第 $n$ 个元素，如果它与 $k$ 个元素划分到一个集合中去，那么我们要做的就是把剩下的 $n-k-1$ 个元素进行划分，方案数就是 $\binom{n-1}{k}B_{n-k-1}&#x3D;\binom{n}{n-k-1}B_{n-k-1}$ 由此不难得出原式。</p>
+<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><ul>
+<li>$B_{n+m}&#x3D;\sum_{j&#x3D;0}^m\sum_{i&#x3D;0}^nj^{n-i}\left{ m\atop j \right}\binom{n}{i}B_i$</li>
+</ul>
+<p>证明：我们考虑这个式子的组合意义，这 $m$ 个元素怎么分配，枚举 $j$ 表示分配到 $j$ 个集合里，然后考虑这 $n$ 个元素如何分配，我们枚举 $i$ 个单独分配，分配方案就是 $B_i$，然后把剩下的放在那 $j$ 个集合里，方案数为 $j^{n-i}$。所以这个式子成立。</p>
+<ul>
+<li>Touchard 同余：$B_{p+n}\equiv B_n+B_{n+1}\bmod p$</li>
+</ul>
+<p>根据第二类斯特林数的递推公式 ：</p>
+<p>$$<br>\left{ n\atop m \right} &#x3D; \frac{1}{m!}\sum\limits_{i&#x3D;0}^m(-1)^i\binom{m}{i}(m-i)^n<br>$$</p>
+<p>我们可以得到，当 $n$ 为质数时，$1&lt;m&lt;n$ 时有 $\left{ n\atop m \right}\equiv 0\bmod n$ 成立。具体证明在博主的另一篇博客《斯特林数与斯特林反演中》提到，这里不再赘述。</p>
+<p>我们用第一条性质把 $B_{n+p}$ 展开得到：</p>
+<p>$$<br>\begin{aligned}<br>  B_{n+p}&#x3D;\sum\limits_{i&#x3D;0}^n\sum\limits_{j&#x3D;0}^pj^{n-i}\left{ p\atop j \right}\binom{n}iB_i\<br>  &#x3D;\sum\limits_{j&#x3D;0}^p\left{ p\atop j \right}\sum\limits_{i&#x3D;0}^nj^{n-i}\binom{n}iB_i\<br>\end{aligned}<br>$$</p>
+<p>根据第二类斯特林数上面所述的性质，在 $\bmod\ p$ 意义下，当 $1&lt;j&lt;p$ 时为 $0$，而当 $j&#x3D;0$ 时根据第二类斯特林数的定义，也为 $0$，所以上面这个式子可以化简如下：</p>
+<p>$$<br>\begin{aligned}<br>  &amp;\equiv \left{ p\atop 1 \right}\sum\limits_{i&#x3D;0}^n\binom{n}{i}B_i+\left{ p\atop p\right}\sum\limits_{i&#x3D;0}^np^{n-i}\binom{n}{i}B_i\<br>  &amp;\equiv B_{n+1}+B_n<br>\end{aligned}<br>$$</p>
+<p>后面那个式子之所以成立是因为当且仅当 $i&#x3D;n$ 的时候后面那个式子才不会被 $\bmod\ p$ 给模掉。</p>
+<ul>
+<li>$\sum_{r&#x3D;0}^k(-1)^r\binom{k}{r} B_{n-r+1}&#x3D;\sum_{r&#x3D;0}^{n-k}\binom{n-k}{r}B_{n-r}$</li>
+</ul>
+<p>注意到 $k&#x3D;0$ 时的情况是平凡的。我们考虑对 $k$ 归纳证明，我们分别让 $F(n,k)$ 等于等号两边的式子，通过对两边都进行证明 $F(n,k)-F(n-1,k)&#x3D;F(n,k+1)$ 就可以证明。</p>
+<p>这里只证明等号左边满足这个式子，等号右边同理。</p>
+<p>设 $F(n,k)&#x3D;\sum_{r&#x3D;0}^k(-1)^r\binom kr B_{n-r+1}$，那么我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  &amp;F(n-1,k)+F(n,k+1)\&amp;&#x3D;\sum\limits_{r&#x3D;0}^k(-1)^r\binom kr B_{n-r}+\sum\limits_{r&#x3D;0}^{k+1}(-1)^r\binom { k+1}{r}G_{n-r+1}\<br>  &amp;&#x3D;G_{n+1}+\sum\limits_{r&#x3D;1}^{k+1}(-1)^r\binom kr G_{n-r+1}&#x3D;F(n,k)<br>\end{aligned}<br>$$</p>
+<ul>
+<li>$B_{n+p^m}\equiv mB_n+B_{n+1}\bmod p$</li>
+</ul>
+<p>这个式子可以看作是上面那个式子的一个扩展，我们同样利用第一条性质把这个东西展开得到：</p>
+<p>$$<br>B_{n+p^m}&#x3D;\sum_{j&#x3D;0}^{n}\sum_{i&#x3D;0}^{p^m}j^{p^m-i}\left{ n\atop j \right}\binom{p^m}{i}B_i<br>$$</p>
+<p>根据卢卡斯定理，我们可以得到 $\binom{p^m}{r}\equiv 0\bmod p(0&lt;r&lt;p^m)$，所以上面这个式子在 $\bmod \ p$ 意义下就可以写成：</p>
+<p>$$<br>\begin{aligned}<br>  B_{n+p^m}&amp;\equiv\sum\limits_{j&#x3D;0}^n \left{ n\atop j \right}(j^{p^m}B_0+B_{p^m})\<br>  &amp;\equiv \sum\limits_{j&#x3D;0}^n\left{ n\atop j \right}(j+B_{p^m})<br>\end{aligned}</p>
+<p>$$</p>
+<p>通过让性质 $1$ 的 $n&#x3D;1$ 我们可以得到一个式子：</p>
+<p>$$<br>B_{1+m}&#x3D;\sum\limits_{j&#x3D;0}^m(j+1)\left{ m\atop j \right}<br>$$</p>
+<p>所以我们可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  B_{n+p^m}&amp;\equiv (B_{p^n}-1)\sum\limits_{j&#x3D;0}^n\left{ n\atop j \right}+\sum\limits_{j&#x3D;0}^n(j+1)\left{ n\atop j \right}\<br>  &amp;&#x3D;(B_{p^m}-1)\sum\limits_{j&#x3D;0}^n\left{ n\atop j \right}+B_{n+1}\<br>  &amp;&#x3D;(B_{p^m}-1)B_n+B_{n+1}<br>\end{aligned}<br>$$</p>
+<p>所以现在我们只需要证明下面这个结论：</p>
+<p>$$<br>B_{p^m}\equiv m+1 \bmod p<br>$$</p>
+<p>我们考虑如何证明，这里会用得到一点抽象代数中的定义，不过基本还是初等方法。</p>
+<p>这里 $\Bbb{Z}&#x2F;p^m\Bbb{Z}$ 指的是 $p^m$ 的完全剩余系。对于 $x,y \in \Bbb{Z}&#x2F;p^m\Bbb{Z}$，定义 $f_y(x)&#x3D;x+y\bmod p^m$，设 $P$ 是这个剩余系的一个划分，那么 $f_y(P)$ 表示的就是对这个划分中的每一个集合的每一个元素进行操作所得到的划分，于是 $f_y(P)$ 就可以理解成一个类似于置换的东西。设 $X&#x3D;{f_y(x)|y\in \Bbb{Z} }$，定义一个划分 $P$ 为不动的指的是 $\forall f_y(x)\in X,P&#x3D;f_y(P)$ .其实这个东西等价于 $P&#x3D;f_y(P)$。同样我们也可以定义不动的划分，有以下性质：任何非不动的划分必然属于一个大小为 $P$ 的正整数幂的轨道。</p>
+<p>容易发现这个轨道的大小就是最小的 $k$ 满足 $f_k(P)&#x3D;P$，我们已经知道有 $f_{p^m}&#x3D;P$，这其实就是一个不断执行 $p^m$ 次 $f_1$ 的过程，我们可以形象的把这个过程看做一个环，那么我们在这个环上走 $p^m$ 次一定能够走回源点，那么这也就是说，环的长度一定能够乘除 $p^m$，而在非不动的意义下，我们也可以得到 $f_1(P)\not&#x3D;P$，所以我们最终可以得到以上性质，这告诉我们，所有非不动的划分的数量可以被 $p$ 整除，这也就是说，总的划分数量，即 $B_{p^m}$，和不动的划分的数量在模 $p$ 的意义下相等。</p>
+<p>假设一个划分 $P$ 是不动的，$a,b$ 分别在这个划分的某个集合中 $A,B$ 中，明显 $f_{b-a}(a)&#x3D;b$ 又因为这个划分是不动的，所以我们有 $f_{b-a}(A)&#x3D;B$，因此在一个不动的划分中，所有划分出的集合大小都相等，不妨设为 $p^j$，我们考虑证明这个划分有以下性质：在一个集合中的所有元素模 $p^{m-j}$ 都相同。</p>
+<p>我们用反证法来证明这个性质，设 $P$ 是一个不动的划分，$A\in P$ 且 $a,b\in A$，并且 $a\not\equiv b\bmod p^{m-j}$ 所以 $f_{b-a}(a)&#x3D;b$，所以 $f_{b-a}$ 是一个把 $A$ 映射到 $A$ 的映射，因此对于任意的正整数 $r$，我们有 $f_{r(b-a)}(a)$ 为 $A$ 中的某个元素，显然 $f_{r(b-a)}(a)\equiv f_{s(b-a)}(a)\bmod p^{m}$，当且仅当 $a+r(b-a)\equiv a+s(b-a)\bmod p^m$，有假设可知 $r\equiv s$，因此对于 $1\le r\le p^{j+1}$ $f_{r(b-a)}(a)$ 都是不同的元素，这表明 $|A|&gt;p^j$ 矛盾。</p>
+<p>于是这告诉我们，对于划分中的集合大小都为 $p^j$ 的不动的划分，它是唯一的。于是这样的集合个数就为 $m+1$ 个，于是我们可以得到 $B_{p^m}\equiv m+1$。由此上面的性质得以证明。</p>
+<p>设 $B^n&#x3D;B_n$ 也就是说我们规定了一个符号。</p>
+<p>我们考虑证明一个更强的性质：$B_{kp^s+n}\equiv B^n(B+s)^k$</p>
+<p>我们考虑证明当 $s$ 固定的时候，对于所有的 $k$ 和 $n$ 上面这个式子成立，我们考虑对 $k$ 进行归纳，当 $k&#x3D;1$ 的时候我们已经证明这个是对的，则：</p>
+<p>$$<br>B_{(k+1)p^s+n}\equiv B_{kp^s+p^s+n}\equiv B^{p^s+n}(B+s)^k\equiv B^n(B+s)^{k+1}<br>$$</p>
+<p>由此我们可以得到这个性质成立。</p>
+<p>其实如果我们不知道 $k&#x3D;1$ 的时候式子成立也可以证明，我们考虑这个式子在 $s&#x3D;0$ 的时候显然成立，我们考虑取 $k&#x3D;1$ 对 $s$ 进行归纳也可以证明这个式子的正确性。</p>
+<p>由此我们可以在把这个同余性质加强一下，贝尔数满足：</p>
+<p>$$<br>G_{\sum k_rp^r}\equiv \prod(G+r)^{k_r}<br>$$</p>
+<p>证明这个式子，只需要把上面那个更强的式子进行迭代使用。</p>
+<p>由此我们可以得到这样的一个式子：</p>
+<p>$$<br>G_{\frac{p^p-1}{p-1}+n}\equiv G_n\bmod p<br>$$</p>
+<p>证明：</p>
+<p>$$<br>G_{\frac{p^p-1}{p-1}+n}\equiv G_{p^{p-1}+p^{p-2}+…1+n}\equiv G^{n+1}(G+p-1)…(G+1)<br>$$</p>
+<p>不难发现这就是一个下降幂的形式，根据第二类斯特林数的性质，我们可以得到：</p>
+<p>$$<br>G^{n+1}(G^{p-1}-1)&#x3D;G^{n+p}-G^{n+1}&#x3D;G_n<br>$$</p>
+<p>所以我们可以得到以下的性质：</p>
+<ul>
+<li>贝尔数模素数 $p$ 的周期为 $\frac{p^p-1}{p-1}$</li>
+</ul>
+<h2 id="贝尔三角形"><a href="#贝尔三角形" class="headerlink" title="贝尔三角形"></a>贝尔三角形</h2><p>我们可以通过构造贝尔三角形来得到贝尔数，具体方法如下：$b_{1,1}&#x3D;1$，$b_{k,1}&#x3D;b_{k-1,k-1}$，$b_{x,y}&#x3D;b_{x,y-1}+b_{x-1,y-1}$。</p>
+<p>这样构造，每一行的第一个数就是贝尔数，即 $b_{k,1}&#x3D;B_k$。</p>
+<p>这样构造的原因如下：</p>
+<p>我们知道：$\Delta B_m&#x3D;B_{m+1}-B_m$，不难发现并证明：</p>
+<p>$$<br>\Delta^n B_m&#x3D;\sum\limits_{k&#x3D;0}^n(-1)^{n-k}\binom{n}{k}B_{m+k}<br>$$</p>
+<p>我们令 $m&#x3D;1$ 可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  \Delta^nB_1&amp;&#x3D;\sum\limits_{k&#x3D;0}^n(-1)^{n-k}\binom{n}{k}B_{k+1}\<br>  &amp;&#x3D;\sum\limits_{k&#x3D;0}^n(-1)^{n-k}\binom{n}{k}\sum\limits_{j&#x3D;0}^k\binom{k}{j}B_j\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^n\sum\limits_{k&#x3D;j}^n(-1)^{n-k}\binom{n}{k}\binom{k}{j}B_j\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^nB_j\binom{n}{j}\sum\limits_{k&#x3D;j}^n(-1)^{n-k}\binom{n-k}{k-j}\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^nB_j\binom nj \sum\limits_{j&#x3D;0}^{n-k}(-1)^j\binom{n-k}j\<br>  &amp;&#x3D;\sum\limits_{j&#x3D;0}^nB_j\binom nj [k&#x3D;n]&#x3D;B_n<br>\end{aligned}<br>$$</p>
+<p>那么我们就可以利用差分公式计算贝尔数。</p>
+<p>这个公式提示我们，如果我们按照上面的方式去构造贝尔数的话，不难发现前几项的规律，把没一行的最后一个数往前拆，就会发现这个东西其实就是 $\Delta^n B_1$。其实就是不断往下做差分的过程。我们看这个三角形的局部：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">1 2</span><br><span class="line">2 3 5</span><br><span class="line">5 7 10 15</span><br><span class="line">15 20 27 37 52</span><br></pre></td></tr></table></figure>
+
+<p>就会发现下一行的差分是这一行。</p>
+<p>那么这个三角形怎么理解呢？我们这样来理解，设 $a_{i,j}$ 表示第 $i$ 行的第 $j$ 个数，我们首先来看第一列，不难发现，这一列数全部是 $\Delta^n B_1$，然后第二列数，不难发现，这一列数全是 $\Delta^n B_2$，后面依次类推，那么它是怎么保持这种性质的呢？原因在于：</p>
+<p>$$<br>B_n&#x3D;\Delta B_{n-1}+B_{n-1}\Rightarrow \Delta^{n} B_n&#x3D;\Delta^{n+1} B_{n-1}+\Delta^n B_{n-1}<br>$$</p>
+<p>注意我们消除而加上 $\Delta$ 算子必须要满足的条件是我们应用的式子没有依靠于这个数列的特殊性质。</p>
+<p>由上面这个式子可以知道递推式子成立，再由 $\Delta^n B_1&#x3D;B_n$ 就可以知道我们把每一行的最后一个数抄下来当做第一行的第一个数的原因了。</p>
+<h2 id="生成函数"><a href="#生成函数" class="headerlink" title="生成函数"></a>生成函数</h2><p>设贝尔数的 EGF 为 $f(x)$，由此我们可以得到：</p>
+<p>$$<br>f(x)&#x3D;\sum\limits_{i\ge0}\frac{B_i}{i!}x^i<br>$$</p>
+<p>我们对上面这个东西进行求导可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  f’(x)&amp;&#x3D;\sum\limits_{i\ge 0}\frac{B_{i+1}}{i!}x^i\<br>  &amp;&#x3D;\sum\limits_{i\ge 0}\frac{x^i}{i!}\sum\limits_{i\ge j}\binom{i}{j}B_j\<br>  &amp;&#x3D;\sum\limits_{j\ge 0}\frac{B_jx^j}{j!}\sum\limits_{i\ge j}\frac{x^{i-j}}{(i-j)!}\<br>\end{aligned}<br>$$</p>
+<p>众所周知，我们把 $e^x$ 在原点处的泰勒展开式写出来可以得到：</p>
+<p>$$<br>e^x&#x3D;\sum\limits_{i\ge 0}\frac{x^i}{i!}<br>$$</p>
+<p>把 $e^{ix}$ 在原点处的泰勒展开式写出来可以得到：</p>
+<p>$$<br>e^{ix}&#x3D;\sum\limits_{j\ge 0}\frac{x^ji^j}{j!}<br>$$</p>
+<p>所以原式我们可以继续写得到：</p>
+<p>$$<br>LHS&#x3D;\sum\limits_{j\ge 0}\frac{B_jx_j}{j!}e^x&#x3D;f(x)e^x<br>$$</p>
+<p>由此我们可以得到 $f(x)$ 的封闭形式为 $f(x)&#x3D;e^{e^x+c}$。由 $f(0)&#x3D;1$ 我们可以得到 $c&#x3D;-1$，所以 $f(x)&#x3D;e^{e^x-1}$。</p>
+<p>至此我们得到贝尔数 EGF 的封闭形式。</p>
+<p>设 $g(x)&#x3D;e^{e^x}$，我们把指数上的 $e^x$ 看做一个整体，然后我们可以得到 $e^{e^x}&#x3D;\sum_{i\ge 0}\frac{e^{xi}}{i!}$</p>
+<p>所以我们可以得到 $f(x)&#x3D;\frac 1e g(x)&#x3D;\frac 1e \sum_{i\ge 0}\frac{e^{xi}}{i!}$。</p>
+<p>我们继续推可以得到：</p>
+<p>$$<br>\begin{aligned}<br>  LHS&amp;&#x3D;\frac 1e \sum\limits_{i\ge 0}\frac{e^{xi}}{i!}\<br>  &amp;&#x3D;\frac 1e \sum\limits_{i\ge 0}\frac{1}{i!}\sum\limits_{j\ge 0}\frac{i^jx^j}{j!}\<br>  &amp;&#x3D;\frac 1e \sum\limits_{j\ge 0}\frac{x^j}{j!}\sum\limits_{i\ge 0}\frac{i^j}{i!}<br>\end{aligned}<br>$$</p>
+<p>我们去式子两边 $\frac{x^n}{n!}$ 的系数，就可以得到：$B_n&#x3D;\frac 1e\sum_{i\ge 0}\frac{i^n}{i!}$（Dobinski公式）。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/378119359">知乎回答</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zorchp.blog.csdn.net/article/details/121714658">高等组合学笔记(七): Bell数,第一,二类Stirling数及其递推关系_zorchp-CSDN博客</a></p>
+</li>
+<li><p>论文《AN ELEMENTARY (NUMBER THEORY) PROOF OF TOUCHARD’S CONGRUENCE》</p>
+</li>
+<li><p>论文《numbers generated by the function $e^{e^x-1}$》</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%BB%84%E5%90%88%E6%95%B0%E5%AD%A6/"># 组合数学</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/%E4%BA%8C%E9%A1%B9%E5%BC%8F%E5%8F%8D%E6%BC%94/">二项式反演</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/28/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC/">拉格朗日插值</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

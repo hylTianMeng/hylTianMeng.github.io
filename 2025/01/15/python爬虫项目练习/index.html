@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>python爬虫项目练习 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">python爬虫项目练习</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 15, 2025&nbsp;&nbsp;23:14:29</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>今天一共做了 3 个小项目。</p>
+<h1 id="项目-1：豆瓣前-top250-电影爬取"><a href="#项目-1：豆瓣前-top250-电影爬取" class="headerlink" title="项目 1：豆瓣前 top250 电影爬取"></a>项目 1：豆瓣前 top250 电影爬取</h1><p>目标是爬取前 250 （其实没有那么多）电影的名称、评分等信息。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://movie.douban.com/top250&quot;</span>;</span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>:<span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.get(url, headers=header);</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"><span class="comment"># with open(&quot;tmp.html&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:</span></span><br><span class="line"><span class="comment">#     f.write(resp.text);</span></span><br><span class="line"></span><br><span class="line">page_content = resp.text;</span><br><span class="line"></span><br><span class="line">obj = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;li&gt;.*?&lt;div class=&quot;item&quot;&gt;.*?&lt;span class=&quot;title&quot;&gt;(?P&lt;name&gt;.*?)&lt;/span&gt;&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;p class=&quot;&quot;&gt;.*?&lt;br&gt;\s*(?P&lt;year&gt;.*?)&amp;nbsp&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;span class=&quot;rating_num&quot; property=&quot;v:average&quot;&gt;(?P&lt;rate&gt;.*?)&lt;/span&gt;\s*&lt;span property=&quot;v:best&quot; content=&quot;10.0&quot;&gt;&lt;/span&gt;&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;span&gt;(?P&lt;people&gt;.*?)人评价&lt;/span&gt;.*?&lt;/li&gt;&#x27;</span>, re.S);</span><br><span class="line"></span><br><span class="line">result = obj.finditer(page_content);</span><br><span class="line"></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, mode= <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>, newline = <span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="comment"># 这里添加参数 newline 可以有效防止空行问题。</span></span><br><span class="line">csvwriter = csv.writer(f);</span><br><span class="line"><span class="comment"># csv.writer 中可以存入一个文件对象。返回一个 csv 文件操作对象。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result:</span><br><span class="line">    <span class="comment"># print(it.group(&quot;name&quot;));</span></span><br><span class="line">    <span class="comment"># # print(it.group(&quot;year&quot;));</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;year&quot;).strip());</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;rate&quot;));</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;people&quot;));</span></span><br><span class="line">    dic = it.groupdict();</span><br><span class="line">    dic[<span class="string">&#x27;year&#x27;</span>] = dic[<span class="string">&#x27;year&#x27;</span>].strip();</span><br><span class="line">    csvwriter.writerow(dic.values());</span><br><span class="line"><span class="comment"># dic.values() 以列表返回字典中的所有值。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># strip 方法，属于 str 类，可以去除前缀和后缀的空白字符。</span></span><br><span class="line">f.close();</span><br><span class="line">resp.close();</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>要点 1：<code>requests.get()</code> 方法返回 <code>Response</code> 类，其中的两个数据：<code>text</code> 和 <code>content</code> 都用来储存请求返回的数据，不同的是，前者以文本形式保存，也就是经过了编码。其中，编码形式可以通过改变 <code>Response</code> 类中的 <code>encoding</code> 成员（<code>str</code> 类型）来进行设定，默认是通过 unicode 进行编码。后者是以字节的形式返回数据，这在返回数据并非文本时（例如照片，视频等）非常有用。</p>
+</li>
+<li><p>要点 2：python 中 <code>str</code> 的拼接可以直接通过罗列 ‘…’ 来进行，两个不同的被单引号框住的字符串直接的空格和回车会被自动忽略。</p>
+</li>
+<li><p>要点 3：<code>r</code> 字符串表示原始字符串，转义字符（例如 <code>\n,\r</code>）将被保留而不进行转义。</p>
+</li>
+<li><p>要点 4：<code>requests.get()</code> 方法可以接受 <code>headers</code> 参数，后者本质上是一个字典，可以用来更改请求页面时使用的请求头信息。<br>实际上还有一个参数 <code>verify</code>，默认值是 <code>True</code>，可以设定为 <code>False</code> 以爬取那些并没有 ca 安全认证的网页。</p>
+</li>
+<li><p>要点 5：<code>Match</code> 类型中的 <code>groupdict</code> 方法可以把所有组中设定的 <code>key</code> 和 <code>value</code> 组成字典，而不用像注释那样一个一个进行。</p>
+</li>
+<li><p>要点 6：<code>open</code> 函数返回一个文件操作对象 <code>TextIOWrapper</code>，而 <code>csv.writer</code> 方法可以接受一个文件操作对象，返回一个 csv 文件操作对象。其中的 <code>writerow</code> 方法接受一行列表（作为参数），并可以往对应的文件里面写入一行数据（以 csv 文件的格式，即用“,”隔开），</p>
+</li>
+<li><p>要点 7：<code>open</code> 函数中的 newline 参数可以很好的解决 csv 文件读写时可能出现的空白行问题，这里做出以下解释：</p>
+</li>
+</ul>
+<p>首先，应该知道的是在不同的操作系统下，换行符不同。例如，在 windows 系统下，<code>\r\n</code> 作为<strong>一个字符</strong>表示换行，而在类 Unix 系统中，<code>\n</code> 表示换行。</p>
+<p>python 文档是这样来解释 newline 的作用的：</p>
+<blockquote>
+<p><font face = "Time New Roman"> On input,if newline is None, universal newlines mode is enabled. Lines in the input can end in '\n', '\r', or '\r\n', and these are translated into '\n' before being returned to the caller. If it is '', universal newline mode is enabled, but line endings are returned to the caller untranslated. If it has any of the other legal values, input lines are only terminated by the given string, and the line ending is returned to the caller untranslated.
+On output,if newline is None, any '\n' characters written are translated to the system default line separator,os.linesep. If newline is '', no translation takes place. If new line is any of the other legal values, any '\n' characters written are translated to the given string</font></p>
+</blockquote>
+<p>而 ChatGPT 给出的中文解释如下：</p>
+<blockquote>
+<p>输入（或读取）时：</p>
+<p><code>newline=None</code> 时：启用了“通用换行模式”（universal newlines mode）。文件中的换行符可以是 <code>\n、\r</code> 或 <code>\r\n</code>，但在返回给调用者（读取内容）之前，所有这些换行符都会被统一转换为 \n。<code>newline=&#39;&#39;</code>（空字符串）时：同样启用了“通用换行模式”，但不同的是，不会对文件中的换行符进行转换，直接原样返回给调用者。<code>newline</code> 是其他合法值时：输入行（也就是读取的内容）只会在遇到这个指定字符串时被认为是“行结束”（only terminated 的意思）。换句话说，这种情况下，行必须以你指定的字符串结束，否则不认为是“换行”。换行符原样返回，不进行转换。</p>
+<p>输出（或写入）：</p>
+<p><code>newline=None</code> 时：输出文件中，每当写入 <code>\n</code> 时，会被转换为系统默认的换行符（通常是 <code>\n</code> 或 <code>\r\n</code>，由 <code>os.linesep</code> 决定）。<code>newline=&#39;&#39;</code>（空字符串）时：不会对 <code>\n</code> 进行任何转换，直接原样写入。<code>newline</code> 是其他合法值时（比如一个特定的字符串）：所有的 <code>\n</code> 都会被转换为你指定的字符串。 </p>
+</blockquote>
+<p>对上述文字这里不再做任何更加详细的解释，目前足以解释当前的问题。不加 <code>newline=&quot;&quot;</code> 时，<code>csvwriter.writerow</code> 会自动在字符串结尾加入换行符，笔者电脑系统为 windows 系统，于是会在末尾加上 <code>\r\n</code>，而在写入时 <code>\n</code> 变为 <code>\r\n</code>，于是字符串末尾会变成 <code>\r\r\n</code>，后者在 windows 环境下会被解释成换两次行，所以会出现空白行的存在。加上该参数后，将不会出现此问题。</p>
+<h1 id="项目-2：爬取盗版网站电影迅雷下载链接"><a href="#项目-2：爬取盗版网站电影迅雷下载链接" class="headerlink" title="项目 2：爬取盗版网站电影迅雷下载链接"></a>项目 2：爬取盗版网站电影迅雷下载链接</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">domain = <span class="string">&quot;https://www.dytt89.com/&quot;</span>;</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.get(domain, verify=<span class="literal">False</span>, headers=headers); <span class="comment"># 去掉 ca 安全验证。 verify = false。原因是有的网站可能并没有购买 ca 证书。</span></span><br><span class="line">resp.encoding = <span class="string">&#x27;gb2312&#x27;</span>; <span class="comment"># 指定字符集。</span></span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"></span><br><span class="line">obj1 = re.<span class="built_in">compile</span>(<span class="string">r&quot;2025必看热片.*?&lt;ul&gt;(?P&lt;ul&gt;.*?)&lt;/ul&gt;&quot;</span>, re.S);</span><br><span class="line">result1 = obj1.finditer(resp.text);</span><br><span class="line"></span><br><span class="line">obj2 = re.<span class="built_in">compile</span>(<span class="string">r&quot;&lt;li&gt;&lt;a href=&#x27;(?P&lt;href&gt;.*?)&#x27;&quot;</span>, re.S);</span><br><span class="line">child_href_list = [];</span><br><span class="line"></span><br><span class="line">obj3 = re.<span class="built_in">compile</span>(<span class="string">r&#x27;◎片　　名\s+(?P&lt;movie&gt;.*?)&lt;br /&gt;.*?&lt;td style=&quot;WORD-WRAP: break-word&quot; bgcolor=&quot;#fdfddf&quot;&gt;&lt;a href=&quot;(?P&lt;down&gt;.*?)&quot;&gt;&#x27;</span>, re.S);</span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result1:</span><br><span class="line">    <span class="comment"># print(it.group(&quot;ul&quot;));</span></span><br><span class="line">    ul = it.group(<span class="string">&quot;ul&quot;</span>);</span><br><span class="line"></span><br><span class="line">    result2 = obj2.finditer(ul);</span><br><span class="line">    <span class="keyword">for</span> itt <span class="keyword">in</span> result2:</span><br><span class="line">        child_href = domain + itt.group(<span class="string">&#x27;href&#x27;</span>).strip(<span class="string">&quot;/&quot;</span>)</span><br><span class="line">        <span class="comment"># print(itt.group(&quot;href&quot;));</span></span><br><span class="line">        child_href_list.append(child_href);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> href <span class="keyword">in</span> child_href_list:</span><br><span class="line">    child_resp = requests.get(href, verify=<span class="literal">False</span>, headers=headers);</span><br><span class="line">    child_resp.encoding = <span class="string">&#x27;gb2312&#x27;</span>;</span><br><span class="line">    <span class="comment"># print(child_resp.text);</span></span><br><span class="line">    result3 = obj3.search(child_resp.text);</span><br><span class="line">    <span class="built_in">print</span>(result3.group(<span class="string">&quot;movie&quot;</span>));</span><br><span class="line">    <span class="built_in">print</span>(result3.group(<span class="string">&quot;down&quot;</span>));</span><br><span class="line">    <span class="comment"># break;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>要点 1：<code>str</code> 类 <code>strip()</code> 方法可以去掉前缀后缀字符，如果没有参数则去掉空白字符，有参数（<code>str</code>，代表一个字符集）则去掉前导或后导的字符集中的字符。</li>
+</ul>
+<h1 id="项目-3：爬取图片"><a href="#项目-3：爬取图片" class="headerlink" title="项目 3：爬取图片"></a>项目 3：爬取图片</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://www.umeituku.com/bizhitupian/weimeibizhi/&quot;</span>;</span><br><span class="line">resp = requests.get(url);</span><br><span class="line">resp.encoding = <span class="string">&quot;utf-8&quot;</span>;</span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"></span><br><span class="line">bs = BeautifulSoup(resp.text, <span class="string">&quot;html.parser&quot;</span>);</span><br><span class="line">childbs = bs.find_all(<span class="string">&quot;a&quot;</span>, attrs=&#123;<span class="string">&quot;class&quot;</span>: <span class="string">&quot;TypeBigPics&quot;</span>&#125;);</span><br><span class="line"></span><br><span class="line">urllist = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cbs <span class="keyword">in</span> childbs:</span><br><span class="line">    <span class="comment"># urllist.append(cbs.get(&#x27;href&#x27;));</span></span><br><span class="line">    href = cbs.get(<span class="string">&#x27;href&#x27;</span>);</span><br><span class="line">    <span class="built_in">print</span>(href);</span><br><span class="line">    resp2 = requests.get(href);</span><br><span class="line">    resp2.encoding = <span class="string">&quot;utf-8&quot;</span>;</span><br><span class="line">    bs2 = BeautifulSoup(resp2.text, <span class="string">&quot;html.parser&quot;</span>);</span><br><span class="line">    p = (bs2.find_all(<span class="string">&quot;p&quot;</span>,attrs=&#123;<span class="string">&quot;align&quot;</span>: <span class="string">&quot;center&quot;</span>&#125;) + bs2.find_all(<span class="string">&quot;p&quot;</span>, attrs=&#123;<span class="string">&quot;style&quot;</span>: <span class="string">&quot;text-align:center;&quot;</span>&#125;))[-<span class="number">1</span>];</span><br><span class="line">    img = p.find(<span class="string">&quot;img&quot;</span>);</span><br><span class="line">    <span class="built_in">print</span>(img);</span><br><span class="line">    <span class="comment"># print(img.get(&quot;src&quot;));</span></span><br><span class="line">    src = img.get(<span class="string">&quot;src&quot;</span>);</span><br><span class="line">    img_resp = requests.get(src);</span><br><span class="line">    img_name = src.split(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;img/&quot;</span>+img_name, mode=<span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="comment"># 这里，w 仍然意味着写入，而 b 表示以二进制方式写入。</span></span><br><span class="line">        f.write(img_resp.content);</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>, img_name);</span><br><span class="line">    time.sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="comment"># break;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># print(urllist);</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>要点 1：<code>BeautifulSoup</code> 构造函数接受需要解析的 <code>html</code> 文本，并且需要指明需要解析的就是 <code>html</code> 文本 （<code>html.parser</code>）。返回 <code>Tag</code> 类型，<code>Tag</code> 类型有 <code>find()</code> 和 <code>find_all()</code> 方法，可以传入两个参数：<code>html</code> 标签和 <code>html</code> 属性，用来寻找 <code>Tag</code> 类型对应的 <code>html</code> 文本符合条件的 <code>html</code> 标签及其子标签。<code>find()</code> 方法只返回能找到的第一个结果，返回值为 <code>Tag</code> 类型。而 <code>find_all()</code> 方法返回所有能找到的结果，返回一个列表，列表中的元素为 <code>Tag</code> 类型。参数 <code>html</code> 属性并非必须。<code>Tag</code> 类型有 <code>get()</code> 方法，参数为标签属性名称，返回的是属性具体的值。同时，<code>Tag</code> 标签的 <code>text</code> 数据返回标签以及所有子标签中的所有文本信息。今天一共做了 3 个小项目。</li>
+</ul>
+<h1 id="项目-1：豆瓣前-top250-电影爬取-1"><a href="#项目-1：豆瓣前-top250-电影爬取-1" class="headerlink" title="项目 1：豆瓣前 top250 电影爬取"></a>项目 1：豆瓣前 top250 电影爬取</h1><p>目标是爬取前 250 （其实没有那么多）电影的名称、评分等信息。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://movie.douban.com/top250&quot;</span>;</span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>:<span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.get(url, headers=header);</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"><span class="comment"># with open(&quot;tmp.html&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:</span></span><br><span class="line"><span class="comment">#     f.write(resp.text);</span></span><br><span class="line"></span><br><span class="line">page_content = resp.text;</span><br><span class="line"></span><br><span class="line">obj = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;li&gt;.*?&lt;div class=&quot;item&quot;&gt;.*?&lt;span class=&quot;title&quot;&gt;(?P&lt;name&gt;.*?)&lt;/span&gt;&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;p class=&quot;&quot;&gt;.*?&lt;br&gt;\s*(?P&lt;year&gt;.*?)&amp;nbsp&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;span class=&quot;rating_num&quot; property=&quot;v:average&quot;&gt;(?P&lt;rate&gt;.*?)&lt;/span&gt;\s*&lt;span property=&quot;v:best&quot; content=&quot;10.0&quot;&gt;&lt;/span&gt;&#x27;</span></span><br><span class="line">                 <span class="string">r&#x27;.*?&lt;span&gt;(?P&lt;people&gt;.*?)人评价&lt;/span&gt;.*?&lt;/li&gt;&#x27;</span>, re.S);</span><br><span class="line"></span><br><span class="line">result = obj.finditer(page_content);</span><br><span class="line"></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, mode= <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>, newline = <span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="comment"># 这里添加参数 newline 可以有效防止空行问题。</span></span><br><span class="line">csvwriter = csv.writer(f);</span><br><span class="line"><span class="comment"># csv.writer 中可以存入一个文件对象。返回一个 csv 文件操作对象。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result:</span><br><span class="line">    <span class="comment"># print(it.group(&quot;name&quot;));</span></span><br><span class="line">    <span class="comment"># # print(it.group(&quot;year&quot;));</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;year&quot;).strip());</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;rate&quot;));</span></span><br><span class="line">    <span class="comment"># print(it.group(&quot;people&quot;));</span></span><br><span class="line">    dic = it.groupdict();</span><br><span class="line">    dic[<span class="string">&#x27;year&#x27;</span>] = dic[<span class="string">&#x27;year&#x27;</span>].strip();</span><br><span class="line">    csvwriter.writerow(dic.values());</span><br><span class="line"><span class="comment"># dic.values() 以列表返回字典中的所有值。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># strip 方法，属于 str 类，可以去除前缀和后缀的空白字符。</span></span><br><span class="line">f.close();</span><br><span class="line">resp.close();</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>要点 1：<code>requests.get()</code> 方法返回 <code>Response</code> 类，其中的两个数据：<code>text</code> 和 <code>content</code> 都用来储存请求返回的数据，不同的是，前者以文本形式保存，也就是经过了编码。其中，编码形式可以通过改变 <code>Response</code> 类中的 <code>encoding</code> 成员（<code>str</code> 类型）来进行设定，默认是通过 unicode 进行编码。后者是以字节的形式返回数据，这在返回数据并非文本时（例如照片，视频等）非常有用。</p>
+</li>
+<li><p>要点 2：python 中 <code>str</code> 的拼接可以直接通过罗列 ‘…’ 来进行，两个不同的被单引号框住的字符串直接的空格和回车会被自动忽略。</p>
+</li>
+<li><p>要点 3：<code>r</code> 字符串表示原始字符串，转义字符（例如 <code>\n,\r</code>）将被保留而不进行转义。</p>
+</li>
+<li><p>要点 4：<code>requests.get()</code> 方法可以接受 <code>headers</code> 参数，后者本质上是一个字典，可以用来更改请求页面时使用的请求头信息。<br>实际上还有一个参数 <code>verify</code>，默认值是 <code>True</code>，可以设定为 <code>False</code> 以爬取那些并没有 ca 安全认证的网页。</p>
+</li>
+<li><p>要点 5：<code>Match</code> 类型中的 <code>groupdict</code> 方法可以把所有组中设定的 <code>key</code> 和 <code>value</code> 组成字典，而不用像注释那样一个一个进行。</p>
+</li>
+<li><p>要点 6：<code>open</code> 函数返回一个文件操作对象 <code>TextIOWrapper</code>，而 <code>csv.writer</code> 方法可以接受一个文件操作对象，返回一个 csv 文件操作对象。其中的 <code>writerow</code> 方法接受一行列表（作为参数），并可以往对应的文件里面写入一行数据（以 csv 文件的格式，即用“,”隔开），</p>
+</li>
+<li><p>要点 7：<code>open</code> 函数中的 newline 参数可以很好的解决 csv 文件读写时可能出现的空白行问题，这里做出以下解释：</p>
+</li>
+</ul>
+<p>首先，应该知道的是在不同的操作系统下，换行符不同。例如，在 windows 系统下，<code>\r\n</code> 作为<strong>一个字符</strong>表示换行，而在类 Unix 系统中，<code>\n</code> 表示换行。</p>
+<p>python 文档是这样来解释 newline 的作用的：</p>
+<blockquote>
+<p><font face = "Time New Roman"> On input,if newline is None, universal newlines mode is enabled. Lines in the input can end in '\n', '\r', or '\r\n', and these are translated into '\n' before being returned to the caller. If it is '', universal newline mode is enabled, but line endings are returned to the caller untranslated. If it has any of the other legal values, input lines are only terminated by the given string, and the line ending is returned to the caller untranslated.
+On output,if newline is None, any '\n' characters written are translated to the system default line separator,os.linesep. If newline is '', no translation takes place. If new line is any of the other legal values, any '\n' characters written are translated to the given string</font></p>
+</blockquote>
+<p>而 ChatGPT 给出的中文解释如下：</p>
+<blockquote>
+<p>输入（或读取）时：</p>
+<p><code>newline=None</code> 时：启用了“通用换行模式”（universal newlines mode）。文件中的换行符可以是 <code>\n、\r</code> 或 <code>\r\n</code>，但在返回给调用者（读取内容）之前，所有这些换行符都会被统一转换为 \n。<code>newline=&#39;&#39;</code>（空字符串）时：同样启用了“通用换行模式”，但不同的是，不会对文件中的换行符进行转换，直接原样返回给调用者。<code>newline</code> 是其他合法值时：输入行（也就是读取的内容）只会在遇到这个指定字符串时被认为是“行结束”（only terminated 的意思）。换句话说，这种情况下，行必须以你指定的字符串结束，否则不认为是“换行”。换行符原样返回，不进行转换。</p>
+<p>输出（或写入）：</p>
+<p><code>newline=None</code> 时：输出文件中，每当写入 <code>\n</code> 时，会被转换为系统默认的换行符（通常是 <code>\n</code> 或 <code>\r\n</code>，由 <code>os.linesep</code> 决定）。<code>newline=&#39;&#39;</code>（空字符串）时：不会对 <code>\n</code> 进行任何转换，直接原样写入。<code>newline</code> 是其他合法值时（比如一个特定的字符串）：所有的 <code>\n</code> 都会被转换为你指定的字符串。 </p>
+</blockquote>
+<p>对上述文字这里不再做任何更加详细的解释，目前足以解释当前的问题。不加 <code>newline=&quot;&quot;</code> 时，<code>csvwriter.writerow</code> 会自动在字符串结尾加入换行符，笔者电脑系统为 windows 系统，于是会在末尾加上 <code>\r\n</code>，而在写入时 <code>\n</code> 变为 <code>\r\n</code>，于是字符串末尾会变成 <code>\r\r\n</code>，后者在 windows 环境下会被解释成换两次行，所以会出现空白行的存在。加上该参数后，将不会出现此问题。</p>
+<h1 id="项目-2：爬取盗版网站电影迅雷下载链接-1"><a href="#项目-2：爬取盗版网站电影迅雷下载链接-1" class="headerlink" title="项目 2：爬取盗版网站电影迅雷下载链接"></a>项目 2：爬取盗版网站电影迅雷下载链接</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">domain = <span class="string">&quot;https://www.dytt89.com/&quot;</span>;</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.get(domain, verify=<span class="literal">False</span>, headers=headers); <span class="comment"># 去掉 ca 安全验证。 verify = false。原因是有的网站可能并没有购买 ca 证书。</span></span><br><span class="line">resp.encoding = <span class="string">&#x27;gb2312&#x27;</span>; <span class="comment"># 指定字符集。</span></span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"></span><br><span class="line">obj1 = re.<span class="built_in">compile</span>(<span class="string">r&quot;2025必看热片.*?&lt;ul&gt;(?P&lt;ul&gt;.*?)&lt;/ul&gt;&quot;</span>, re.S);</span><br><span class="line">result1 = obj1.finditer(resp.text);</span><br><span class="line"></span><br><span class="line">obj2 = re.<span class="built_in">compile</span>(<span class="string">r&quot;&lt;li&gt;&lt;a href=&#x27;(?P&lt;href&gt;.*?)&#x27;&quot;</span>, re.S);</span><br><span class="line">child_href_list = [];</span><br><span class="line"></span><br><span class="line">obj3 = re.<span class="built_in">compile</span>(<span class="string">r&#x27;◎片　　名\s+(?P&lt;movie&gt;.*?)&lt;br /&gt;.*?&lt;td style=&quot;WORD-WRAP: break-word&quot; bgcolor=&quot;#fdfddf&quot;&gt;&lt;a href=&quot;(?P&lt;down&gt;.*?)&quot;&gt;&#x27;</span>, re.S);</span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result1:</span><br><span class="line">    <span class="comment"># print(it.group(&quot;ul&quot;));</span></span><br><span class="line">    ul = it.group(<span class="string">&quot;ul&quot;</span>);</span><br><span class="line"></span><br><span class="line">    result2 = obj2.finditer(ul);</span><br><span class="line">    <span class="keyword">for</span> itt <span class="keyword">in</span> result2:</span><br><span class="line">        child_href = domain + itt.group(<span class="string">&#x27;href&#x27;</span>).strip(<span class="string">&quot;/&quot;</span>)</span><br><span class="line">        <span class="comment"># print(itt.group(&quot;href&quot;));</span></span><br><span class="line">        child_href_list.append(child_href);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> href <span class="keyword">in</span> child_href_list:</span><br><span class="line">    child_resp = requests.get(href, verify=<span class="literal">False</span>, headers=headers);</span><br><span class="line">    child_resp.encoding = <span class="string">&#x27;gb2312&#x27;</span>;</span><br><span class="line">    <span class="comment"># print(child_resp.text);</span></span><br><span class="line">    result3 = obj3.search(child_resp.text);</span><br><span class="line">    <span class="built_in">print</span>(result3.group(<span class="string">&quot;movie&quot;</span>));</span><br><span class="line">    <span class="built_in">print</span>(result3.group(<span class="string">&quot;down&quot;</span>));</span><br><span class="line">    <span class="comment"># break;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>要点 1：<code>str</code> 类 <code>strip()</code> 方法可以去掉前缀后缀字符，如果没有参数则去掉空白字符，有参数（<code>str</code>，代表一个字符集）则去掉前导或后导的字符集中的字符。</li>
+</ul>
+<h1 id="项目-3：爬取图片-1"><a href="#项目-3：爬取图片-1" class="headerlink" title="项目 3：爬取图片"></a>项目 3：爬取图片</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://www.umeituku.com/bizhitupian/weimeibizhi/&quot;</span>;</span><br><span class="line">resp = requests.get(url);</span><br><span class="line">resp.encoding = <span class="string">&quot;utf-8&quot;</span>;</span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"></span><br><span class="line">bs = BeautifulSoup(resp.text, <span class="string">&quot;html.parser&quot;</span>);</span><br><span class="line">childbs = bs.find_all(<span class="string">&quot;a&quot;</span>, attrs=&#123;<span class="string">&quot;class&quot;</span>: <span class="string">&quot;TypeBigPics&quot;</span>&#125;);</span><br><span class="line"></span><br><span class="line">urllist = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cbs <span class="keyword">in</span> childbs:</span><br><span class="line">    <span class="comment"># urllist.append(cbs.get(&#x27;href&#x27;));</span></span><br><span class="line">    href = cbs.get(<span class="string">&#x27;href&#x27;</span>);</span><br><span class="line">    <span class="built_in">print</span>(href);</span><br><span class="line">    resp2 = requests.get(href);</span><br><span class="line">    resp2.encoding = <span class="string">&quot;utf-8&quot;</span>;</span><br><span class="line">    bs2 = BeautifulSoup(resp2.text, <span class="string">&quot;html.parser&quot;</span>);</span><br><span class="line">    p = (bs2.find_all(<span class="string">&quot;p&quot;</span>,attrs=&#123;<span class="string">&quot;align&quot;</span>: <span class="string">&quot;center&quot;</span>&#125;) + bs2.find_all(<span class="string">&quot;p&quot;</span>, attrs=&#123;<span class="string">&quot;style&quot;</span>: <span class="string">&quot;text-align:center;&quot;</span>&#125;))[-<span class="number">1</span>];</span><br><span class="line">    img = p.find(<span class="string">&quot;img&quot;</span>);</span><br><span class="line">    <span class="built_in">print</span>(img);</span><br><span class="line">    <span class="comment"># print(img.get(&quot;src&quot;));</span></span><br><span class="line">    src = img.get(<span class="string">&quot;src&quot;</span>);</span><br><span class="line">    img_resp = requests.get(src);</span><br><span class="line">    img_name = src.split(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;img/&quot;</span>+img_name, mode=<span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="comment"># 这里，w 仍然意味着写入，而 b 表示以二进制方式写入。</span></span><br><span class="line">        f.write(img_resp.content);</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>, img_name);</span><br><span class="line">    time.sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="comment"># break;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># print(urllist);</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>要点 1：<code>BeautifulSoup</code> 构造函数接受需要解析的 <code>html</code> 文本，并且需要指明需要解析的就是 <code>html</code> 文本 （<code>html.parser</code>）。返回 <code>Tag</code> 类型，<code>Tag</code> 类型有 <code>find()</code> 和 <code>find_all()</code> 方法，可以传入两个参数：<code>html</code> 标签和 <code>html</code> 属性，用来寻找 <code>Tag</code> 类型对应的 <code>html</code> 文本符合条件的 <code>html</code> 标签及其子标签。<code>find()</code> 方法只返回能找到的第一个结果，返回值为 <code>Tag</code> 类型。而 <code>find_all()</code> 方法返回所有能找到的结果，返回一个列表，列表中的元素为 <code>Tag</code> 类型。参数 <code>html</code> 属性并非必须。<code>Tag</code> 类型有 <code>get()</code> 方法，参数为标签属性名称，返回的是属性具体的值。同时，<code>Tag</code> 标签的 <code>text</code> 数据返回标签以及所有子标签中的所有文本信息。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%88%AC%E8%99%AB/"># 爬虫</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2025/01/16/XPath/">XPath 小记</a>
+            
+            
+            <a class="next" rel="next" href="/2025/01/14/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

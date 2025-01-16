@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>KMP 与 EXKMP | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">KMP 与 EXKMP</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 2, 2022&nbsp;&nbsp;16:22:09</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="KMP-算法"><a href="#KMP-算法" class="headerlink" title="KMP 算法"></a>KMP 算法</h1><h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>KMP 算法可以解决这样一类问题：给定一个字符串 $s$ ，我们称为主串，给定字符串 $t$ ，我们称之为模式串。我们需要用模式串去匹配主串，也就是说，看看模式串有没有在主串中出现过，如果出现过那么在哪里出现？出现过几次。</p>
+<p>不难想到，暴力是可以做的，时间复杂度为 $O(|s||t|)$ ，我们只需要枚举字符串 $t$ 可能出现的所有位置即可。</p>
+<p>但是，我们似乎并没有利用好我们的每一次合并。</p>
+<p>例如这个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abacabbccabc</span><br><span class="line">abb</span><br></pre></td></tr></table></figure>
+
+<p>其中它出现了失配，我们可以很显然的知道，我们可以直接去枚举这个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abacabbccabc</span><br><span class="line">  abb</span><br></pre></td></tr></table></figure>
+
+<p>因为中间那一个是一定不可能的。</p>
+<p>所以不难发现我们可以利用之前匹配的一些信息来优化我们的匹配过程，但如何利用呢？</p>
+<h2 id="next-数组"><a href="#next-数组" class="headerlink" title="next 数组"></a>next 数组</h2><p>了解过 KMP 算法的人都知道，$next$ 数组是 KMP 的灵魂，注意，这里的 $next$ 数组是相当于模式串 $t$ 来说的，$next_j$ 的定义是：表示 $t$ 的非前缀子串与 $t$ 的前缀能够匹配的最长长度，即：<br>$$<br>next_j&#x3D;\max{k},(k&lt;j,t_{j-k+1,j}&#x3D;t_{1,k})<br>$$<br>特别的，如果不存在这样的 $k$，那么 $next_j&#x3D;0$ 。</p>
+<p>以下我们称满足上式右边括号里的 $k$ 为候选项。</p>
+<ul>
+<li>定理 $1$ ：如果 $j_0$ 是 $next_i$ 的一个候选项，则小于 $j_0$ 的最大的 $next_i$ 的候选项是 $next_{j_0}$，换言之，$next_{j_0}+1$ 到 $j_0-1$ 都不是其候选项。</li>
+</ul>
+<p>证明：假设存在一个 $j_1$ 满足 $next_{j_0}&lt;j_1&lt;j_0-1$ 为 $next_{j_0}$ 的候选项，</p>
+<p><img src="https://pic.imgdb.cn/item/60d1d537844ef46bb262485f.png"></p>
+<p>如图，不难发现，$next_{j_0}$ 是 $next_i$ 的候选项。那么，根据 $j_1$ 也是其候选项，我们有这样的图：</p>
+<p><img src="https://pic.imgdb.cn/item/60d1d706844ef46bb26cb589.png"></p>
+<p>不难发现，$j_1$ 同时也是 $next_{j_0}$ 的候选项，这与 $next_{j_0}$ 的最大性矛盾，所以定理成立。</p>
+<ul>
+<li>定理 $2$：如果 $j$ 是 $next_i$ 的候选项，那么 $j-1$ 是 $next_{i-1}$ 的候选项。</li>
+</ul>
+<p>证明：如图：</p>
+<p><img src="https://pic.imgdb.cn/item/60d1d8d6844ef46bb278081d.png"></p>
+<p>显然绿色部分是相等的，定理成立。</p>
+<p>我们假设目前 $next_{1}$ 到 $next_{i-1}$ 已经推出来了，我们来推导 $next_i$ ，我们设 $j$ 为 $next_{i-1}$ ，由定理二可以知道，$j$ 是 $next_{i-1}$ 的候选项是 $j+1$ 为 $next_{i-1}$ 的必要条件， 再根据定理 $1$ ，我们只需要尝试 $j+1,next_j+1,next_{next_j}+1…$。</p>
+<h2 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><p>在上面的代码中，$j$ 的值不断减小，所以第 $3$ 行的执行次数不会超过每一层 <code>for</code> 循环开始的时候与 <code>while</code> 循环结束的时候 $j$ 值的差，而在每层 <code>for</code> 循环中 $j$ 的值至多增加 $1$。因为 $j$ 是非负的，所以 $j$ 减小的幅度总和不会超过 $j$ 增加的幅度总和，所以 $j$ 的变化次数至多为 $2N$ 次。</p>
+<h2 id="求解"><a href="#求解" class="headerlink" title="求解"></a>求解</h2><p>那么，知道了 $next$ 数组，我们如何去求解我们 KMP 期望所解决的问题呢？设 $f$ 数组表示 $s$ 中以 $i$ 结尾的子串与 $t$ 的前缀能够匹配的最长长度。那么因为 $next$ 和 $j$ 的相似性，我们可以类似的去算 $f$ 数组。</p>
+<p>那么细心的读者可能会发现，这里 $f$ 数组和 $next$ 数组的定义并不一样，并且 <code>while</code> 语句里面的循环条件也不一样，我们仔细剖析一下。</p>
+<p>为什么 $next$ 中有限制是“非前缀“呢？如果没有这样的限制，遇到像 <code>aaaa</code> 这样的数据，跳 $next$ 的时候会死循环，这样限制实际上是为了 $next_j$ 要严格小于 $j$ 。而 $f$ 明显就没有这样的问题。在求 $next$ 时为了这个限制我们是预处理的 $next_1$ 而从 $next_2$ 开始算。</p>
+<p>那么为什么这个求 $f$ 数组 <code>while</code> 循环里面这样特殊呢？这是因为如果 $j&#x3D;n$ 而不跳的话，$a_{j+1}$ 就会越界，这是我们不希望出现的，且这样做其实并不影响正确性，因为如果字符串 $t$ 中不是全都是一个字符的话，是不可能出现  $f_i&#x3D;n,f_{i+1}&#x3D;n$ 的情况的，如果是这种情况，因为 $next_{j}&#x3D;j-1$ ，所以这样做是正确的。</p>
+<p>根据之前的分析，总时间复杂度是 $O(n+m)$ 。</p>
+<h1 id="扩展-KMP"><a href="#扩展-KMP" class="headerlink" title="扩展 KMP"></a>扩展 KMP</h1><h2 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h2><p>扩展 KMP （国外通常称其为 Z 函数）用于解决这样的问题：</p>
+<p>给定字符串 $s$ 和 $t$，请输出 $s$ 的每一个后缀与 $t$ 的最长公共前缀。</p>
+<h2 id="算法讲解"><a href="#算法讲解" class="headerlink" title="算法讲解"></a>算法讲解</h2><p>我们定义 $extend_i$ 表示 $s_{i,n}$ 与 $t$ 的最长公共前缀长度，而题意就是让你求所有的 $extend$。</p>
+<p>类似于 KMP，我们设 $next_i$ 表示 $t_{i,m}$ 与 $t$ 匹配的非后缀最长公共前缀长度。</p>
+<p>我们可以借助 $extend$ 的思想，借助前面的匹配信息来快速匹配后边的信息。</p>
+<p>假设 $extend_{1…k}$ 已经算好，并且在以前的匹配过程中在 $s$ 串中的最远位置是 $p$ ，即 $p&#x3D;\max\limits_{1\le i\le k}(i-extend_i+1)$ ，并且取到这个最大值 $p$ 的位置是 $p_0$ ，根据上面的定义，我们可以画出这样的图：</p>
+<p><img src="https://pic.imgdb.cn/item/60d2dcf1844ef46bb23a69c7.png"></p>
+<p>注意，这里 $a&#x3D;k-p_0+1,b&#x3D;k-p_0+2$，然后我们再令 $l&#x3D;next_b$ 。</p>
+<p>下面分两种情况讨论：</p>
+<h3 id="情况-1"><a href="#情况-1" class="headerlink" title="情况 1"></a>情况 1</h3><p>$k+l&lt;p$ 。也就是 $s_{k+l}$  这个位置再 $p$ 前面。如图：</p>
+<p><img src="https://pic.imgdb.cn/item/60d2dcf3844ef46bb23a783c.png"></p>
+<p>我们在设 $l_1&#x3D;1,r_1&#x3D;l,l_2&#x3D;b,r_2&#x3D;b+l-1$ ，对应上面这个图，由 $next$ 的定义，我们可以知道 $t_{l_1,r_1}&#x3D;t_{l_2,r_2}$。</p>
+<p>就是红线等于绿线等于蓝线。由 $next$ 的定义可以知道，$t_{r_1+1}\not&#x3D;t_{t_2+1}$ 。</p>
+<p>又因为 $t_{r_2+1}&#x3D;s_{k+l+1}$ ，所以 $t_{r_1+1}\not &#x3D;s_{k+l+1}$。这两个字符不一样，但是又因为红线和蓝线相等，所以有：$extend_{k+1}&#x3D;l$ ，也就是 $next_b$。</p>
+<h3 id="情况-2"><a href="#情况-2" class="headerlink" title="情况 2"></a>情况 2</h3><p>$p\le k+l$ ，也就是 $s_{k+l}$ 这个位置在 $p$ 后面，如图：</p>
+<p><img src="https://pic.imgdb.cn/item/60d2dcf5844ef46bb23a8516.png"></p>
+<p>同理我们设 $l_1&#x3D;1,r_1&#x3D;l,l_2&#x3D;b,r_2&#x3D;b+l-1$。</p>
+<p>同理，我们仍然有红线，绿线，蓝线相等。</p>
+<p>那么我们设 $(k+l)$ 到 $p$ 的这段距离为 $x$ ，蓝线和红线同时丢掉后 $x$ 个字符后，红线部分剩余 $s_2$ ，蓝线部分剩余 $s_1$ ，所以 $s_1&#x3D;s_2$ ，所以如果我们想要求 $extend_{k+1}$ 的话，我们直接从 $s_{p+1},t_{r_1-x+2}$ 开始暴力匹配就可以了。 </p>
+<h2 id="求-next"><a href="#求-next" class="headerlink" title="求 next"></a>求 next</h2><p>发现 $next$ 数组与 $extend$ 数组的相似性，我们可以用类似求 $extend$ 的做法去求 $next$，但是我们同时也需要注意从第 $2$ 位开始，这是为了防止 $next$ 时引用自己的 $next$ 值，即防止死循环。</p>
+<p>在实际代码实现中，因为 $next_2$ 无法利用 $next_1$ 的信息，所以我们从第三位开始求 $next$ ，从第二位开始求 $extend$ 。$next_2,extend_1$ 通过暴力预处理来实现。</p>
+<h2 id="复杂度分析-1"><a href="#复杂度分析-1" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><p>不难发现，$now$ 指针的总移动长度不会超过数组长度，所以有 $O(n+m)$。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><ul>
+<li>李煜东《算法竞赛进阶指南》</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/KMP/"># KMP</a>
+                    
+                        <a href="/tags/EXKMP/"># EXKMP</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/02/manacher%20%E7%AE%97%E6%B3%95/">manacher 算法</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/02/wqs-%E4%BA%8C%E5%88%86/">wqs 二分</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

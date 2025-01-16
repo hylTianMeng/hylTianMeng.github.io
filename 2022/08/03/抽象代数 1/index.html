@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>抽象代数 1 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">抽象代数 1</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 3, 2022&nbsp;&nbsp;13:37:41</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="基本概念和引理"><a href="#基本概念和引理" class="headerlink" title="基本概念和引理"></a>基本概念和引理</h1><ul>
+<li>代数系统：在一个集合上 $S$ 定义一个二元运算 $\times$，如果二元运算满足封闭性，则称 $(S,\times)$ 为一个代数系统。</li>
+<li>半群：如果一个代数系统二元运算满足结合律，那么这个代数系统称为半群。</li>
+<li>幺半群：如果一个半群里面有幺元（单位元），那么这个群为幺半群。</li>
+<li>群：如果一个幺半群里面每个元素都有逆元，则这个幺半群是个群。</li>
+<li>Abel 群：如果一个群满足交换律，那么这个群是一个 Abel 群。</li>
+<li>循环群：如果一个 Abel 群有一个生成元 $g$，也就是说，任意群内的元素可以被表示为 $g^k$，则这个群为一个循环群。</li>
+</ul>
+<p>如图：</p>
+<p><img src="https://pic.imgdb.cn/item/62ea134716f2c2beb1fe2f4b.png"></p>
+<ul>
+<li><p>环：环是定义了两个运算 $+,\times$ 的集合 $S$，满足 $(S,+)$ 是阿贝尔群，且乘法关于加法有分配率，乘法具有结合律。</p>
+</li>
+<li><p>域：域是定义了两个运算 $+,\times$ 的集合 $S$ 满足 $(S,+)$ 和 $(S\backslash 0,\times)$ 都是阿贝尔群，其中 $0$ 是 $(S,+)$ 的单位元。 </p>
+</li>
+<li><p>子群：设 $H$ 是 $G$ 的子集，若 $H$ 在 $G$ 的运算里构成群，则称 $H$ 为 $G$ 的子群。记作 $H\le G$ </p>
+</li>
+<li><p>对于子群而言，以下三个定义等价：</p>
+</li>
+<li><ul>
+<li>$H\le G$</li>
+</ul>
+</li>
+<li><ul>
+<li>对任意的 $a,b\in H$ 有 $ab\in H,a^{-1}\in H$</li>
+</ul>
+</li>
+<li><ul>
+<li>对任意的 $a,b\in H$ 有 $ab^{-1}\in H$</li>
+</ul>
+</li>
+</ul>
+<p>证明：互相推导是显然的，只需要注意因为 $H$ 中定义的二元运算就是 $G$ 中定义的，所以一定满足结合律。</p>
+<ul>
+<li><p>陪集：设 $H\le G$ 则可以给出 $G$ 上的一个等价关系，$a\sim b \Leftrightarrow ∃ h,a&#x3D;bh$，可以简单证明这个关系确实是等价关系，且 $a$ 的等价类是 $aH$，这个等价类是 $G$ 的一个左陪集，同时也可以由等价关系得到，$G$ 实际上是左陪集的无交并，任意一个元素一定属于一个等价类：$a\in aH$。</p>
+<p>推论：任意有限群的子群大小一定是其大小的因数。</p>
+<p>阶：设 $a$ 为群 $G$ 中的一个元素，则满足 $a^n&#x3D;e$ 的最小的 $n$ 称为 $a$ 的阶。</p>
+<p>推论：任意元素的阶一定是群大小的因数。因而若群大小是质数，则一定是循环群。</p>
+</li>
+</ul>
+<p>证明：对于一个元素 $a$，所有的 $a^n$ 组成一个群，所以阶数一定为群大小的因数。</p>
+<ul>
+<li><p>正规子群：设 $H$ 为 $G$ 的子群，若对于任意 $g\in G,h\in H$ 都存在 $h’\in H$ 使得 $gh&#x3D;h’g$，则称 $H$ 为 $G$ 的正规子群，记为  $H\trianglelefteq G$。</p>
+<p>等价定义 $1$：若 $H$ 所有左陪集与右陪集相等，即 $\forall a,aH&#x3D;Ha$，则 $H$ 是正规子群。</p>
+<p>等价定义 $2$：若 $\forall g\in G,h\in H,ghg^{-1}\in H$，则 $H$ 是正规子群。</p>
+</li>
+</ul>
+<p>证明：显然。</p>
+<ul>
+<li><p>商群：给定群 $G$，设 $H$ 是 $G$ 的正规子群，则 $H$ 的所有左陪集在群定义二元运算下满足群的性质，这个群称为 $G$ 关于 $H$ 的商群。记作 $L&#x3D;G&#x2F;H$，定义 $L$ 上的乘法为 $a_1H\times a_2H&#x3D;(a_1\times a_2)H$</p>
+</li>
+<li><p>对于商群的定义来说，其良定义当且仅当 $H$ 是正规子群。</p>
+</li>
+</ul>
+<p>证明：充分性：若 $H$ 是正规子群，则 $\forall h_1,h_2\in H$ 都有 $a_1h_1H\times a_2h_2H&#x3D;(a_1h_1a_2h_2)H&#x3D;(a_1a_2h_1’h_2)H&#x3D;(a_1a_2)H$。显然良定义。<br>必要性：$\forall g\in G,h_1,h_2\in H$，我们需要让 $(gh_1g^{-1}h_2)H&#x3D;gh_1H\times g^{-1}h_2H&#x3D;gH\times g^{-1}H&#x3D;H$，因此必然要有 $gh_1h^{-1}$，这正是正规子群的定义。</p>
+<ul>
+<li><p>推论：$|H||G&#x2F;H|&#x3D;|G|$</p>
+</li>
+<li><p>推论：对于一个 Abel 群，其任意子群都是正规子群。 </p>
+</li>
+<li><p>同态：对于群 $G,H$，存在映射 $f:G\to H$，使得 $\forall a,b\in G,f(ab)&#x3D;f(a)f(b)$，则 $G,H$ 同态。<br>同时定义 $\ker f&#x3D;{ g|f(g)&#x3D;1_H,g\in G }$，即所有能被映射到 $H$ 单位元的 $G$ 中的值，这显然是一个群。同时，$\mathrm{im}\ f$ 定义为 $f(G)$，为 $f$ 的像。$\ker f$ 称为 $f$ 的核。</p>
+<p>若 $f$ 是双射，则称 $G,H$ 同构，成 $f$ 为 $G$ 和 $H$ 同构映射，并且记为 $G\cong H$。</p>
+</li>
+<li><p>群的直积：两个群的直积定义为 $H&#x3D;G_1\times G_2&#x3D;{ (g_1,g_2)|g_1\in G_1,g_2\in G_2 }$，乘法定义为 $(g_1,g_2)\times (g_1’,g_2’)&#x3D;(g_1\times_{G_1}g_1’,g_2\times_{G_2}g_2’)$。</p>
+<p>显然的 $|H|&#x3D;|G_1||G_2|$，并且 $G_1’&#x3D;{ (g_1,1_{G_2})|g_1\in G_1 }$ 和 $G_2’&#x3D;{ (1_{G_1},g_2)|g_2\in G_2 }$ 都是 $H$ 的 $H$ 正规子群。</p>
+</li>
+</ul>
+<h1 id="同构基本定理与同构第二定理"><a href="#同构基本定理与同构第二定理" class="headerlink" title="同构基本定理与同构第二定理"></a>同构基本定理与同构第二定理</h1><ul>
+<li>同构基本定理：<br>设 $f:G\to H$ 为一个同态，则 $\ker f$ 是正规子群且 $G&#x2F;\ker f\cong \mathrm{im}\ f$。</li>
+</ul>
+<p>证明：首先证明 $\ker f$ 是一个正规子群，考虑 $f(gkg^{-1})$ 的值，其中 $k\in \ker f,g\in G$，根据定义，有：</p>
+<p>$$<br>f(gkg^{-1}) &#x3D;f(g)f(k)f(g^{-1})&#x3D;f(g)f(g^{-1})&#x3D;f(1_G)&#x3D;1_H<br>$$</p>
+<p>所以 $\ker f$ 是一个正规子群。</p>
+<p>接下来证明 $\mathrm{im}\ f$ 是一个子群，对于 $a_1,b_1\in \mathrm{im}\ f,∃ a,b,s.t.f(a)&#x3D;a_1,f(b)&#x3D;b_1$，于是 $a_1b_1^{-1}&#x3D;f(a)f(b)^{-1}&#x3D;f(ab^{-1})\in \mathrm{im}\ f$，故 $\mathrm{im}\ f\le H$。</p>
+<p>以上证明了关于 $f$ 的像与核的一些简单性质。以下记 $H&#x3D;\mathrm{im}\ f$</p>
+<p>令 $\varphi : G&#x2F;\ker f\to H$ 定义为 $\varphi(g\ker f)&#x3D;f(g)$。要证明 $\varphi$ 良定义需要证明对于 $a,b$ 满足 $aH&#x3D;bH\Rightarrow b\in aH$ 来说，$\varphi(aH)&#x3D;\varphi(bH)$。实际上这确实是成立的：$\varphi(bH)&#x3D;f(b)&#x3D;f(ah)&#x3D;f(a)f(h)&#x3D;f(a)&#x3D;\varphi(aH)$。</p>
+<p>同时 $\varphi(g_1\ker f\times g_2\ker f)&#x3D;\varphi(g_1g_2\ker f)&#x3D;f(g_1g_2)&#x3D;f(g_1)f(g_2)&#x3D;\varphi(g_1\ker f)\varphi(g_2\ker f)$，所以 $\varphi$ 是同态映射。实际上，只需要说明 $\ker \varphi &#x3D;{H}$ 即可，因为 $H$ 是 $G&#x2F;H$ 的幺元，这个定理我们会在后面证明，这里先假设其成立。于是有 $\varphi(aH)&#x3D;e_1\Rightarrow f(a)&#x3D;e_1\Rightarrow a\in H\Rightarrow aH&#x3D;H\Rightarrow\ker \varphi&#x3D;H\Rightarrow$ $\varphi$ 是单射，而对于 $f(g)$ 来说，有 $\varphi(g\ker f)&#x3D;f(g)$，所以又是满射。所以 $\varphi$ 是同构映射。</p>
+<ul>
+<li>设 $\varphi:G\to H$ 是群同态，则 $\varphi$ 单 $\Leftrightarrow \ker \varphi &#x3D;{ e_G }$</li>
+</ul>
+<p>证明：$\varphi$ 不是单射 $\Leftrightarrow ∃ a,b\in G,s.t.a\not&#x3D;b,\varphi(a)&#x3D;\varphi(b)\Leftrightarrow \varphi(ab^{-1})&#x3D;\varphi(a)\varphi(b)^{-1}&#x3D;e_H\Leftrightarrow \ker \varphi \supseteq { ab^{-1},e }\Leftrightarrow \ker \varphi \not&#x3D; { e }$。</p>
+<ul>
+<li>推论：令 $H&#x3D;G_1\times G_2$，则 $H&#x2F;G’_1\cong G _2,H&#x2F;G’_2\cong G_1$。</li>
+</ul>
+<p>证明：这里只证明前者，后者类似。</p>
+<p>构造 $f((g_1,g_2))&#x3D;g_2$，这样的话 $\ker f&#x3D;{ (g_1,e) }$。由同构基本定理就可以得到推论。</p>
+<ul>
+<li>推论：设 $\varphi:G\to H$ 为群的满同射，则 $G&#x2F;\ker \varphi \cong G_1$。</li>
+<li>同构第二定理：设 $H,K\trianglelefteq G,H\le K$ 则 $\frac{G&#x2F;H}{K&#x2F;H}&#x3D;\frac{G}{K}$。即“除数”可约。</li>
+</ul>
+<p>证明：首先有 $H\trianglelefteq K$，这是显然的，因为 $K\le G$，且对于 $g\in G$ 有 $gH&#x3D;Hg$。</p>
+<p>构造映射 $f:G&#x2F;H\to G&#x2F;K:f(gH)&#x3D;gK$。</p>
+<p>首先证明 $f$ 是良定义的，对于 $aH&#x3D;bH$，有 $f(aH)&#x3D;aK&#x3D;aHK&#x3D;bHK&#x3D;bK&#x3D;f(bH)$。</p>
+<p>而 $f$ 是同态映射：$f(g_1H\times g_2H)&#x3D;f(g_1g_2H)&#x3D;g_1g_2K&#x3D;g_1K\times g_2K&#x3D;f(g_1H)f(g_2H)$。</p>
+<p>显然，对于 $gK$，一定有 $gH$ 能映射到它，因此 $f$ 是满同态。由同态基本定理得：$\frac{G&#x2F;H}{\ker f}&#x3D;\frac{G}{K}$。现在只需要证明：$\ker f&#x3D;K&#x2F;H$。</p>
+<p>有 $f(gH)&#x3D;gK&#x3D;K\Leftrightarrow g\in K\Leftrightarrow gH\in K&#x2F;H$。于是 $K&#x2F;H&#x3D;\ker f$。</p>
+<h1 id="轨道稳定集定理"><a href="#轨道稳定集定理" class="headerlink" title="轨道稳定集定理"></a>轨道稳定集定理</h1><ul>
+<li><p>给定非空集合 $S$ 和置换群 $G$，这里 $G$ 中元素为置换，二元运算定义为 $f_1\times f_2&#x3D;f_1\circ f_2$，即先做置换 $f_2$ 再做置换 $f_1$ 得到的置换。</p>
+</li>
+<li><p>设 $F_u&#x3D;{ f(u)|f\in G }$ 为 $u$ 的轨道，$P_u&#x3D;{ f|f(u)&#x3D;u }$ 为 $u$ 的稳定集，则有 $|F_u||P_u|&#x3D;G$</p>
+</li>
+</ul>
+<p>证明：值得一提的是 $F_u\subseteq S,P_u\le G$。</p>
+<p>考虑 $G$ 的陪集分解：$f_1P_u\cup f_2P_u\cup\cdots f_kP_u$，显然 $f_iP_u$ 中所有的置换作用在 $u$ 上得到的结果相同。而实际上，不同陪集的置换作用在 $u$ 上得到的结果不同，这是因为如果作用的结果相同，不妨设两个置换为 $f_1,f_2$，那么 $f_2$ 肯定可以与若干个 $P_u$ 中的置换复合得到 $f_1$，这与 $f_1,f_2$ 属于不同陪集的前提不相符。</p>
+<p>所以，陪集分解的数量应该就是 $|F_u|$，而每个陪集的大小都是 $P_u$，所以可知定理成立。</p>
+<h1 id="Bunside-引理"><a href="#Bunside-引理" class="headerlink" title="Bunside 引理"></a>Bunside 引理</h1><p>现在给定集合 $S$ 和置换群 $G$，现在定义如果两个 $S$ 中的元素可以通过置换得到，那么就认为它们相等。求本质不同的元素个数。</p>
+<p>我们让每个轨道中的元素的贡献是轨道大小分之一即可。即：</p>
+<p>$$<br>\sum\limits_{u\in S}\frac{1}{|F_u|}&#x3D;\sum\limits_{u\in S}\frac{|P_u|}{|G|}&#x3D;\frac{1}{|G|}\sum\limits_{p\in G}\sum\limits_{s\in S}[p(s)&#x3D;s]<br>$$</p>
+<p>后者就是 Burnside 引理的形式。</p>
+<h2 id="无标号无向图计数"><a href="#无标号无向图计数" class="headerlink" title="无标号无向图计数"></a>无标号无向图计数</h2><h1 id="阿贝尔群基本定理"><a href="#阿贝尔群基本定理" class="headerlink" title="阿贝尔群基本定理"></a>阿贝尔群基本定理</h1><ul>
+<li><p>阿贝尔群的任意子群都是正规子群。</p>
+</li>
+<li><p>阿贝尔群的商群也是阿贝尔群。</p>
+</li>
+<li><p>阿贝尔群基本定理内容：对于任意阿贝尔群 $A$，它一定可以唯一的写成：</p>
+</li>
+</ul>
+<p>$$<br>A\cong \mathbb{Z}<em>{a_1}\times \mathbb{Z}</em>{a_2}\times \cdots \times \mathbb{Z}_{a_k}\times \mathbb{Z}^r<br>$$</p>
+<p>其中 $a_1|a_2|\cdots |a_k$。$\mathbb{Z}_i$ 为 $\bmod i$ 意义下的加法群。若 $A$ 是有限群，则 $r&#x3D;0$。</p>
+<p>证明过于复杂，略过。</p>
+<ul>
+<li>给定 $n$ 求 $n$ 阶阿贝尔群的个数，由于 $n$ 很大，以质因数分解的形式给出 $n&#x3D;\sum\limits_{i&#x3D;1}^mp_i^{a_i}$。$1\le m\le 10^6$。</li>
+</ul>
+<p>根据上面的定理内容，我们考虑 $a_1,a_2,\cdots,a_k$ 的值，实际上我们是需要对于每个质数 $p_i$，把它的指数 $a_i$ 拆成若干个数字的，也就是一个划分数，而答案就是若干划分数的乘积。</p>
+<ul>
+<li>推论：若 $(p,q)&#x3D;1$，则 $\mathbb{Z}<em>{pq}&#x3D;\mathbb{Z}</em>{p}\times\mathbb{Z}_q$</li>
+</ul>
+<p>证明：只需要证明等号右边是循环群即可，实际上等号右边确实是循环群，生成元是 $(1,1)$。</p>
+<ul>
+<li>推论：有限的阿贝尔群一定可以写成如下形式：</li>
+</ul>
+<p>$$<br>\prod\mathbb{Z}<em>{p_1}^{\alpha</em>{1,i}}\prod\mathbb{Z}<em>{p_2}^{\alpha</em>{2,i}}\cdots\prod\mathbb{Z}<em>{p_k}^{\alpha</em>{k,i}}<br>$$</p>
+<p>其中 $p_1,p_2,\cdots,p_k$ 是质数。</p>
+<h1 id="Lagrange-定理"><a href="#Lagrange-定理" class="headerlink" title="Lagrange 定理"></a>Lagrange 定理</h1><ul>
+<li>域 $F$ 上的任意 $n$ 次多项式在 $F$ 内至多有 $n$ 个根。</li>
+</ul>
+<p>证明：可以简单归纳证明。</p>
+<ul>
+<li>推论：域 $F$ 上的阿贝尔乘法群 $F^\times$ 的任意有限子群都是循环群。</li>
+</ul>
+<p>证明：$f^\times$ 即为 $F$ 域定义中的 $(S&#x2F;0,\times)$。设子群 $G$，分解可得：</p>
+<p>$$<br>G&#x3D;\mathbb{Z}<em>{a_1}\mathbb{Z}</em>{a_2}\cdots\mathbb{Z}_{a_k}<br>$$</p>
+<p>因为 $a_1|a_2|\cdots|a_k$，所以 $G$ 是循环群当且仅当 $k&#x3D;1$。若 $k&gt;1$，显然 $G$ 中 $1^{F}$ 对应的元素应该是 $(0,0,\cdots,0)$，而对于 $G$ 中的一个元素对应的元素 $(b_1,b_2,\cdots,b_k)$ 来说，其 $a_k$ 次方一定是 $1^F$，所以对于 $F$ 域下的一个方程 $x^{a_k}-1^F&#x3D;0^F$ 来说，按照 lagrange 定理，其应该只多有 $a_k$ 个根，但是 $G$ 中的每个元素都是这个方程的根，且一共有 $a_1a_2\cdots,a_k$ 个元素。矛盾。</p>
+<h1 id="Z-上的乘法群"><a href="#Z-上的乘法群" class="headerlink" title="Z 上的乘法群"></a>Z 上的乘法群</h1><p>令 $\mathbb{Z}_n^\times$ 为 $\bmod n$ 意义下的乘法群，显然 $|\mathbb{Z}_n^\times|&#x3D;\varphi(n)$。因为群要求有逆元，而只有与 $n$ 互质的数有逆元。</p>
+<ul>
+<li>欧拉定理：若 $(n,m)&#x3D;1$ 则 $m^{\varphi(n)}&#x3D;1\bmod n$。</li>
+</ul>
+<p>证明：$m\in Z_n^\times$，设 $m$ 的阶是 $p$，则有 $m^p&#x3D;1$，而根据 lagrange 定理，有 $p|\varphi(n)$，故成立。</p>
+<ul>
+<li>定理：若 $(p,q)&#x3D;1$，则 $\mathbb{Z}<em>{pq}^\times\cong \mathbb{Z}</em>{p}^\times\times \mathbb{Z}_{q}^\times$。</li>
+</ul>
+<p>证明：构造映射 $f:\mathbb{Z}<em>{pq}^\times\to \mathbb{Z}</em>{p}^\times\times \mathbb{Z}_q^\times:f(n)&#x3D;(n\bmod p,b\mod q)$。</p>
+<p>证明是同态：$f(nm)&#x3D;(nm\bmod p,nm\bmod q)&#x3D;f(n)f(m)$。</p>
+<p>证明是双射：根据中国剩余定理，对于右边任意一个 $(a,b)$，可以找出在 $\bmod\ pq$ 下的唯一解 $n$。而 $f(n)&#x3D;(a,b)$。</p>
+<p>所以定理成立。</p>
+<h1 id="威尔逊定理"><a href="#威尔逊定理" class="headerlink" title="威尔逊定理"></a>威尔逊定理</h1><ul>
+<li>设 $p$ 为质数，则 $(p-1)!\equiv -1\bmod p$</li>
+<li>若 $p$ 为质数，则 $(p^q)!_p\equiv -1\bmod p$，其中 $(n!)_m$ 表示所有小于等于 $n$ 且与 $m$ 互质的正整数的乘积。</li>
+</ul>
+<p>证明：若 $n$ 的原根存在，设为 $g$，则 $(n!)_n\equiv g^{\frac{\varphi(n)(\varphi(n)-1)}{2}}\bmod m$。</p>
+<p>而 $g^{\varphi(n)(\varphi(n)-1)}\equiv 1$，所以 $(n!)_n$ 要么是 $-1$ 要么是 $1$，取决于 $\varphi(n)|\frac{\varphi(n)(\varphi(n)-1)}{2}$ 是否成立。</p>
+<p>因此若 $\varphi(n)$ 是偶数，则乘积为 $-1$，否则乘积为 $1$。</p>
+<p>于是两个定理都是显然的。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%8A%BD%E8%B1%A1%E4%BB%A3%E6%95%B0/"># 抽象代数</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/09/%E9%97%B5%E5%8F%AF%E5%A4%AB%E6%96%AF%E5%9F%BA%E5%92%8C/">闵可夫斯基和学习笔记</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/03/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%8F%8D%E6%BC%94/">莫比乌斯反演</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

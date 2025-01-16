@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>CF1307G 解题报告 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CF1307G 解题报告</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 16, 2022&nbsp;&nbsp;21:05:21</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%81%9A%E9%A2%98%E8%AE%B0%E5%BD%95/">做题记录</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="最小费用流与线性规划"><a href="#最小费用流与线性规划" class="headerlink" title="最小费用流与线性规划"></a>最小费用流与线性规划</h1><p>最小费用流问题可以考虑看成一个线性规划问题。</p>
+<p>设 $f_{u，v}$ 为边的流量，$c_{u,v}$ 表示边的容量，$w_{u,v}$ 表示边的代价。$V$ 表示点集，$E$ 表示边集，记总的流量为 $F$。</p>
+<p>那么最小费用流问题等价于：</p>
+<ul>
+<li>求 $\min{ \sum f_{u,v}w_{u,v} }$</li>
+<li>限制：</li>
+<li><ul>
+<li>对所有 $u\in V$，有：<br>$$<br>  \sum\limits_{(v,u)\in E}f_{v,u}-\sum\limits_{(u,v)\in E}f_{u,v}&#x3D;\begin{cases}<br>F,if\ u&#x3D;n\<br>-F,if\ u&#x3D;1\<br>0,otherwise<br>  \end{cases}<br>$$</li>
+</ul>
+</li>
+<li><ul>
+<li>对所有 $(u,v)\in E$，有 $0\le f_{u,v}\le c_{u,v}$。</li>
+</ul>
+</li>
+<li>共 $m$ 个变量 $f_{u,v}$，$n+m$ 条限制。</li>
+</ul>
+<p>给出线性规划一般形式和其对偶问题：</p>
+<p>原问题：</p>
+<p>$$<br>\begin{aligned}<br>    \max z&amp;&#x3D;\sum\limits_{j&#x3D;1}^m c_jx_j\<br>    Ax&amp;\le b\<br>    x&amp;\ge 0<br>\end{aligned}<br>$$</p>
+<p>对偶问题：</p>
+<p>$$<br>\begin{aligned}<br>    \min w&amp;&#x3D;\sum\limits_{j&#x3D;1}^nb_jy_j\<br>    A^Ty&amp;\ge c\<br>    y&amp;\ge 0<br>\end{aligned}<br>$$</p>
+<p>这里 $A,x,b,c,y$ 均为矩阵，其中 $A$ 为 $n\times m$ 矩阵，$x,c$ 为 $n\times 1$ 矩阵，$y,b$ 为 $m\times 1$ 矩阵。定义矩阵之间的 $\le$ 为对应位置都需要小于。 </p>
+<p>不加证明的给出以下定理：</p>
+<ul>
+<li>线性规划和其对偶线性规划等价。</li>
+</ul>
+<blockquote>
+<p>这里不给证明的原因是该定理证明较为繁杂，博主不会证明，且本博客内容与该性质内容关系不大。</p>
+</blockquote>
+<p>把最小费用流问题对应线性规划的限制转化成一般形式：</p>
+<p>$$<br>\begin{cases}<br>    +\sum f_{v,u}-\sum f_{u,v}&amp;\ge a_i\<br>    -\sum f_{u,v} + \sum f_{u,v}&amp;\ge a_i\<br>    -f_{u,v}\ge -c_{u,v}<br>\end{cases}<br>$$</p>
+<p>其中 $a_u$ 表示点 $u$ 应该的流量: $F,-F$ 或 $0$。 </p>
+<p>把这个线性规划的对偶形式写出来，限制一共有 $2n+m$ 个，考虑前 $n$ 个限制代表变量为 $q_i$，另外 $n$ 个限制代表变量为 $e_i$，后 $m$ 个限制设为 $r_{u,v}$。</p>
+<p>考虑前 $2n$ 个向量与限制的对应关系，对于一个限制来说，显然我们可以让 $q_u$ 来对应 $+\sum f_{v,u}-\sum f_{u,v}\ge a_i$，这样所有 $f_{v,u}$ 代表的位置会有 $+q_u$，$f_{v,u}$ 代表的位置会有 $-q_u$。强烈建议各位读者画一个矩阵自己感受一下。</p>
+<p>最后化成对偶线性规划为：</p>
+<ul>
+<li>求 $\max{ \sum a_u q_u-\sum\ a_ue_u-\sum r_{u,v}{w_{u,v}} }$</li>
+<li>限制：</li>
+<li><ul>
+<li>对于所有 $(u,v)\in E$，有：$-q_u+q_v+e_u-e_v-r_{u,v}\le w_{u,v}$</li>
+</ul>
+</li>
+<li><ul>
+<li>$q_u,e_u,r_{u,v}\ge 0$</li>
+</ul>
+</li>
+<li>一共 $m$ 条限制。</li>
+</ul>
+<p>需要注意在推式子的时候，特别关注一下无入度点和无出度点的的情况，它们也是满足条件的。</p>
+<p>发现所有式子都与 $q_u-e_u$ 有关，不如设其为 $d_u$。以及注意到 $a_u$ 除了 $1,n$ 都是 $0$，所以线性规划变成：</p>
+<ul>
+<li>求 $\max{ F(d_n-d_1)-\sum r_{u,v}{c_{u,v}} }$</li>
+<li>限制：</li>
+<li><ul>
+<li>对于所有 $(u,v)\in E$，有：$d_v\le d_u+r_{u,v}+w_{u,v}$</li>
+</ul>
+</li>
+<li><ul>
+<li>$d_u,r_{u,v}\ge 0$</li>
+</ul>
+</li>
+<li>一共 $m$ 条限制。</li>
+</ul>
+<p>$d_u$ 依然满足 $\ge0$ 的原因是，考虑如果找到了一组满足条件的 $d$，那么把 $d$ 同加到 $\ge 0$ 依然满足条件。</p>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>题目大意：给定 $n$ 个点 $m$ 条边的有向图，边权为 $w$，可以选择把一条边的边权 $w_i$ 修改为 $w_i+a_i$，$a_i$ 可以为实数，但是需要满足 $a_i\ge 0,\sum a_i\le x$，有 $q$ 次询问，每次给定 $x$，询问修改之后 $1$ 到 $n$ 最短路的最大值，每次询问独立，无重边无自环。$n\le 50,w_i\le 10^6,w\le 10^5$</p>
+<p>关注我们的对偶问题，发现限制如同最短路，而 $r_{u,v}$ 就像我们给每条边加上的权值 $a_i$。</p>
+<p>关注我们对偶线性规划求的东西，可以令 $c_{u,v}&#x3D;1$，那么现在变成了求 $\max{ F(d_n-d_1)-\sum r_{u,v} }$，其中后者相当于我们更改的权值总和，设为 $C$，同时记 $D&#x3D;d_n-d_1$ 设为最短路。</p>
+<p>我们把所有有用的 $(C,D)$ 映射到二维平面上，形成的图形一定是上凸壳，且斜率最大是 $1$。并且，凸壳上的拐点一定都是整点。且如果让 $a_i$ 都是整数，那么显然随着 $C$ 的增加，$D$ 要么不变，要么加一，在这个情况下建立凸包，而考虑如果令 $a_i$ 可以为实数，不难发现凸包不会变化。如图：</p>
+<p><img src="https://pic.imgdb.cn/item/62fde21616f2c2beb136ae70.png"></p>
+<p>如果令所有 $a_i$ 都是整数，那么点应该是 $E,F,G$，而如果 $a_i$ 可以为实数，那么点 $I,J,K$。</p>
+<p>由此可以得出结论，凸包上的所有切线都形如 $\frac{1}{x}$ 的形式，其中 $x$ 是整数。</p>
+<p>设 $A(F)&#x3D;\max_{D,C}{ FD-C }$，设对于给定 $F$，有 $A(F)&#x3D;FD_F-C_F$，那么 $D_F&#x3D;\frac{A(F)}{F}+\frac{C_F}{F}$。由此可知，若给定 $F$ 求 $A(F)$，方法即为用 $\frac{1}{F}$ 去切这个凸包，而切线与 $x$ 轴的截距为 $A(F)$。</p>
+<p>原问题等价于给定 $C$，要求在凸包上找到 $x&#x3D;C$ 与凸壳的交点 $(C,D)$。考虑所有的 $F$ 和它们对应的切线在 $x&#x3D;C$ 处的值，设为 $y$，不难发现有 $y\ge D$，且一定存在一个 $x$，使得 $y&#x3D;D$，即一条与凸包相切且切点为 $(C,D)$ 的切线。则答案为 $\min_F{ \frac{A(F)}{F}+\frac{C}{F} }$。</p>
+<p>现在唯一的问题是 $F$ 是可以为实数的，一个方法是可以二分，不过不用这么麻烦。我们其实只用考虑 $F$ 是整数的情况，这是因为凸包上所有的斜率都形如 $\frac{1}{x}$，所有对于凸包上每个点 $(C,D)$，都存在一个整数 $F$ 使得斜率为 $\frac{1}{F}$ 的切线经过这个点。</p>
+<p>所以，我们枚举 $F$，通过费用流算出 $A(F)$，对于每个询问，算出 $\min_F{ \frac{A(F)}{F}+\frac{C}{F} }$ 即可。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n,m;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">edge</span>&#123;</span><br><span class="line">    <span class="type">int</span> to,next,w,f;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Init</span><span class="params">(<span class="type">int</span> to_,<span class="type">int</span> ne_,<span class="type">int</span> w_,<span class="type">int</span> f_)</span></span>&#123;</span><br><span class="line">        to=to_;next=ne_;w=w_;f=f_;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;li[N*N*<span class="number">2</span>];</span><br><span class="line"><span class="type">int</span> head[N],tail=<span class="number">1</span>,now[N],d[N],s,t,Ans,A[N],ans,Q;</span><br><span class="line"><span class="type">bool</span> vis[N];</span><br><span class="line">queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Add</span><span class="params">(<span class="type">int</span> from,<span class="type">int</span> to,<span class="type">int</span> w,<span class="type">int</span> f)</span></span>&#123;</span><br><span class="line">    li[++tail].<span class="built_in">Init</span>(to,head[from],w,f);head[from]=tail;<span class="built_in">swap</span>(from,to);</span><br><span class="line">    li[++tail].<span class="built_in">Init</span>(to,head[from],-w,<span class="number">0</span>);head[from]=tail;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">spfa</span><span class="params">(<span class="type">int</span> s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(q.<span class="built_in">size</span>()) q.<span class="built_in">pop</span>();</span><br><span class="line">    <span class="type">bool</span> op=<span class="number">0</span>;</span><br><span class="line">    <span class="built_in">mset</span>(d,INF);<span class="built_in">mset</span>(vis,<span class="number">0</span>);d[s]=<span class="number">0</span>;q.<span class="built_in">push</span>(s);vis[s]=<span class="number">1</span>;now[s]=head[s];</span><br><span class="line">    <span class="keyword">while</span>(q.<span class="built_in">size</span>())&#123;</span><br><span class="line">        <span class="type">int</span> top=q.<span class="built_in">front</span>();q.<span class="built_in">pop</span>();vis[top]=<span class="number">0</span>;</span><br><span class="line">        <span class="built_in">Next</span>(top)&#123;</span><br><span class="line">            <span class="type">int</span> to=li[x].to,f=li[x].f,w=li[x].w;<span class="keyword">if</span>(!f||d[to]&lt;=d[top]+w)<span class="keyword">continue</span>;</span><br><span class="line">            d[to]=d[top]+w;<span class="keyword">if</span>(!vis[to]) vis[to]=<span class="number">1</span>,q.<span class="built_in">push</span>(to);now[to]=head[to];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(d[t]&gt;=INF) <span class="keyword">return</span> <span class="number">0</span>;<span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">dinic</span><span class="params">(<span class="type">int</span> k,<span class="type">int</span> flow)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(k==t) <span class="keyword">return</span> flow;<span class="type">int</span> rest=flow,x;vis[k]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(x=now[k];x&amp;&amp;rest;x=li[x].next)&#123;</span><br><span class="line">        <span class="type">int</span> to=li[x].to,f=li[x].f,w=li[x].w;</span><br><span class="line">        <span class="keyword">if</span>(!f||d[to]!=d[k]+w||(vis[to]&amp;&amp;to!=t)) <span class="keyword">continue</span>;<span class="type">int</span> val=<span class="built_in">dinic</span>(to,<span class="built_in">min</span>(rest,f));</span><br><span class="line">        <span class="keyword">if</span>(!val) d[to]=INF;li[x].f-=val;li[x^<span class="number">1</span>].f+=val;rest-=val;Ans+=val*w;</span><br><span class="line">    &#125;</span><br><span class="line">    now[k]=x;</span><br><span class="line">    <span class="keyword">return</span> flow-rest;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// freopen(&quot;my.in&quot;,&quot;r&quot;,stdin);</span></span><br><span class="line">    <span class="comment">// freopen(&quot;my.out&quot;,&quot;w&quot;,stdout);</span></span><br><span class="line">    <span class="built_in">read</span>(n);<span class="built_in">read</span>(m);</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">1</span>,m)&#123;</span><br><span class="line">        <span class="type">int</span> from,to;<span class="built_in">read</span>(from);<span class="built_in">read</span>(to);<span class="type">int</span> w;<span class="built_in">read</span>(w);</span><br><span class="line">        <span class="built_in">Add</span>(from,to,w,<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    s=<span class="number">1</span>,t=n;</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">1</span>,n)&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">spfa</span>(s)) <span class="keyword">break</span>;</span><br><span class="line">        ans+=<span class="built_in">dinic</span>(s,<span class="number">1</span>);</span><br><span class="line">        A[i]=Ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">read</span>(Q);</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">1</span>,Q)&#123;</span><br><span class="line">        <span class="type">int</span> x;<span class="built_in">read</span>(x);</span><br><span class="line">        ld nowans=INF;</span><br><span class="line">        <span class="built_in">rep</span>(i,<span class="number">1</span>,n)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!A[i]) <span class="keyword">break</span>;</span><br><span class="line">            <span class="built_in">cmin</span>(nowans,(ld)(A[i]+x)/(ld)(i));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%0.7Lf\n&quot;</span>,nowans);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%BD%91%E7%BB%9C%E6%B5%81/"># 网络流</a>
+                    
+                        <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92/"># 线性规划</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/23/NOI%20%E6%B8%B8%E8%AE%B0%E4%B8%8E%E6%80%BB%E7%BB%93/">NOI 游记与总结</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/16/%E5%88%86%E6%B2%BBFFT/">分治FFT</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

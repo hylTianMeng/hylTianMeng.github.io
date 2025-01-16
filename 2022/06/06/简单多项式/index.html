@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>简单多项式 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">简单多项式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 6, 2022&nbsp;&nbsp;11:37:15</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Math/">Math</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h2 id="复数"><a href="#复数" class="headerlink" title="复数"></a>复数</h2><ul>
+<li><p>$i^2&#x3D;-1$</p>
+</li>
+<li><p>复数为 $z&#x3D;a+bi$</p>
+</li>
+<li><p>$a+bi,a-bi$ 互为共轭复数</p>
+</li>
+<li><p>一个复数对应复平面上的任意一个点，一个复数与复平面上 $(a,b)$ 一一对应。复数与向量之间的运算有相似的地方，假设复数到复平面原点的距离为 $r$ ，那么复数也可以用 $(r\cos \alpha,r\sin \alpha)$ 来表示。</p>
+</li>
+<li><p>加法为向量加法：$z_1+z_2&#x3D;(a+c)+(b+d)i$</p>
+</li>
+<li><p>乘法：模长相乘幅角相加。$(ac-bd)+(ad+bc)i$</p>
+<p>也可以表示成 $(r_1r_2\cos(\theta_1+\theta_2),r_1r_2\sin(\theta_1+\theta_2))$。实质是向量旋转。</p>
+</li>
+</ul>
+<h2 id="单位根"><a href="#单位根" class="headerlink" title="单位根"></a>单位根</h2><p>$n$ 次单位根为 $x^n&#x3D;1$ 的 $n$ 个根。</p>
+<p>$\omega_n&#x3D;\cos\frac{2\pi}{n}+\sin\frac{2\pi}{n}i$</p>
+<p>所谓的 $n$ 个根为 $\omega_n^1,\omega_n^2…\omega_n^n$。</p>
+<p>注意到：</p>
+<p>$$<br>\begin{aligned}<br>\omega_n^2&amp;&#x3D;\cos\frac{2\pi}{n}\times \cos\frac{2\pi}{n}+\sin\frac{2\pi}{n}\times \sin\frac{2\pi}{n}+(\sin\frac{2\pi}{n}\times \cos\frac{2\pi}{n}+\cos\frac{2\pi}{n}\times \sin\frac{2\pi}{n})i\<br>&amp;&#x3D;\cos \frac{2\pi\times2}{n}+\sin\frac{2\pi\times 2}{n}i<br>\end{aligned}<br>$$</p>
+<p>推广后得到：<br>$$<br>\omega_{n}^k&#x3D;\cos\frac{2k\pi}{n}+\sin\frac{2k\pi}{n}i<br>$$</p>
+<p>单位根满足以下性质：</p>
+<ul>
+<li><p>$\omega_n^k&#x3D;\omega_{2n}^{2k}$</p>
+</li>
+<li><p>证明：$\omega_n^k&#x3D;(\cos\frac{2k\pi}{n},\sin\frac{2k\pi}{n})&#x3D;(\cos\frac{4k\pi}{2n},\sin\frac{4k\pi}{2n})&#x3D;\omega_{2n}^{2k}$</p>
+</li>
+<li><p>$\omega_n^{k+\frac n2}&#x3D;-\omega_{n}^k$</p>
+</li>
+<li><p>$\omega_n^0&#x3D;\omega_n^n&#x3D;1$</p>
+</li>
+</ul>
+<blockquote>
+<p>有关于上面若干性质的证明都比较显然，这里不再赘述。</p>
+</blockquote>
+<h2 id="多项式"><a href="#多项式" class="headerlink" title="多项式"></a>多项式</h2><ul>
+<li><p>原始表示法：$f(x)&#x3D;\sum\limits_{i&#x3D;0}^na_ix^i$</p>
+</li>
+<li><p>原始的多项式乘法：$\sum\limits_{i&#x3D;0}^{n_1}\sum\limits_{j&#x3D;0}^{n_2}a_ib_jx^{i+j}$ 。</p>
+</li>
+<li><p>点值表示法：$n+1$ 个点确定一个 $n$ 次多项式，所以我们可以用 $(x_1,f(x_1)),(x_2,f(x_2)),…(x_{n+1},f(x_{n+1}))$ ，来表示一个 $n$ 次多项式。</p>
+</li>
+<li><p>点值表示法多项式相乘：</p>
+<p>不难发现，多项式相乘后的点值为 $(x_1,g(x_1)f(x_1)),(x_2,g(x_2)f(x_2)…x_{n+1}g(x_{n+1})f(x_{n+1}))$</p>
+</li>
+</ul>
+<h1 id="多项式乘法"><a href="#多项式乘法" class="headerlink" title="多项式乘法"></a>多项式乘法</h1><p>容易发现原式的多项式乘法复杂度是 $O(n^2)$ 而点值表示法师 $O(n)$，所以我们考虑原始表示法和点值表示法的相互转化，我们称 $DFT(f)$ 为原始表示法 $f$ 化为点值表示法，$IDFT(f)$ 表示点值表示法 $f$ 化为原始表示法。 那么我们进行多项式乘法需要完成的步骤有三个：</p>
+<ul>
+<li>$DFT(f),DFT(g)$</li>
+<li>$DFT(f\times g)&#x3D;DFT(f)\times DFT(g)$</li>
+<li>$IDFT(DFT(f\times g))$</li>
+</ul>
+<p>其中，第二步可以 $O(n)$。现在只需要解决第一个步骤和第三个步骤。</p>
+<h2 id="DFT"><a href="#DFT" class="headerlink" title="DFT"></a>DFT</h2><p>以下我们假设多项式<strong>项数</strong> $n$ 为 $2^k$ 我们可以强行补到 $2^k$ 次方的形式。令多项式 $A(x)&#x3D;\sum\limits_{i&#x3D;0}^{n-1}a_ix^i$</p>
+<p>我们选取 $n$ 个点来使上面的多项式变为点值表示法，而我们选择的 $n$ 个点（此时多项式次数为 $n-1$ ）为 $\omega_n^0,\omega_n^1…\omega_n^{n-1}$。</p>
+<p>我们令：<br>$$<br>\begin{aligned}<br>A_1(x)&#x3D;a_0+a_2x+…a_{n-2}x^{\frac n 2-1}\<br>A_2(x)&#x3D;a_1+a_3x+…a_{n-1}x^{\frac n2-1}<br>\end{aligned}<br>$$<br>不难发现，这时有：<br>$$<br>A(x)&#x3D;A_1(x^2)+xA_2(x^2)<br>$$<br>我们令 $x&#x3D;\omega_n^k$ </p>
+<p>发现 $A(\omega_{n}^k)&#x3D;A_1(\omega_n^{2k})+\omega_{n}^kA_2(\omega_{n}^{2k})&#x3D;A_1(\omega_{\frac{n}{2}}^k)+\omega_{n}^kA_2(\omega_{\frac{n}{2}}^k)$</p>
+<p>我们还有 $A(\omega_n^{k+\frac n2})&#x3D;A_1(\omega_{\frac n2}^k)-\omega_n^kA_2(\omega_{\frac n2}^k)$</p>
+<p>所以复杂度应该为 $T(n)&#x3D;2T(\frac{n}{2})+O(n)&#x3D;O(n\log n)$。</p>
+<h2 id="IDFT"><a href="#IDFT" class="headerlink" title="IDFT"></a>IDFT</h2><p>我们令 $B&#x3D;DFT(A)$ 即 $b_i&#x3D;A(\omega_n^i)$ ，我们设 $C(x)&#x3D;\sum\limits_{i&#x3D;0}^{n-1} b_ix^i$，然后让 $x&#x3D;\omega_n^{-k}$ </p>
+<p>我们就有了下面这个式子：<br>$$<br>\begin{aligned}<br>C(\omega_n^{-k})&amp;&#x3D;\sum\limits_{i&#x3D;0}^{n-1}\sum\limits_{j&#x3D;0}^{n-1}a_j(\omega_{n}^i)^j(\omega_n^{-k})^i\<br>&amp;&#x3D;\sum\limits_{j&#x3D;0}^{n-1}a_j\sum\limits_{i&#x3D;0}^{n-1}(\omega_{n}^{j-k})^i<br>\end{aligned}<br>$$<br>令 $S(i)&#x3D;\sum\limits_{i&#x3D;0}^{n-1}(\omega_{n}^{j-k})^i$，然后我们讨论一下会发现：</p>
+<ul>
+<li>$j&#x3D;k\Rightarrow S(i)&#x3D;n$</li>
+<li>$j\not &#x3D;k\Rightarrow S(i)&#x3D;0$</li>
+</ul>
+<blockquote>
+<p>$\text{Update on 2022.6.18}$</p>
+<p>这个性质的证明已经忘了好几次了，简单证明一下：<br>我们可以用等比数列拆开，可以得到：$\frac{\omega_{n}^{(j-k)n}-1}{\omega_n^{(j-k)}-1}$，分子是 $0$。$\text{Q.E.D}$</p>
+</blockquote>
+<p>所以有：<br>$$<br>C(\omega_n^{-k})&#x3D;a_k\times n<br>$$</p>
+<p>所以我们直接按照 DFT 那样去做 IDFT 即可。</p>
+<h2 id="NTT-快速数论变换"><a href="#NTT-快速数论变换" class="headerlink" title="NTT 快速数论变换"></a>NTT 快速数论变换</h2><p>NTT 适用于在模意义下做多项式乘法。</p>
+<p>在 FFT 中我们用到了的性质：</p>
+<ul>
+<li>$\omega_n^n&#x3D;1$ </li>
+<li>$\omega_{n}^1,\omega_n^2…\omega_n^n$ 互不相等</li>
+<li>$\omega_n^k&#x3D;\omega_{2n}^{2k},\omega_{n}^{k+\frac{n}{2}}&#x3D;-\omega_n^k$</li>
+<li>$\sum\limits_{i&#x3D;0}^{n-1}(\omega_n^k)^i&#x3D;n\times [k&#x3D;0]$</li>
+</ul>
+<p>假设 NTT 是在 $\bmod\ p$ 意义下的，其中 $p$ 为一个质数。设 $g$ 为 $p$ 的原根。</p>
+<p>设 $p-1&#x3D;q\times 2^r&#x3D;q\times n$ 我们令 $n$ 为多项式项数。</p>
+<p>设 $\omega_n&#x3D;g^q$，我们来证明这个东西仍然满足上面的性质。</p>
+<ul>
+<li><p>$\omega_{n}^n&#x3D;g^{qn}&#x3D;g^{p-1}\equiv 1(\bmod p)$</p>
+</li>
+<li><p>假设有两个相等，则有 $g^{qi}\equiv g^{qj}(\bmod p)\Rightarrow g^{qi-qj}\equiv 1(\bmod p)$，显然有 $i-j\not &#x3D; n$。所以如果成立，与原根定义不符合，所以成立。</p>
+</li>
+<li><p>前半段：$g^{qk}&#x3D;g^{\frac{q}{2}\times 2k}$ 。所以前半段成立。</p>
+<p>后半段：只需要证明：$\omega_n^{\frac n2}&#x3D;-1$ 。而 $\omega_n^n&#x3D;1,(\omega_n^{\frac{n}{2}})^2&#x3D;1,\omega_n^{\frac{n}{2}}\not &#x3D; 1$ 。所以成立。</p>
+</li>
+<li><p>这个性质依赖于前面的性质，显然成立。</p>
+</li>
+</ul>
+<p>所以我们找到了一个单位根的替代品。主要，在实践中，我们通常取模数为 $998244353&#x3D;2^{23}\times 7\times 17+1$。这样，只要这个多项式长度不超过 $2^{23}$ ，都可以用 NTT 而不是 FFT。</p>
+<p>另一个常用的模数为 $1004535809$，里面有一个 $2^20$ 的因子，其原根也为 $3$。</p>
+<h2 id="从线性变换角度理解-FFT"><a href="#从线性变换角度理解-FFT" class="headerlink" title="从线性变换角度理解 FFT"></a>从线性变换角度理解 FFT</h2><p>我们可以用矩阵来表示从系数表示法到点值表示法的转换，设 $a_i$ 为 $x^i$ 的系数，则经过上面的讨论，变换矩阵应该为：</p>
+<p>$$<br>\begin{pmatrix}<br>  1&amp;1&amp;1&amp;\cdots&amp;1\<br>  \omega_{n}^1&amp;\omega_n^2&amp;\omega_n^3&amp;\cdots&amp;\omega_n^{n-1}\<br>  \omega_{n}^{2}&amp;\omega_n^{4}&amp;\omega_n^6&amp;\cdots&amp;\omega_n^{(n-1)2}\<br>  \vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\<br>  \omega_n^{n-1}&amp;\omega_n^{2(n-1)}&amp;\omega_n^{3(n-1)}&amp;\cdots&amp;\omega_{n}^{(n-1)(n-1)}<br>\end{pmatrix}<br>$$</p>
+<p>通过右乘系数矩阵 $(a_0,a_1,\cdots,a_{n-1})^T$ 来得到点值矩阵。</p>
+<h2 id="蝴蝶变换"><a href="#蝴蝶变换" class="headerlink" title="蝴蝶变换"></a>蝴蝶变换</h2><p>在具体实现中，递归版本的 <code>FFT</code> 和 <code>NTT</code> 的常数过大，蝴蝶变换可以帮助我们进行非递归版的 <code>FFT</code> 或 <code>NTT</code>。</p>
+<p>蝴蝶变换的定义很简单，就是把一个二进制数 $x$ 在给定二进制位数 $K$ 的前提下进行翻转得到的结果，可以简单的通过 $O(n)$ 求出。</p>
+<p>事实上，<code>FFT</code> 做完之后原来的下标到现在的位置就是原位置经过蝴蝶变换得到的结果。</p>
+<p>应该说，这个不难证明。只要各位读者愿意把多项式长度 $n&#x3D;8$ 时候的 <code>FFT</code> 过程画出来就不难验证结论的正确性，至于证明，读者可以细心观察二进制位最后为 $0$ 和为 $1$ 时的变换结果。</p>
+<p>昨晚蝴蝶变换之后就便于我们做 <code>FFT</code> 而不用复制数组。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">NTT</span><span class="params">(<span class="type">int</span> *f,<span class="type">int</span> len,<span class="type">int</span> flag)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;len;i++) <span class="keyword">if</span>(i&lt;tr[i]) <span class="built_in">swap</span>(f[i],f[tr[i]]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>;i&lt;=len;i&lt;&lt;=<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="type">int</span> tg=<span class="built_in">ksm</span>(g,(mod<span class="number">-1</span>)/i,mod),l=i&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(flag==<span class="number">-1</span>) tg=<span class="built_in">ksm</span>(tg,mod<span class="number">-2</span>,mod);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;len;j+=i)&#123;</span><br><span class="line">            <span class="type">int</span> buf=<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> k=j;k&lt;j+l;k++)&#123;</span><br><span class="line">                <span class="type">int</span> tt=<span class="number">1ll</span>*buf*f[k+l]%mod;</span><br><span class="line">                f[k+l]=((f[k]-tt)%mod+mod)%mod;</span><br><span class="line">                f[k]=(f[k]+tt)%mod;buf=<span class="number">1ll</span>*buf*tg%mod;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(flag==<span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="type">int</span> inv=<span class="built_in">ksm</span>(len,mod<span class="number">-2</span>,mod);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;len;i++) f[i]=<span class="number">1ll</span>*f[i]*inv%mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>变换完之后我们就可以再也不用关注下标的问题了，根据 <code>DFT</code> 的式子，我们只需要知道 $A_1,A_2$ 的对应点值即可。</p>
+<h1 id="多项式算法简单扩展"><a href="#多项式算法简单扩展" class="headerlink" title="多项式算法简单扩展"></a>多项式算法简单扩展</h1><h2 id="多项式求逆"><a href="#多项式求逆" class="headerlink" title="多项式求逆"></a>多项式求逆</h2><p>我们考虑给定 $A(x)$ 要求一个 $B(x)$，使得 $A(x)B(x)\equiv 1 (\bmod x^n)$</p>
+<p>如果 $n&#x3D;1$ 显然这个问题就是一个求逆元的事情。这启发我们尝试把答案逐渐缩小。</p>
+<p>这里假设我们已经找到了一个 $C(x)$ 使得 $A(x)C(x)\equiv 1\bmod x^{\lceil\frac x2\rceil}$</p>
+<p>我们尝试用 $A(x),C(x)$ 去表示 $B(x)$ 。</p>
+<p>不难发现，有：<br>$$<br>\begin{aligned}<br>&amp;A(x)B(x)\equiv 1\bmod x^{\lceil\frac x2\rceil}\Rightarrow A(x)(B(x)-C(x))\equiv 0 \bmod x^{\lceil\frac x2\rceil}\<br>&amp;\Rightarrow B(x)\equiv C(x)\bmod x^{\lceil\frac x2\rceil}\<br>&amp;\Rightarrow x^{\lceil\frac x2\rceil}|B(x)-C(x)\<br>&amp;\Rightarrow x^n|(B(x)-C(x))^2\Rightarrow B^2(x)-2B(x)C(x)+C^2(x)\equiv 0\bmod x^n\<br>&amp;\Rightarrow A(x)B^2(x)-2A(x)B(x)C(x)+A(x)C^2(x)\equiv 0\bmod x^n\<br>&amp;\Rightarrow B(x)-2C(x)+A(x)C^2(x)\equiv 0 \bmod x^n\<br>&amp;\Rightarrow B(x)\equiv 2C(x)-A(x)C^2(x)\bmod x^n<br>\end{aligned}<br>$$<br>所以我们就可以用多项式乘法来做了。</p>
+<p>时间复杂度上限为 $T(n)&#x3D;T(\frac{n}{2})+n\log n&#x3D;O(n\log n)$。</p>
+<h2 id="多项式开根"><a href="#多项式开根" class="headerlink" title="多项式开根"></a>多项式开根</h2><p>给定 $A(x)$ 找到一个 $B(x)$ 使得 $B^2(x)\equiv A(x)\bmod x^n$</p>
+<p>我们同样考虑缩小这个问题，假设我们已经求到了一个 $C(x),s.t.C^2(x)\equiv A(x)\bmod x^{\lceil\frac x2\rceil}$ </p>
+<p>那么我们有：<br>$$<br>\begin{aligned}<br>&amp;(C^2(x)-A(x))^2\equiv 0\bmod x^{n}\<br>&amp;\Rightarrow C^4(x)-2C^2(x)A(x)+A^2(x)\equiv 0\bmod x^{n}\<br>&amp;\Rightarrow C^4(x)+2C^2(x)A(x)+A^2(x)\equiv 4C^2(x)A(x)\bmod x^n\<br>&amp;\Rightarrow (\frac{C^2(x)+A(x)}{2C(x)})^2\equiv A(x)\bmod x^n\<br>&amp;\Rightarrow B(x)&#x3D;\frac{C^2(x)+A(x)}{2C(x)}<br>\end{aligned}<br>$$<br>运用多项式求逆就可以做了。</p>
+<h2 id="多项式除法"><a href="#多项式除法" class="headerlink" title="多项式除法"></a>多项式除法</h2><p>给定 $A(x),B(x)$ 要求找到 $C(x),D(x)$ 使得 $A(x)&#x3D;C(x)B(x)+D(x)$。其中需要满足 $D(x)$ 的次数小于 $B(x)$ 的次数。</p>
+<p>我们设 $A$ 的次数为 $n$ ，$B$ 的次数为 $m$ ，那么 $C$ 的次数为 $n-m$ ，可以认为 $D$ 的次数为 $m-1$。</p>
+<p>我们设 $inv(A)&#x3D;x^n\times A(\frac 1x)$ ，那么显然有 $A&#x3D;inv(inv(A))$ 。通俗来讲，$inv$ 就是把系数倒着写一遍。</p>
+<p>那么有：<br>$$<br>\begin{aligned}<br>&amp;inv(A)&#x3D;inv(C\times B+D)\<br>&amp;\Rightarrow x^n\times A(\frac 1x)&#x3D;x^{n-m}\times C(\frac 1x)\times x^m\times B(\frac 1x)+x^{n-m+1}\times x^{m-1}\times D(\frac 1x)\<br>&amp;\Rightarrow inv(A)&#x3D;inv(C)\times inv(B)+x^{n-m+1}inv(D)\<br>&amp;\Rightarrow inv(A)\equiv inv(C)\times inv(B)\bmod x^{n-m+1}\<br>\end{aligned}<br>$$<br>我们可以利用多项式求逆来求解一个 $C$ ，然后代入原式求 $D$ 即可。</p>
+<h2 id="多项式求对数"><a href="#多项式求对数" class="headerlink" title="多项式求对数"></a>多项式求对数</h2><p>给定 $f(x)$ 要求找到 $g(x),s.t.g(x)\equiv \ln f(x)\bmod x^n$</p>
+<p>我们首先关注这里的对数的定义是什么，我们对两边求导可以得到：<br>$$<br>g’(x)\equiv \frac{f’(x)}{f(x)}\bmod x^n<br>$$<br>很明显等式右边是可以算的，那么我们算出后用不定积分算一下就可以得到 $g$。</p>
+<p>一般来说，题目保证常数项等于 $1$。</p>
+<h2 id="多项式-exp"><a href="#多项式-exp" class="headerlink" title="多项式 exp"></a>多项式 exp</h2><p>给定 $f(x)$ 要求求解 $g(x),s.t.g(x)\equiv e^{f(x)}\bmod x^n$</p>
+<p>首先引入 $f(x)$ 的泰勒级数：<br>$$<br>f(x)&#x3D;\sum\limits_{i&#x3D;0}^{\infty}\frac{f^{(i)}(x_0)}{i!}\times (x-x_0)^i<br>$$<br>我们还是首先要考虑这里 exp 的定义是什么，我们对两边求对可以得到：<br>$$<br>\ln g(x)\equiv f(x)\bmod x^n\Rightarrow \ln g(x)-f(x)\equiv 0\bmod x^n<br>$$<br>我们令 $h(g(x))&#x3D;\ln g(x)-f(x)$ ，注意<strong>这里函数 $h$ 的自变量是多项式 $g(x)$ 而不是 $x$</strong> ，也就是说，这并不是一个复合函数，这里的 $f(x)$ 相当于一个常量。而我们期望得到一个 $h(g(x))&#x3D;0$ 的一个解。</p>
+<p>我们对 $h$ 多次求导可以得到：<br>$$<br>\begin{aligned}<br>h^{(1)}(g(x))&amp;&#x3D;\frac{1}{g(x)}\<br>h^{(2)}(g(x))&amp;&#x3D;-\frac{1}{g^2(x)}\<br>h^{(3)}(g(x))&amp;&#x3D;2\frac{1}{g^{3}(x)}\<br>h^{(n)}(g(x))&amp;&#x3D;(n-1)!\times (-1)^{n-1}\times \frac{1}{g^n(x)}<br>\end{aligned}<br>$$<br>我们还是和以前一样，设 $\ln g_0(x)\equiv f(x)\bmod x^{\lceil\frac n2\rceil}$，假设这个 $g_0(x)$ 是已知的。我们现在要求 $g_1(x),s.t.\ln g_1(x)\equiv f(x)\bmod x^n$。我们写出 $h(g_1(x))$ 当 $x_0&#x3D;g_0(x)$ 的泰勒级数。有：<br>$$<br>h(g_1(x))&#x3D;\sum\limits_{i&#x3D;0}^{\infty}\frac{h^{(i)}(g_0(x))}{i!}\times (g_1(x)-g_0(x))^i<br>$$<br> 两边都对 $x^n$ 取模可以得到：<br>$$<br>h(g_1(x))\equiv \sum\limits_{i&#x3D;0}^{\infty}\frac{h^{(i)}(g_0(x))}{i!}\times (g_1(x)-g_0(x))^i\bmod x^n<br>$$<br>注意到实际上有：<br>$$<br>g_0(x)\equiv g_1(x)\bmod x^{\lceil\frac n2\rceil}\Rightarrow (g_0(x)-g_1(x))^2\equiv 0\bmod x^n\Rightarrow (g_0(x)-g_1(x))^i\equiv 0\bmod x^n(i\ge 2,i\in \mathbb{N})<br>$$<br>所以有：<br>$$<br>\begin{aligned}<br>h(g_1(x))&amp;\equiv \sum\limits_{i&#x3D;0}^{\infty}\frac{h^{(i)}(g_0(x))}{i!}\times (g_1(x)-g_0(x))^i\bmod x^n\<br>&amp;\equiv \sum\limits_{i&#x3D;0}^{1}\frac{h^{(i)}(g_0(x))}{i!}\times (g_1(x)-g_0(x))^i\bmod x^n\<br>&amp;\equiv h(g_0(x))+h’(g_0(x))\times (g_1(x)-g_0(x))\bmod x^n<br>\end{aligned}<br>$$<br>而 $h(g_1(x))\equiv 0$ ：<br>$$<br>\begin{aligned}<br>  &amp;h(g_0(x))+ h’(g_0(x))\times (g_1(x)-g_0(x))\equiv 0\bmod x^n\<br>&amp;\Rightarrow \ln g_0(x)-f(x)+\frac{1}{g_0(x)}\times (g_1(x)-g_0(x))\equiv 0 \bmod x^n\<br>&amp;\Rightarrow g_1(x)\equiv g_0(x)(f(x)-\ln g_0(x))+g_0(x)\equiv 0 \bmod x^n<br>\end{aligned}<br>$$<br>所以 $g_1(x)$ 就可以算了。 </p>
+<h2 id="多项式快速幂"><a href="#多项式快速幂" class="headerlink" title="多项式快速幂"></a>多项式快速幂</h2><p>求 $f^k(x)\bmod x^n$。首先可以直接用快速幂。</p>
+<p>还有一种方法：<br>$$<br>\begin{aligned}<br>  f^k(x)&#x3D;e^{k\ln f(x)}<br>\end{aligned}<br>$$<br>所以可以用多项式取对数加多项式 exp 解决。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E5%A4%9A%E9%A1%B9%E5%BC%8F/"># 多项式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/19/%E4%BA%8C%E6%AC%A1%E5%89%A9%E4%BD%99/">二次剩余</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/05/FWT%20%E5%81%9A%E9%A2%98%E7%AC%94%E8%AE%B0/">FWT 做题记录</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>XPath 小记 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">XPath 小记</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 16, 2025&nbsp;&nbsp;17:49:08</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="XPATH"><a href="#XPATH" class="headerlink" title="XPATH"></a>XPATH</h1><p>在拿到页面源代码之后，用 <code>etree.HTML()</code> 或 <code>etree.XML()</code> 进行解析，或者用 <code>etree.parse()</code> 对<strong>文件</strong>进行解析。前两个接受 <code>str</code> 类型参数，代表页面源代码，最后一个接受 <code>str</code> 类型参数，代表文件路径。以上三个方法均返回 <code>ElementTree</code> 对象。</p>
+<p>对于 <code>ElementTree</code> 对象，可以使用 <code>xpath()</code> 方法进行解析。该方法接受 <code>str</code> 类型参数，代表 <code>xpath</code> 的路径信息，返回的同样是 <code>ElementTree</code> 对象。</p>
+<p><code>xpath</code> 路径规则如下：</p>
+<ol>
+<li>用 <code>/</code> 表示父子关系。<code>&quot;/book/name&quot;</code> 表示标签 book 下的子标签 name</li>
+<li>用 <code>//</code> 表示任意的路径。<code>/book/author//nick</code> 表示标签 author 下的所有 nick 节点。返回的是一个列表。</li>
+<li>用 <code>text()</code> 来获取标签内的文本信息，这和 <code>bs4</code> 中的 <code>Tag</code> 类型中的 <code>text</code> 数据有本质区别。并且在路径中的形式如同父子关系一般，例如： <code>/book/name/text()</code>。以列表形式返回数据。</li>
+<li>* 用来表示任意节点。<code>/book/author/*/nick</code> 就表示 author 标签的任意子标签的 nick 子标签。</li>
+<li>如果一个标签下有多个相同名称的标签，可以通过序号来区别，出现越早的序号越小，<strong>从 1 开始而非从 0 开始</strong>。或者可以用属性来区别，语法如例：<code>/html/body/ul/li[1]/a/text()</code> 和 <code>/html/body/ol/li/a[@href=&#39;dapao&#39;]</code></li>
+<li>. 用于非开头位置的 <code>ElementTree</code> 类型，表示当前的节点。例如，我们已经找到了某个 li 标签，<code>li.xpath(&quot;./a/text()&quot;)</code> 表示找该 li 标签的子 a 标签里的文本内容。</li>
+<li>如果要获取属性值，则语法为：<code>./a/@href</code>，同样是作为父子关系出现，@ 表示属性。</li>
+</ol>
+<p>实例代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line">xml = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&lt;book&gt;</span></span><br><span class="line"><span class="string">    &lt;name&gt;hh&lt;/name&gt;</span></span><br><span class="line"><span class="string">    &lt;author&gt;</span></span><br><span class="line"><span class="string">        &lt;nick id=&quot;1&quot;&gt;41&lt;/nick&gt;</span></span><br><span class="line"><span class="string">        &lt;nick id=&quot;2&quot;&gt;42&lt;/nick&gt;</span></span><br><span class="line"><span class="string">        &lt;div&gt;</span></span><br><span class="line"><span class="string">            &lt;nick id=&quot;3&quot;&gt;43&lt;/nick&gt;</span></span><br><span class="line"><span class="string">        &lt;/div&gt;</span></span><br><span class="line"><span class="string">        &lt;span&gt;</span></span><br><span class="line"><span class="string">            &lt;nick id=&quot;3&quot;&gt;44&lt;/nick&gt;</span></span><br><span class="line"><span class="string">        &lt;/span&gt;</span></span><br><span class="line"><span class="string">    &lt;/author&gt;</span></span><br><span class="line"><span class="string">&lt;/book&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">tree = etree.XML(xml);</span><br><span class="line"></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/book&quot;); # /表示层级关系，第一个是根节点。</span></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/book/name&quot;)</span></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/book/name/text()&quot;) # text() 是拿取文本</span></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/book/author//nick/text()&quot;);</span></span><br><span class="line"><span class="comment"># 两个 // 表示后代，查找后代所有的 nick 节点。</span></span><br><span class="line">result = tree.xpath(<span class="string">&quot;/book/author/*/nick/text()&quot;</span>);</span><br><span class="line"><span class="comment"># * 表示任意的节点，通配符。</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(result);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">tree = etree.parse(<span class="string">&quot;b.html&quot;</span>);</span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/html/body/ul/li/a/text()&quot;);</span></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/html/body/ul/li[1]/a/text()&quot;); # xpath 的顺序是从 1 开始数的。</span></span><br><span class="line"><span class="comment"># result = tree.xpath(&quot;/html/body/ol/li/a[@href=&#x27;dapao&#x27;]/text()&quot;); # [@xxx=xxx]</span></span><br><span class="line"></span><br><span class="line">ol_li_list = tree.xpath(<span class="string">&quot;html/body/ol/li&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(result);</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> li <span class="keyword">in</span> ol_li_list:</span><br><span class="line">    result = li.xpath(<span class="string">&quot;./a/text()&quot;</span>);</span><br><span class="line">    <span class="comment"># ./ 表示相对查找，.表示当前节点。</span></span><br><span class="line">    result2 = li.xpath(<span class="string">&quot;./a/@href&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(tree.xpath(<span class="string">&quot;/html/body/ul/li/a/@href&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以在浏览器检查页面（F12）中对于网页源代码直接右键节点可以复制 xpath。</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://www.zbj.com/fw/?k=saas&quot;</span>;</span><br><span class="line">resp = requests.get(url);</span><br><span class="line"><span class="comment"># print(resp.text);</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># with open(&quot;zbj.html&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:</span></span><br><span class="line">    <span class="comment"># f.write(resp.text);</span></span><br><span class="line"></span><br><span class="line">html = etree.HTML(resp.text);</span><br><span class="line">etree</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拿到每一个服务商。</span></span><br><span class="line">divs = html.xpath(<span class="string">&#x27;//*[@id=&quot;__layout&quot;]/div/div[3]/div[1]/div[4]/div/div[2]/div/div[2]/div&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> div <span class="keyword">in</span> divs:</span><br><span class="line">    price = div.xpath(<span class="string">&quot;./div/div/div[@class=&#x27;price&#x27;]/span/text()&quot;</span>);</span><br><span class="line">    <span class="built_in">print</span>(price);</span><br><span class="line">    <span class="comment"># break;</span></span><br><span class="line"></span><br><span class="line">resp.close();</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/XPath-%E7%88%AC%E8%99%AB/"># XPath, 爬虫</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/01/15/python%E7%88%AC%E8%99%AB%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0/">python爬虫项目练习</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
