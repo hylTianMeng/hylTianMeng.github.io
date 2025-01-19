@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>多线程与多进程 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">多线程与多进程</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 19, 2025&nbsp;&nbsp;21:05:55</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在写爬虫时，多线程或多进程有时候是必要的，我们爬取的数据量有时过于庞大，使用单一线程可能会使我们的时间成本显著增加。</p>
+<h1 id="线程与进程"><a href="#线程与进程" class="headerlink" title="线程与进程"></a>线程与进程</h1><ul>
+<li>何谓进程</li>
+</ul>
+<p>“进程”在计算机科学中是指正在执行的程序的实例。它是程序代码与程序运行时所需的资源（如内存、CPU 时间等）结合的产物。</p>
+<p>进程是资源单位。</p>
+<ul>
+<li>何谓线程</li>
+</ul>
+<p>“线程”是操作系统中执行程序的基本单元，是比进程更小的执行单位。一个进程可以包含多个线程，这些线程共享进程的资源（如内存空间、文件句柄等），但每个线程有自己的栈空间和程序计数器。</p>
+<p>线程是执行单位。</p>
+<p>如果把进程比作公司，那么线程就是公司里的员工，一个公司里可以有多个员工，也必须至少有一个员工。</p>
+<p>一般而言，我们更倾向于用多线程去解决任务。</p>
+<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><p>下面是一些有关多线程，多进程，线程池的程序代码以及一些 Python 的细节说明。</p>
+<h2 id="案例-1"><a href="#案例-1" class="headerlink" title="案例 1"></a>案例 1</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;func&quot;</span>, i);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    t = Thread(target=func); <span class="comment"># 创建一个线程并安排任务。</span></span><br><span class="line">    t.start(); <span class="comment"># 多线程状态为可以开始工作，具体执行执行时间由 CPU 决定。</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;main&quot;</span>, i);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Thread</code> 是一个线程对象，利用 <code>target</code> 参数可以把我们需要进行的多线程任务 （在案例中  <code>func</code>）传入，通过 <code>start()</code> 方法，来使该线程的执行状态为可以开始，至于具体什么时候开始，则与 CPU 有关。</li>
+<li><code>__name__</code> 是一个 Python 自带的参数，它的功能是用于区分程序是直接被编译还是在 <code>import</code> 中被调用，如果是直接被编译，那么 <code>__name__</code> 的值就是 ‘__main’，如果是被 <code>import</code>，那么它的值就是 <code>import</code> 后面的字符串。</li>
+</ul>
+<h2 id="案例-2"><a href="#案例-2" class="headerlink" title="案例 2"></a>案例 2</h2><p>第二种实现多线程的方法如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyThread</span>(<span class="title class_ inherited__">Thread</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):<span class="comment"># 固定的。当线程可以开始之后，默认执行的就是 run 方法。</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;zixiancheng&quot;</span>,i);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    t = MyThread();</span><br><span class="line">    t.start();<span class="comment">#开始线程。</span></span><br><span class="line">    <span class="comment"># t.join();</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;zhuxiancheng&quot;</span>,i);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码工作的原理是：在默认情况下，<code>Thread</code> 类的实例在 <code>start</code> 时会运行 <code>run()</code> 方法，上述代码通过继承类 <code>Thread</code> 并重定义 <code>run()</code> 方法，实现了目标结果。</p>
+<h2 id="案例-3"><a href="#案例-3" class="headerlink" title="案例 3"></a>案例 3</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(name, i);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    p = Process(target=func);</span><br><span class="line">    p.start();</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;zhuxincheng&quot;</span>, i);</span><br></pre></td></tr></table></figure>
+
+<p>可以看到多进程和多线程的代码非常类似，只是换了模块而已。这要感谢 Python 提供的如此良好的 API。</p>
+<h2 id="案例-4"><a href="#案例-4" class="headerlink" title="案例 4"></a>案例 4</h2><p>线程池的需求是必要的。试想如果我们有 1000 个网页要爬取，难道要开 1000 个线程吗？还是只开 50 个线程来回使用？显然后者是更优的一种做法。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, ProcessPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fn</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(name, i);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 创建线程池。</span></span><br><span class="line">    <span class="keyword">with</span> ThreadPoolExecutor(<span class="number">50</span>) <span class="keyword">as</span> t:</span><br><span class="line">        <span class="comment"># 开辟了一个 50 个线程组成的线程池.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">            t.submit(fn, name=<span class="string">f&quot;线程<span class="subst">&#123;i&#125;</span>&quot;</span>);</span><br><span class="line">    <span class="comment"># 等待线程池中的任务全部执行完毕，才继续执行（守护）。</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">123</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里 Python 自带的 <code>concurrent.futures</code> 模块里自带了线程池和进程池。本代码使用线程池做的演示，进程池完全类似。</p>
+<blockquote>
+<p>注解 1：上面的所有示例代码中多线程的任务有些是不带参数，有些只带了 1 个参数。事实上，对于 <code>Thread</code> 实例来说，如果采取第一种实现方式，则可以通过 <code>Thread(target=func, args=(&quot;t1&quot;,));</code> 这样的方式进行传参，注意到 <code>args</code> 后面的 <code>,</code> 是必须的，表示 <code>args</code> 是一个元组。而对于线程池来说，就可以像案例 4 的代码一样，在 <code>submit()</code> 方法中直接传入参数即可，也可以按照顺序排列，不用名言是哪个参数。</p>
+</blockquote>
+<p>最后是一个线程池与爬虫结合起来的部分代码</p>
+<h2 id="案例-5"><a href="#案例-5" class="headerlink" title="案例 5"></a>案例 5</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">download_one_page</span>(<span class="params">url</span>):</span><br><span class="line">    <span class="comment"># 拿到页面源代码</span></span><br><span class="line">    resp = requests.get(url);</span><br><span class="line">    <span class="built_in">print</span>(resp.text);</span><br><span class="line">    html = etree.HTML(resp.text);</span><br><span class="line">    table = html.xpath(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    trs = table.xpath(<span class="string">&quot;tr[position()&gt;1]&quot;</span>);</span><br><span class="line">    <span class="comment"># 拿到每个 tr</span></span><br><span class="line">    <span class="keyword">for</span> tr <span class="keyword">in</span> trs:</span><br><span class="line">        txt = tr.xpath(<span class="string">&quot;./td/text()&quot;</span>);</span><br><span class="line">        txt = (item.replace(<span class="string">&quot;\\&quot;</span>,<span class="string">&quot;&quot;</span>).replace(<span class="string">&quot;/&quot;</span>,<span class="string">&quot;&quot;</span>) <span class="keyword">for</span> item <span class="keyword">in</span> txt);</span><br><span class="line">        <span class="built_in">print</span>(<span class="built_in">list</span>(txt));</span><br><span class="line">    resp.close();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>要点 1：xpath 路径中 <code>position()&gt;1</code> 表示的是所有顺位比 1 大的，在代码中就代表 <code>tr[2], tr[3], tr[4]...</code> 等等。</li>
+<li>要点 2：<code>(item.replace(&quot;\\&quot;,&quot;&quot;).replace(&quot;/&quot;,&quot;&quot;) for item in txt)</code> 代表的是数据生成器（可以粗略的理解为迭代器），而非元组。可以用 <code>for</code> 循环或者 <code>next</code> 进行遍历。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"># 多线程</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/01/16/XPath/">XPath 小记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

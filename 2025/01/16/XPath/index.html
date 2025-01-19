@@ -227,7 +227,7 @@
 <ol>
 <li>用 <code>/</code> 表示父子关系。<code>&quot;/book/name&quot;</code> 表示标签 book 下的子标签 name</li>
 <li>用 <code>//</code> 表示任意的路径。<code>/book/author//nick</code> 表示标签 author 下的所有 nick 节点。返回的是一个列表。</li>
-<li>用 <code>text()</code> 来获取标签内的文本信息，这和 <code>bs4</code> 中的 <code>Tag</code> 类型中的 <code>text</code> 数据有本质区别。并且在路径中的形式如同父子关系一般，例如： <code>/book/name/text()</code>。以列表形式返回数据。</li>
+<li>用 <code>text()</code> 来获取标签内的文本信息（这和 <code>bs4</code> 中的 <code>Tag</code> 类型中的 <code>text</code> 数据有本质区别，后者返回的是该标签下的————包括后代子孙标签中的所有————文本内容），并且其在路径中的形式如同父子关系一般，例如： <code>/book/name/text()</code>。以列表形式返回数据，所以注意，如果有多个符合条件的标签，都会被放到列表中。</li>
 <li>* 用来表示任意节点。<code>/book/author/*/nick</code> 就表示 author 标签的任意子标签的 nick 子标签。</li>
 <li>如果一个标签下有多个相同名称的标签，可以通过序号来区别，出现越早的序号越小，<strong>从 1 开始而非从 0 开始</strong>。或者可以用属性来区别，语法如例：<code>/html/body/ul/li[1]/a/text()</code> 和 <code>/html/body/ol/li/a[@href=&#39;dapao&#39;]</code></li>
 <li>. 用于非开头位置的 <code>ElementTree</code> 类型，表示当前的节点。例如，我们已经找到了某个 li 标签，<code>li.xpath(&quot;./a/text()&quot;)</code> 表示找该 li 标签的子 a 标签里的文本内容。</li>
@@ -279,6 +279,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2025/01/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%A4%9A%E8%BF%9B%E7%A8%8B/">多线程与多进程</a>
             
             
             <a class="next" rel="next" href="/2025/01/15/python%E7%88%AC%E8%99%AB%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0/">python爬虫项目练习</a>
