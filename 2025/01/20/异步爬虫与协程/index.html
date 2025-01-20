@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>异步爬虫与协程 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">异步爬虫与协程</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 20, 2025&nbsp;&nbsp;16:33:40</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在很多情况下，程序会进入“阻塞”状态，例如输入输出，访问某个网站，打开某个文件等等。当程序处于阻塞状态的时候，CPU 是不在工作的，造成了时间的浪费。</p>
+<p>所以协程是解决这样一个问题，当程序某个时刻处于阻塞状态时，它可以暂停执行，去执行其它的任务，这样就节省了时间成本。</p>
+<p>这似乎和线程池类似，但是从本质上来说两者不同。协程（在爬虫领域表现为异步爬虫）是单线程的。</p>
+<blockquote>
+<p>提示：在本文中，暂时对 python 协程的实现不作解释，只提供理解。<del>因为笔者还没看懂</del></p>
+</blockquote>
+<h1 id="asyncio"><a href="#asyncio" class="headerlink" title="asyncio"></a>asyncio</h1><p><code>asyncio</code> 是 python 中自带的、专门用处理 IO 异步的一个模块。</p>
+<p>假设我们有两个任务要完成，分别放在函数 <code>func1</code> 和 <code>func2</code> 中：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1.1&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func2</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;2&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;2.1&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>time.sleep()</code> 方法模拟了每个任务所需要的时间。</p>
+<p>下面只改变 <code>func1</code>，<code>func2</code> 的改变完全类似。</p>
+<p>首先，我们利用 <code>async</code> 关键字，将以上两个函数转化为协程对象（<code>coroutine</code>），代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">func1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1.1&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是这样还不够，<code>func1</code> 中的 <code>time.sleep()</code> 方法是“同步”而非“异步”的。暂时可以这样理解：同步和异步程序在底层的实现不同，所以对于特定的需要异步来处理的程序，即导致 CPU 不再工作的“阻塞”程序，需要特定的，与同步程序不同的模块或 API。在这里，需要用 <code>asyncio.sleep()</code> 方法来替换。两者的效果，抛开同步还是异步不谈，完全相同。代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">func1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    asyncio.sleep(<span class="number">3</span>)  <span class="comment"># 使用非阻塞的异步睡眠</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1.1&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是这样还不够，语法上会报错，我们还需要用 python 自带的 <code>await</code> 关键字显性的标注那些异步操作：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">func1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">3</span>)  <span class="comment"># 使用非阻塞的异步睡眠</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1.1&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样，一个<strong>单独</strong>的任务已经被我们实现了。然后我们需要的是一个类似于线程池的东西，即如果一个任务阻塞了，可以去执行其它的任务。我们这样来实现：编写一个 <code>main</code> 函数，并在其中用 <code>async.create_task()</code> 方法来将协程对象（在本例中是<code>func1,func2</code>）转化成任务（<code>Task</code>）对象，并用 <code>asyncio.gather()</code> 方法进行执行。不要忘记 <code>await</code>，<strong>凡是那些与异步有关的地方</strong>，都需要加上 <code>await</code> 关键字。这里写的或许过于笼统与不准确，但是对于异步爬虫目前是够用了。</p>
+<p>完整代码：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">func1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">3</span>)  <span class="comment"># 使用非阻塞的异步睡眠</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;1.1&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">func2</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;2&quot;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">2</span>)  <span class="comment"># 使用非阻塞的异步睡眠</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;2.1&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    f1 = asyncio.create_task(func1())</span><br><span class="line">    f2 = asyncio.create_task(func2())</span><br><span class="line">    <span class="keyword">await</span> asyncio.gather(f1, f2);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    asyncio.run(main());</span><br></pre></td></tr></table></figure>
+
+<h1 id="aiohttp"><a href="#aiohttp" class="headerlink" title="aiohttp"></a>aiohttp</h1><p>上文已经说过，在异步爬虫中，以前用同步方法的地方要用异步方法进行替换。而 <code>requests</code> 模块的替代品就是 <code>aiohttp</code> 模块。</p>
+<p>而在进行异步操作时，我们利用 <code>async with</code> 关键字，可以把这两个单词看成一个关键字，与 <code>with</code> 上下文管理器的底层实现略有不同。代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> aiohttp</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line">urls = [</span><br><span class="line">    <span class="string">&quot;https://i1.huishahe.com/uploads/allimg/202206/9999/61c976a82d.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;https://i1.huishahe.com/uploads/tu/201911/9999/7b9852f16a.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;https://i1.huishahe.com/uploads/tu/201911/9999/766d82b8a0.jpg&quot;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">aiodownload</span>(<span class="params">url: <span class="built_in">str</span></span>):</span><br><span class="line">    name = url.split(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>];</span><br><span class="line">    <span class="comment"># aiohttp.ClientSession() # 等价于 requests 模块</span></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> aiohttp.ClientSession() <span class="keyword">as</span> session:</span><br><span class="line">        <span class="keyword">async</span> <span class="keyword">with</span> session.get(url) <span class="keyword">as</span> resp:</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(name, mode=<span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(<span class="keyword">await</span> resp.content.read());</span><br><span class="line">            <span class="comment"># resp.text()</span></span><br><span class="line">    <span class="built_in">print</span>(name, <span class="string">&quot;搞定&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    tasks = [];</span><br><span class="line">    <span class="keyword">for</span> url <span class="keyword">in</span> urls:</span><br><span class="line">        tasks.append(asyncio.create_task(aiodownload(url)));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> asyncio.gather(*tasks);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    asyncio.run(main());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到还是略有不同，比如返回 byte 下的文件要用 <code>read()</code> 方法。</p>
+<p>最后是利用协程爬取百度书库里面的西游记所有章节的代码：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">https://dushu.baidu.com/api/pc/getCatalog?data=&#123;&quot;book_id&quot;:&quot;4306063500&quot;&#125;</span></span><br><span class="line"><span class="string">包括 title, price_status, cid</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">章节内部的内容。</span></span><br><span class="line"><span class="string">https://dushu.baidu.com/api/pc/getChapterContent?data=&#123;&quot;book_id&quot;:&quot;4306063500&quot;,&quot;cid&quot;:&quot;4306063500|1569782244&quot;,&quot;need_bookinfo&quot;:1&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">是否用异步？请求第一个页面只需要一次，而爬取每一个页面的信息是需要异步的。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> aiohttp</span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">GetUrl</span>(<span class="params">book_id: <span class="built_in">int</span>, cid: <span class="built_in">int</span></span>) -&gt;<span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&#x27;https://dushu.baidu.com/api/pc/getChapterContent?data=<span class="subst">&#123;<span class="string">&#x27;&#123;&quot;book_id&quot;:&quot;&#x27;</span>&#125;</span><span class="subst">&#123;book_id&#125;</span>&quot;,&quot;cid&quot;:&quot;<span class="subst">&#123;book_id&#125;</span>|<span class="subst">&#123;cid&#125;</span>&quot;,&quot;need_bookinfo&quot;:1<span class="subst">&#123;<span class="string">&quot;&#125;&quot;</span>&#125;</span>&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">Download</span>(<span class="params">url: <span class="built_in">str</span>, <span class="built_in">id</span>: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> aiohttp.ClientSession() <span class="keyword">as</span> session:</span><br><span class="line">        <span class="keyword">async</span> <span class="keyword">with</span> session.get(url) <span class="keyword">as</span> resp:</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">f&quot;./西游记/第<span class="subst">&#123;<span class="built_in">id</span>&#125;</span>话.txt&quot;</span>, <span class="string">&quot;w&quot;</span>, newline=<span class="string">&quot;&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                <span class="comment"># f.write(resp.json()[&quot;data&quot;][&quot;noval&quot;][&quot;content&quot;]);</span></span><br><span class="line">                <span class="comment"># dic = await resp.json();</span></span><br><span class="line">                f.write((<span class="keyword">await</span> resp.json())[<span class="string">&quot;data&quot;</span>][<span class="string">&quot;novel&quot;</span>][<span class="string">&quot;content&quot;</span>]);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    mainurl = <span class="string">&#x27;https://dushu.baidu.com/api/pc/getCatalog?data=&#123;&quot;book_id&quot;:&quot;4306063500&quot;&#125;&#x27;</span>;</span><br><span class="line">    mainresp = requests.get(mainurl);</span><br><span class="line">    maindic = mainresp.json();</span><br><span class="line">    book_id = json.loads(mainurl.split(<span class="string">&quot;=&quot;</span>)[-<span class="number">1</span>])[<span class="string">&quot;book_id&quot;</span>];</span><br><span class="line">    <span class="built_in">print</span>(book_id);</span><br><span class="line">    <span class="comment"># print(maindic);</span></span><br><span class="line">    tasks = [];</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> dic <span class="keyword">in</span> maindic[<span class="string">&quot;data&quot;</span>][<span class="string">&quot;novel&quot;</span>][<span class="string">&quot;items&quot;</span>]:</span><br><span class="line">        i = i + <span class="number">1</span>;</span><br><span class="line">        nowurl = GetUrl(book_id, dic[<span class="string">&quot;cid&quot;</span>]);</span><br><span class="line">        <span class="comment"># nowresp = requests.get(nowurl)</span></span><br><span class="line">        tasks.append(Download(nowurl, i));</span><br><span class="line">        <span class="comment"># break;</span></span><br><span class="line">    <span class="keyword">await</span> asyncio.gather(*tasks);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    asyncio.run(main());</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>PS：笔者对于协程或者是 aiohttp 的理解并不深刻，所以这里挖一个坑，看看能否彻底搞懂协程的底层实现。</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%88%AC%E8%99%AB/"># 爬虫</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/01/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%A4%9A%E8%BF%9B%E7%A8%8B/">多线程与多进程</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
