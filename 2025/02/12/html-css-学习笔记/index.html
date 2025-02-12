@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>html css 学习笔记 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">html css 学习笔记</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 12, 2025&nbsp;&nbsp;15:33:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <ul>
+<li>!DOCTYPE html 用来声明这是一个 html 文档</li>
+<li>html 标签。用来标记文档的起始和结束</li>
+<li>head 标签。用来包含一些开发者和浏览器需要知道的信息。</li>
+<li>meta 标签。表示一些文档属性。例如该标签的一个属性 charset 表示字符集。</li>
+<li>body 标签。表示用户能看到的部分。</li>
+<li>h1 - h6 标签。标题标签。用来表示标题。属性 align 可以调整标题字体是居左、居中、还是居右。但是更推荐在 css 中更改。</li>
+<li>title 标签。表示标签页的名称。</li>
+<li>VScode 中可以输入 ‘!’ 自动补全 html 框架。</li>
+<li>vscode 中 ‘h$*6’ 用以生成 h1 标签到 h6 标签，改变后面的数字 ‘6’ 可以控制标签生成数量，例如如果把 ‘6’ 改成 ‘4’ 就会生成 h1 到 h4 标签。</li>
+<li>p 标签表示段落。</li>
+<li>br 标签表示换行，可以在不开另外标签的情况下换行。</li>
+<li>hr 标签表示隔断线。属性：color 表示颜色（字符串），align 同标题标签，size 表示大小（上下高度），width 表示宽度（左右长度）</li>
+<li>img 标签。表示图片。属性：src 表示路径，width 表示宽度，height 表示高度，alt 表示如果没加载出来显示的文本内容。其中，width 和 height 不同时出现的情况下图片将按照等比例放缩。两者使用的单位是 px，即像素。</li>
+</ul>
+<blockquote>
+<p>关于 src，有相对路径和绝对路径之分，绝对路径不再赘述，相对路径：“.&#x2F;” 中的 “.” 表示当前目录，而 “..\” 中的 “..” 表示父级目录。</p>
+</blockquote>
+<ul>
+<li>a 标签。表示超链接，内部可以放置文本，也可以放置图片，属性：href 表示跳转的连接。</li>
+</ul>
+<blockquote>
+<p>超链接在浏览器上有默认的渲染方式，可以通过 css 样式进行改变。</p>
+</blockquote>
+<p>文本标签：</p>
+<ul>
+<li>em 标签。表示加重。默认渲染：斜体。</li>
+<li>i 标签。斜体。</li>
+<li>b 标签。加粗。</li>
+<li>strong 标签。加重与其。默认渲染同 b 标签。</li>
+<li>del 标签。删除字。</li>
+<li>span 标签。无特定渲染方式。</li>
+</ul>
+<blockquote>
+<p>段落 p 标签代表一段文本，而文本标签表示文本内容。</p>
+</blockquote>
+<ul>
+<li>ol, li 标签。有序列表。ol 标签下 每个 li 标签表示一个内容，默认以数字作为序号，可以改成大小写字母和罗马字母，只需要改变 ol 标签的属性 type，对应设定值为 a, A, i, I。列表之间可以嵌套。</li>
+<li>ul, li 标签。无序列表。与有序列表类似。属性：type 属性：disc 默认值，实心圆；circle：空心圆；square：实心正方形；none：啥也没有。列表之间可以嵌套。</li>
+</ul>
+<blockquote>
+<p>网站导航（标签栏）通常都是用无序列表 + css 来实现的。有快捷键：<code>ul&gt;li*4</code> 可以快捷创建有四个元素的无序列表。</p>
+</blockquote>
+<ul>
+<li>table 标签。表示表格。tr 表示行，第二层标签，td 是列，第三层标签，示例如下。属性：border 代表表格线的像素单位；weight：宽度；height：高度。加不加 px 都是一样的。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;table&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;11&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;12&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;21&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;22&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有快捷键，实例如：<code>table&gt;tr*4&gt;tr*3&#123;_content&#125;</code>。这个快捷键似乎并不局限于具体的标签。</p>
+</blockquote>
+<ul>
+<li>td 属性 colspan：列合并单元格。td 属性 rowspan 行合并单元格。多余的不需要的部分去掉即可。实例：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;table border=&quot;1&quot;&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;!-- &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt; --&gt;</span><br><span class="line">        &lt;td colspan=&quot;2&quot; align=&quot;center&quot;&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td colspan=&quot;2&quot; rowspan=&quot;3&quot; align=&quot;center&quot;&gt;dyg&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td rowspan=&quot;2&quot;&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;dyg&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>规则：水平合并，保留并改变最左边。垂直合并，保留并合并上边。</p>
+</blockquote>
+<ul>
+<li><p>form 标签。表示表单。表单由表单容器和表单控件组成，需要表单按钮，表单域等基本表单元素。属性：action：表单给提供信息的那个服务器地址；method：提交方式（比如 get 或 post）；name：表单名称。</p>
+</li>
+<li><p>表单元素：</p>
+<ul>
+<li><code>&lt;input type=&quot;text&quot;&gt;</code> 文本域。表现为一个可以输入文本的输入框；name 属性可以规定该文本框对应赋值到的参数。</li>
+<li><code>&lt;input type=&quot;password&quot;&gt;</code> 密码框。表现为一个所有输入文本会变成小圆点的文本框。</li>
+<li><code>&lt;input type=&quot;submit&quot;&gt;</code> 提交按钮。把表单的内容提交给对应（ action 属性所规定的）服务器上去。value 属性可以改变默认按钮文本内容（默认内容为登录）。</li>
+</ul>
+</li>
+<li><p>div 标签。表示容器，无特殊意义，只是用来区分不同的区域。H5 新标签把一些放在 div 标签 id 属性中的内容变成了新标签，实际上是为了同意标准，使得浏览器爬虫可以更加容易的爬虫内容，使得开发者可以更加容易的识别不同区域的功能。</p>
+</li>
+<li><p>css 语法由选择器和一个或多个样式组成，基本语法如下：</p>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">h3</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>把 html 与 css 之间进行关联的方法有：</p>
+<ul>
+<li>内联样式。直接在对应需要改变样式的标签上加入 style 属性，<code>style=&quot;*&quot;</code>，“*” 内容为样式（不包含选择器与大括号）。</li>
+<li>内部样式。可以使用在 head 标签下 style 标签，在该标签下直接编写 css 样式内容。可以改变</li>
+<li>外部样式。在 head 标签下使用 link 标签。基本格式如：<code>&lt;link rel=&quot;stylesheet&quot; href=&quot;./c.css&quot;&gt;</code></li>
+</ul>
+</li>
+<li><p>css 选择器：</p>
+<ul>
+<li>全局选择器：选择器为 “*”，其它语法不变。优先级最低。</li>
+<li>元素选择器。</li>
+<li>类选择器：选择那些添加了对应 class 属性的标签。一个标签可以拥有多个“类”，只需要在设置 class 属性的时候在多个类之间用空格隔开。选择器以 “.” 开头。</li>
+<li>ID 选择器：针对某一个特定的标签，但是只能选择一次。对应标签中的属性名称是 id 属性。id 和 class 唯一的区别在于前者只能选择一次而后者可以全部选择上。这也恰好印证了 id 大多两两不同。选择器以 “#” 开头。注解：类选择器和 ID 选择器都不能以数字开头。</li>
+<li>合并选择器：如果出现多个选择器公用同样的样式，可以在选择器的语法位置用“,”隔开多个选择器。</li>
+</ul>
+</li>
+<li><p>选择器优先级 行内样式高于 ID 选择器高于类选择器高于元素选择器。如果存在选择某个标签的多个选择器优先级相同，则 css 文件靠末尾的优先级高（可以理解为靠近末尾的样式可以覆盖之前的）</p>
+</li>
+<li><p>字体样式：</p>
+<ul>
+<li>颜色：color。使用 16 进制或者使用 rgb 来改变颜色更为推荐。rgba 相比于 rgb 多了一位，表示字体透明度，0 是完全透明，1 是完全不透明。</li>
+<li>字体大小：font-size。</li>
+<li>文本粗细：font-weight。bold 粗体，bolder，更粗（在 chrome 上和 bold 一样），lighter 更细，或者用 100-900 的数值来调整。400相当于默认，700 相当于 bold。</li>
+<li>字体样式：font-style。 italic 斜体。normal 正常。</li>
+<li>字体种类：font-family。不同种类的字体，不如说微软雅黑等等。</li>
+</ul>
+</li>
+<li><p>背景样式：</p>
+<ul>
+<li>背景颜色：background-color。首先可以用 width 和 height 设置容器（比如 div）来设置容器的宽高，再用该属性来这是颜色。</li>
+<li>背景图片：background-image。属性值为：url(…)，… 用具体的路径名称或者网络连接来代替。不够网页大小就继续填充，所以可能会放进去多个图（默认），够网页大小就截取，反正图片不会伸缩变形。</li>
+<li>是否重复：background-repeat。为了改变上面的默认情况而出现的。repeat，就是默认值。repeat-x：只在水平方向平铺。repeat-y：只在竖直方向平铺。no-repeat：不平铺。</li>
+<li>背景大小：background-size。(length) 两个数字（或者一个数字）表示展示图片的宽（第一个值）和高（第二个值）。如果只有一个值等比缩放。这两个数字也可以用百分比来代替，用来表示占据了父容器的百分比大小（呼应了 width 和 height 两个属性）。更常用的是：cover：在等比的条件下充满整个容器（最大大小，会对图边进行切割）。contain：同样也是保证等比，但是图片不会被切割，与之相对应容器可能也无法填充满。</li>
+<li>背景位置：background-position。表示从那个位置开始取背景图片。(left, right, center) + (top, bottom, center)，用两个括号里各选取一个，用空格隔开表示属性值。同样也可以利用百分比，0% 0% 表示左上角，100% 100% 表示左下角，其它位置的比例也就唯一固定。</li>
+</ul>
+</li>
+<li><p>文本样式</p>
+<ul>
+<li>对齐：text-align。默认居左（left），也可以把属性值改为 center, right。</li>
+<li>文本修饰：text-decoration。underline：下划线；overline：上划线；line-through：删除线。</li>
+<li>文本大小写：text-transform。captialize：首字母大写。uppercase：所有单词大写。lowercase：所有单词小写。</li>
+<li>文本缩进：text-indent。首行文本缩进。用像素大小来表示缩进大小。允许负数，如果是负数，则第一行左缩进。</li>
+</ul>
+</li>
+<li><p>表格样式：</p>
+<ul>
+<li>表格边框：border。边框大小(1px) + 边框样式(solid) + 颜色(red)。给 table 加次属性只有最外边的框。给每一个 td 加属性每一个单元格都有框。</li>
+<li>折叠边框：border-collapse: collapse。上面的双边框变成单边框。</li>
+<li>宽度高度：width, height。</li>
+<li>水平对齐：text-align</li>
+<li>垂直对齐：vertical-align</li>
+<li>空隙：padding。像素大小，让单元格框与文字之间的间隙变成设置的值。</li>
+<li>表格也可以设置背景颜色。</li>
+</ul>
+</li>
+<li><p>关系选择器</p>
+<ul>
+<li>后代选择器 <code>E F&#123;&#125;</code> 选择所有被 E 元素包含的 F 元素（可以不正好是父子关系）</li>
+<li>子代选择器 <code>E&gt;F&#123;&#125;</code> 选择所有作为 E 元素的直接子 F 元素。</li>
+<li>相邻兄弟选择器 <code>E+F&#123;&#125;</code> 选择与 E <strong>之后</strong>同级的，第一个 F 元素。</li>
+<li>通用兄弟选择器 <code>E~F&#123;&#125;</code> 选择与 E 之后同级的，所有 F 元素。</li>
+</ul>
+</li>
+<li><p>盒子模型</p>
+<ul>
+<li>由 4 个主要元素构成，分别是内容 content, 内边距 padding, 边框 border, 外边距 margin。从内到外，层层包裹。实际上，任何网页的内容都可以看作是若干个盒子组成。而这四个样式就规定了各个盒子的样式。</li>
+<li>content 并不是一个样式，只是一个概念，其大小由 width, height 规定。也可以规定比如说 background-color，等等。</li>
+<li>padding 是一个样式。样式值为一个值（像素大小）时，默认上下左右内边距都是规定大小；两个值时，第一个值约束上下，第二个值约束左右。同时也可以通过改变 padding-left, padding-right, padding-top, padding-bottom 来自由的改变上下左右内边距的大小。padding 本质上时透明的，于是受到 content 里面一些样式的影响，比如 background-color</li>
+<li>border 如同表格样式那里讲的。三个值，第一个值（数值）表示边框粗细，第二个值（单词）表示边框样式，第三个值表示边框颜色。</li>
+<li>margin 在语法形式上与 padding 完全相同。</li>
+</ul>
+</li>
+<li><p>弹性盒子模型</p>
+<ul>
+<li>所谓弹性盒子，就是指在一个大的盒子里有许多小盒子，而大盒子是固定的，小盒子是弹性的。</li>
+<li>在盒子模型的起初上，在整个大的容器里添加 display 样式，设置值为 flex，既可以让整个容器变为弹性盒子模型。</li>
+<li>弹性盒子大容器内的小容器默认是<strong>横向</strong>摆放，可以通过更改 flex-direction 样式（row, colomn, row-reverse, colomn-reverse）来改变默认小容器拜访方式。同时，也可以改变内部小容器是居中还是紧靠一边。这里，默认方向是我们 flex-direction 设定的方向，justify-content 用于改变默认方向上的样式，而 align-items 用于改变另一个方向。它们都有三个值可以设定：flex-start, flex-end, center。</li>
+<li>内部的小盒子可以通过改变 flex 样式使得自身的大小不在依赖于设定的 width, height 大小，而是随着大容器的大小而改变。这里 flex 规定的就是权重，代表着在默认方向上，这个小盒子占据整个大盒子的长度有多少。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">    <span class="selector-class">.container</span>&#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">500px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">500px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: <span class="number">#555555</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">display</span>: flex;</span></span><br><span class="line"><span class="language-css">        <span class="comment">/* 默认横向拜访</span></span></span><br><span class="line"><span class="comment"><span class="language-css">        可以用 flex-direction 来规定弹性子元素在父容器中的位置 */</span></span></span><br><span class="line"><span class="language-css">        <span class="attribute">flex-direction</span>: row;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">justify-content</span>: center;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">align-items</span>: flex-start;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css">    <span class="selector-class">.box1</span>&#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: red;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css">    <span class="selector-class">.box2</span>&#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">flex</span>: <span class="number">2</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: green;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css">    <span class="selector-class">.box3</span>&#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">flex</span>: <span class="number">1</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: blue;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>浮动<ul>
+<li>浮动是一种脱离文件流的方式，让元素从文件层到浮动层。浮动层元素的拜访规则和文件层大不相同。</li>
+<li>首先，两层的元素之间可能存在遮盖现象（浮动层的元素遮盖文件层的元素）</li>
+<li>通过指定 float 样式（left, right）来使元素进行浮动。只有左右浮动而没有上下浮动，left 和 right 表示从哪里开始摆放元素。</li>
+<li>浮动的元素在空间不足时才会自动向下拜访，这里的空间不足有可能是父元素的大小限制，也可以是浏览器大小限制。</li>
+<li>浮动一个应用是让 ul li 标签横向拜访（导航栏），另一个应用是让原本就横向拜访的 img 元素之间不存在空隙。</li>
+<li>某父元素内部的浮动元素的表现与没有该父元素是表现不同。</li>
+<li>浮动的 left 和 right 在同一层里面，但是在垂直方向上各自会有各自开始拜访的地方。例如：</li>
+</ul>
+</li>
+</ul>
+<p><img src="/image-6.png" alt="alt text"></p>
+<p><img src="/image-7.png" alt="alt text"></p>
+<p>这两个图之间的区别仅仅在于蓝色块 div 的 float 是设置成 left （上）还是 right （下）</p>
+<ul>
+<li><p>清除浮动</p>
+<ul>
+<li>浮动会带来布局问题，主要问题有 2：第一个是会造成父元素的塌陷，第二个是会带来后续元素的布局问题。</li>
+<li>父元素塌陷解决方法：使用 overflow 属性。其本质是通过 BFC 机制，让父元素重新计算布局，包含浮动元素。</li>
+<li>后续元素布局解决方法：使用 clear 属性。其本质是通过强制换行来解决布局问题。</li>
+</ul>
+</li>
+<li><p>定位</p>
+<ul>
+<li>定位有三种，相对定位，绝对定位和固定定位。</li>
+<li>相对定位不脱离文件流，绝对定位脱离文件流。两者都可以通过改变 left 和 top 样式值来改变元素摆放的位置。而相对定位由于不脱离文件流，所以它的基准，即左上角，或者称为坐标的原点，是需要根据其之前按规则摆放的元素来进行决定。而绝对定位脱离文件流，也就是说，想摆放在哪里，就摆放在哪里。与浮动不同的是，不同绝对定位占据不同的层，也就是可以产生多个遮盖的效果。</li>
+<li>相对定位和绝对定位的元素在存在父元素时的定位规则略有变化，从元素自身开始，逐级网上找，直到找到第一个可以定位的元素（添加了 postion 样式），或者找到顶层元素（body），作为定位的基准。原点可以认为时该定位元素盒子模型 content 部分的左上角。</li>
+<li>left, right, top, bottom 在相对定位和绝对定位时可以认为是设定了左上角的坐标，也即，如果对页面上唯一的 div 元素设定 right 100px 和 bottom 100px，元素会相对于之前向左向上各移动 100px，也就是会隐藏一部分。</li>
+<li>固定定位一样脱离文件流。其特点是，它的位置是按照浏览器窗口来进行定位的。也就是说，不随着页面的滚动而改变。固定定位 right 和 bottom 的意义与其余两个定位不同，其意义是距离右下角的距离，实际上这个更符合我们一开始对于这两个样式值的认知。</li>
+</ul>
+</li>
+<li><p>css 新特性：</p>
+<ul>
+<li>圆角效果：通过设定 border-radius 来改变某个元素四个角的圆滑程度。可以设定 1-4 个值，但是 1 个值更为常用，表示 4 个角的圆滑程度相同。可以通过设置像素大小来调节，也可以通过设定百分比来调节。50% 就可以让整个元素变为圆形（如果这个元素高宽设置一样大，否则就是椭圆）。</li>
+<li>阴影效果：<code>box-shadow: h-shadow v-shadow blur color </code>，分别表示水平阴影位置，竖直阴影位置，模糊距离，阴影颜色。前两个值越大（像素），阴影分别越往下和向右偏移，模糊距离越大，阴影越明显。</li>
+<li>动画：通过 <code>@keyframe name_ &#123;&#125;</code> 来创建动画效果，大括号里可以通过百分数来表示动画进行到某个时间段的样式是怎样的，浏览器会自动加载出平滑效果。然后在对应选择器的样式里添加动画就可以了。添加格式为：<code>animation: name duration timing-function delay iteration-count direction</code>。 name 指动画名称，duration 指动画播放时间，timing-function 指播放速度，例如，有 ease 逐渐变慢（默认）， linear 线性速度等等，delay 是指动画延迟播放的时间，iteration-count 是指播放重复的次数，默认为 1，可以设置为 infinite 无限播放，direction 是动画播放的方向，默认顺序播放，当然也可以设置成比如 alternate，使得第一次从头到尾，第二次从尾到头，后面以此类推。</li>
+<li>媒体查询：通过 <code>at-rules</code> 来根据设备改变 css 代码。实例：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 组织不同媒体下的缩放问题  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="selector-tag">div</span>&#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">width</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">height</span>:<span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">background-color</span>: red;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">max-width</span>: <span class="number">768px</span>) &#123;</span></span><br><span class="line"><span class="language-css">            <span class="selector-class">.box</span>&#123;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">background-color</span>: aqua;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">display</span>: none;</span></span><br><span class="line"><span class="language-css">            &#125;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">768px</span>) <span class="keyword">and</span> (<span class="attribute">max-width</span>: <span class="number">996px</span>)&#123;</span></span><br><span class="line"><span class="language-css">            <span class="selector-class">.box</span>&#123;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">background-color</span>: chartreuse;</span></span><br><span class="line"><span class="language-css">            &#125;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">996px</span>) &#123;</span></span><br><span class="line"><span class="language-css">            <span class="selector-class">.box</span>&#123;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">background-color</span>: red;</span></span><br><span class="line"><span class="language-css">            &#125;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>雪碧图：雪碧图本质上来说是一种技巧。对于那种表情图片，可以把一张大图全部加载进来，然后通过设置 background-position 来拉拽背景图片，从而实现使特定的小图标显现出来的目的。</li>
+<li>字体图标：字体图标就是字体样式的图片，可以从多个公开库中获取。例如阿里的库：iconfont.cn。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/02/02/%E4%B8%80%E6%9C%88%E6%80%BB%E7%BB%93/">一月总结</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
