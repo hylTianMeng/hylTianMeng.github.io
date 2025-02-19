@@ -127,6 +127,71 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
@@ -342,7 +407,7 @@
 <li><p>定位</p>
 <ul>
 <li>定位有三种，相对定位，绝对定位和固定定位。</li>
-<li>相对定位不脱离文件流，绝对定位脱离文件流。两者都可以通过改变 left 和 top 样式值来改变元素摆放的位置。而相对定位由于不脱离文件流，所以它的基准，即左上角，或者称为坐标的原点，是需要根据其之前按规则摆放的元素来进行决定。而绝对定位脱离文件流，也就是说，想摆放在哪里，就摆放在哪里。与浮动不同的是，不同绝对定位占据不同的层，也就是可以产生多个遮盖的效果。</li>
+<li>相对定位不脱离文件流，绝对定位脱离文件流。两者都可以通过改变 left 和 top 样式值来改变元素摆放的位置。而相对定位由于不脱离文件流，所以它的基准，即左上角，或者称为坐标的原点，是需要根据其之前按规则摆放的元素来进行决定。而绝对定位脱离文件流，也就是说，想摆放在哪里，就摆放在哪里。与浮动不同的是，不同绝对定位占据不同的层，也就是可以产生多个遮盖的效果。可以通过设定 z-index 属性来决定谁靠上，该值越大，靠上的优先级越高。</li>
 <li>相对定位和绝对定位的元素在存在父元素时的定位规则略有变化，从元素自身开始，逐级网上找，直到找到第一个可以定位的元素（添加了 postion 样式），或者找到顶层元素（body），作为定位的基准。原点可以认为时该定位元素盒子模型 content 部分的左上角。</li>
 <li>left, right, top, bottom 在相对定位和绝对定位时可以认为是设定了左上角的坐标，也即，如果对页面上唯一的 div 元素设定 right 100px 和 bottom 100px，元素会相对于之前向左向上各移动 100px，也就是会隐藏一部分。</li>
 <li>固定定位一样脱离文件流。其特点是，它的位置是按照浏览器窗口来进行定位的。也就是说，不随着页面的滚动而改变。固定定位 right 和 bottom 的意义与其余两个定位不同，其意义是距离右下角的距离，实际上这个更符合我们一开始对于这两个样式值的认知。</li>
@@ -363,6 +428,10 @@
 <li>雪碧图：雪碧图本质上来说是一种技巧。对于那种表情图片，可以把一张大图全部加载进来，然后通过设置 background-position 来拉拽背景图片，从而实现使特定的小图标显现出来的目的。</li>
 <li>字体图标：字体图标就是字体样式的图片，可以从多个公开库中获取。例如阿里的库：iconfont.cn。</li>
 </ul>
+<h5 id="外边距折叠现象。"><a href="#外边距折叠现象。" class="headerlink" title="外边距折叠现象。"></a>外边距折叠现象。</h5><blockquote>
+<p>Update on 2025.2.19 </p>
+</blockquote>
+<p>当两个块级元素处于上下位置，并且都设置了 margin 时，亦或者是父元素与子元素之间（没有边框和 padding 时）都可能会出现外边距折叠现象，即两个不同元素的上边距相互遮盖，最终呈现出较大的那个外边距。</p>
 
         </div>
 
