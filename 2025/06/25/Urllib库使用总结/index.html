@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>Urllib库使用总结 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Urllib库使用总结</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 25, 2025&nbsp;&nbsp;17:31:15</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/python-%E7%88%AC%E8%99%AB/">python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h1><h2 id="Q1-如何请求一个-url"><a href="#Q1-如何请求一个-url" class="headerlink" title="Q1 如何请求一个 url"></a>Q1 如何请求一个 url</h2><ul>
+<li>通过 Request 类创建一个实例，可以通过该实例对象设置 url，请求头，请求体中的 post 内容，请求方法等内容。</li>
+<li>可以使用 urlopen 方法，后者可以接受一个 Request 类获得响应。</li>
+<li>如果想要获取 cookie，或者通过基础认证，需要用到处理器。前者用到 HandleCookieProcessor 处理器，这个处理器要接受 CookieJar 类型的参数，后者要用到 HTTPPassMgr 来管理账户密码，并使用该类作为参数构造 HTTPBasicAuthHandler 类。这些类都是 Handler 的基类，而只要是 Handler 的基类都可以作为 build_opener 函数的参数，来创建一个启动器（opener），可以用 opener 接受 Request 类型的参数来进行请求。</li>
+</ul>
+<h2 id="Q2-如何解析一个-url"><a href="#Q2-如何解析一个-url" class="headerlink" title="Q2 如何解析一个 url"></a>Q2 如何解析一个 url</h2><ul>
+<li>需要使用 urllib.parse 模块中的一些 API。</li>
+<li>例如，通过 urlparse 来解析 url 中的各个部分</li>
+<li>例如，通过 urlopen 来进行 url 之间的拼接</li>
+<li>例如，urlencode 来完成从字典到查询参数（query）之间的转换。</li>
+</ul>
+<h1 id="urllib-库"><a href="#urllib-库" class="headerlink" title="urllib 库"></a>urllib 库</h1><h2 id="request-模块"><a href="#request-模块" class="headerlink" title="request 模块"></a>request 模块</h2><h3 id="urlopen-函数"><a href="#urlopen-函数" class="headerlink" title="urlopen 函数"></a>urlopen 函数</h3><p>url: 接受一个字符串，代表网址；<br>data：接受一个字符串，代表数据的内容，注意这里的参数并非 url 中的参数，而是 post 请求中的提交的内容。一般使用 urlencode 函数完成从字典类型到满足格式的字符串的转化。<br>timeout: 接受一个数字，代表能最大程度接受的响应时长。如果对 url 的请求无法在 timeout 时间内得到响应，那么程序将会抛出异常 urllib.error.URLError<br>返回值类型为 http.client.HTTPResponse 类。<br>或者接受一个 Request 类型的参数，将请求抽象成一个 Request 类的实例。使用 Request 类的时候同样可以设定 timeout。</p>
+<h3 id="http-client-HTTPResponse-类"><a href="#http-client-HTTPResponse-类" class="headerlink" title="http.client.HTTPResponse 类"></a>http.client.HTTPResponse 类</h3><ol>
+<li>调用 read() 方法，可以返回类中文本内容的二进制字节序列（bytes 类），后者再可以通过调用 decode() 方法，接受一个字符串参数（表示编码方法）对二进制字节序列进行编码。不指定直接输出二进制字节序列，会使用默认编码方式。</li>
+<li>status 属性，返回一个整型变量，代表此次响应的状态码。</li>
+<li>getheaders() 方法，返回一个列表，列表中的每个元素都是一个元组，每一个元组的第一个元素是响应头中的某个属性</li>
+<li>getheader() 方法，接受一个字符串类型，表示想要查找的响应头中的属性名称，返回一个字符串，表示对应属性，没有返回none（nonetype 类）。</li>
+</ol>
+<h3 id="Request-类"><a href="#Request-类" class="headerlink" title="Request 类"></a>Request 类</h3><ol>
+<li>构造函数：<br>url，字符串类型，代表请求发送到的网址。<br>data，bytes类型，代表需要 post 的数据，需要用 bytes 和 urllib.parse.urlencode 对字典类型的 POST 数据进行处理，处理成 bytes 类型。<br>headers，字典类型，代表这次请求的请求头。<br>method，字符串类型，代表请求的方法，例如是 GET，POST 等等。</li>
+<li>add_header 方法，接收两个字符串参数，无返回值，代表将这两个字符串参数分别作为字典的键和值，加入到 Request 类中的请求头字典中。</li>
+</ol>
+<h3 id="HTTPPasswordMgrWithDefaultRealm-类"><a href="#HTTPPasswordMgrWithDefaultRealm-类" class="headerlink" title="HTTPPasswordMgrWithDefaultRealm 类"></a>HTTPPasswordMgrWithDefaultRealm 类</h3><p>这个类是 HTTPPasswordMgr 的派生类，因此有 add_password 方法，可以用来管理用户名和密码。</p>
+<ol>
+<li>add_password 接受 4 个参数：<br>@params<br>realm: 含意未知，设置为 None，<br>uri：字符串类型，代表访问的网站地址<br>user：字符串类型，代表用户名<br>passwd：字符串类型，代表密码。</li>
+</ol>
+<h3 id="HTTPBasicAuthHandler-类"><a href="#HTTPBasicAuthHandler-类" class="headerlink" title="HTTPBasicAuthHandler 类"></a>HTTPBasicAuthHandler 类</h3><p>用于管理认证，通过基本用户验证（HTTP Basic Access Authentication）。<br>构造函数可以用 HTTPPasswordMgrWithDefaultRealm 为参数。</p>
+<h3 id="HTTPCookieProcessor-类"><a href="#HTTPCookieProcessor-类" class="headerlink" title="HTTPCookieProcessor 类"></a>HTTPCookieProcessor 类</h3><ol>
+<li>构造函数，可以接受 http.cookiejar.CookJar 类为参数，返回 BaseHandler 的派生类。</li>
+</ol>
+<h3 id="build-opener-函数"><a href="#build-opener-函数" class="headerlink" title="build_opener 函数"></a>build_opener 函数</h3><p>接受若干个 handler 类实例对象（包括HTTPBasicAuthHandler），返回值类型为 OpenerDirector 类。<br>可以用这个函数来创建使用默认处理器（handle）的 OpenerDirector 对象，如果直接使用后者创建实例将无法工作。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;Create an opener object from a list of handlers.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The opener will use several default handlers, including support</span></span><br><span class="line"><span class="string">for HTTP, FTP and when applicable HTTPS.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">If any of the handlers passed as arguments are subclasses of the</span></span><br><span class="line"><span class="string">default handlers, the default handlers will not be used.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="OpenerDirector-类"><a href="#OpenerDirector-类" class="headerlink" title="OpenerDirector 类"></a>OpenerDirector 类</h3><ol>
+<li>open 方法<br>fullurl: 字符串类型，代表url。<br>或者可以接受 Request 类型的参数。<br>返回值类型为 http.client.HTTPResponse 类。</li>
+</ol>
+<h2 id="parse-模块"><a href="#parse-模块" class="headerlink" title="parse 模块"></a>parse 模块</h2><h3 id="urlencode-函数"><a href="#urlencode-函数" class="headerlink" title="urlencode 函数"></a>urlencode 函数</h3><p>接受一个字典类型的参数，返回一个字符串，代表字典转换成的字符串，这个字符串的格式是参数传递格式（POST中的内容），当然也可以看成是 url 中的请求参数（query）</p>
+<h3 id="urlparse-函数"><a href="#urlparse-函数" class="headerlink" title="urlparse 函数"></a>urlparse 函数</h3><p>@params<br>urlstring: 字符串类型，代表需要解析的 URL<br>scheme: 字符串类型，代表协议。如果 url 没有协议，那么将使用默认协议。否则将使用 url 使用的协议。<br>allow_framents：布尔类型，代表是否忽略锚点，如果设置为 True，则代表忽略，此时锚点的内容也不会消失，而是会被放在最后一个可以解析出来的属性里面。<br>@return<br>返回一个 ParseResult 类型的变量，其中储存有协议（scheme）域名（netloc）路径（path）参数（params）查询条件（query）锚点（fragment）信息， </p>
+<blockquote>
+<p>ParseResult 类是很多其它类的派生类，这一点不再去深究，可以通过同名属性，例如 scheme 等属性获得 url 对应的部分，该属性为字符串属性。<br>也可以认为该类是一个元组，也可以通过索引。</p>
+</blockquote>
+<h3 id="urlunparse"><a href="#urlunparse" class="headerlink" title="urlunparse"></a>urlunparse</h3><p>@params<br>可以接受一个长度为 6 的可迭代对象（列表，元组），每个位置的元素分别代表协议等等。<br>@return<br>返回一个字符串类型的数据，代表拼接完成的 url。</p>
+<h3 id="urljoin-函数"><a href="#urljoin-函数" class="headerlink" title="urljoin 函数"></a>urljoin 函数</h3><p>@params<br>base：字符串类型，代表基础字符串<br>url：字符串类型，代表新字符串。<br>@return<br>会返回一个字符串类型，代表拼接好的 url。该函数会解析基础 url 和新 url 中的协议、域名、路径三个内容，如果新 url 中没有，那么就把基础 url 中的移植过去，得到新的 url</p>
+<h3 id="parse-qs-函数"><a href="#parse-qs-函数" class="headerlink" title="parse_qs 函数"></a>parse_qs 函数</h3><p>@params<br>接受一个字符串类型的参数，代表 url 中的请求参数（query）。<br>@return<br>返回一个字典类型，键值都是由请求参数转化来的。</p>
+<h3 id="quote-函数"><a href="#quote-函数" class="headerlink" title="quote 函数"></a>quote 函数</h3><p>@params<br>接受一个字符串类型的参数。<br>@return<br>返回一个字符串，将参数字符串中的中文字符转换为 URL 编码，其他字符不变。</p>
+<h3 id="unquote-函数"><a href="#unquote-函数" class="headerlink" title="unquote 函数"></a>unquote 函数</h3><p>@params<br>接受一个字符串类型的参数。<br>@return<br>返回一个字符串，将参数字符串中的 URL 编码转换为中文字符，其它字符不变。</p>
+<h2 id="error-模块"><a href="#error-模块" class="headerlink" title="error 模块"></a>error 模块</h2><h3 id="URLError-类"><a href="#URLError-类" class="headerlink" title="URLError 类"></a>URLError 类</h3><p>这个类是这个模块中的基类。</p>
+<ol>
+<li>reason 属性，类型可变，代表错误的原因。</li>
+</ol>
+<h2 id="RobotParser-模块"><a href="#RobotParser-模块" class="headerlink" title="RobotParser 模块"></a>RobotParser 模块</h2><ul>
+<li>RobotFileParser 类</li>
+</ul>
+<ol>
+<li>set_url 方法，接受一个字符串类型参数，代表需要解析的 robots.txt 文件的 url。</li>
+<li>read 方法，无参数，代表对该文件进行解析。</li>
+<li>parse：参数为若干字符串，代表着 robots.txt 文件中的某些行中的内容。</li>
+<li>can_fetch：接受两个参数，均为字符串类型，第一个参数代表 User-Agent，第二个代表 URL，表示 User-Agent 指示的搜索引擎是否可以爬取这个 URL。</li>
+</ol>
+<h1 id="HTTPError-类"><a href="#HTTPError-类" class="headerlink" title="HTTPError 类"></a>HTTPError 类</h1><p>这个类是 URLError 的派生类，用来处理 HTTP 请求错误</p>
+<ol>
+<li>reason 属性，类型可变，代表错误的原因</li>
+<li>code 属性，整型，代表这次请求对应的响应状态码</li>
+<li>headers 属性，http.client.HTTPMessage 类，可以用 print 直接输出，代表这次请求的请求头</li>
+</ol>
+<h1 id="http-库"><a href="#http-库" class="headerlink" title="http 库"></a>http 库</h1><h2 id="cookiejar-模块"><a href="#cookiejar-模块" class="headerlink" title="cookiejar 模块"></a>cookiejar 模块</h2><h3 id="CookieJar-类"><a href="#CookieJar-类" class="headerlink" title="CookieJar 类"></a>CookieJar 类</h3><p>是一个容器，里面存储了多个 cookie。该类实现了迭代器（<code>__iter__</code>），因此可以通过 for 循环来取出里面的每一个 cookie，取出的每个 cookie 有两个属性，name 代表 cookie 名称，value 代表名称对应的值。</p>
+<h3 id="MozillaCookieJar-类"><a href="#MozillaCookieJar-类" class="headerlink" title="MozillaCookieJar 类"></a>MozillaCookieJar 类</h3><p>是 CookieJar-&gt;FileCookieJar 的派生类，用来处理 Cookie 和文件相关的事项。</p>
+<ol>
+<li><p>构造函数<br>filename，字符串类型，代表文件名称。</p>
+</li>
+<li><p>save 方法<br>filename，字符串类型，代表文件名称，如果构造函数调用时已经设置就不用再次设置，如果两个值不一样会抛出异常 ValueError。<br>ignore_discard，布尔类型，代表是否保存会话 cookie，设置为 true 代表保存。<br>ignore_expires，布尔类型，代表是否保存已过期的 cookie，设置为 true 代表保存</p>
+</li>
+<li><p>load 方法<br>加载本地文件中的 cookie。<br>filename，字符串类型，代表文件名称。<br>ignore_discard，布尔类型，代表是否忽略会话 cookie，设置为 true 代表不忽略。<br>ignore_expires，布尔类型，代表是否忽略已过期的 cookie，设置为 true 代表不忽略</p>
+</li>
+</ol>
+<blockquote>
+<p>保存肯定是请求后保存，加载肯定是请求前加载。</p>
+</blockquote>
+<h1 id="标准函数"><a href="#标准函数" class="headerlink" title="标准函数"></a>标准函数</h1><h3 id="isinstance-函数"><a href="#isinstance-函数" class="headerlink" title="isinstance 函数"></a>isinstance 函数</h3><p>接受两个参数，第一个参数是变量，第二个参数是类型，返回 true or false，表示该参数是否是这个类型。和 type 有区别，type 不会考虑类派生，而 isinstanse 如果变量的实际类型是第二个参数所代表的类的派生类，会返回 true，而使用 type 检查时返回 false。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%88%AC%E8%99%AB/"># 爬虫</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/02/12/html-css-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">html css 学习笔记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
