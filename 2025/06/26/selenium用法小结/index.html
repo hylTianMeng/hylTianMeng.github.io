@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HYLTianMeng">
+
+
+
+
+
+<title>selenium用法小结 | HYL&#39;s BLog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HYL&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HYL&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">selenium用法小结</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HYLTianMeng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 26, 2025&nbsp;&nbsp;19:56:22</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python-%E7%88%AC%E8%99%AB/">Python 爬虫</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="selenium-使用教程"><a href="#selenium-使用教程" class="headerlink" title="selenium 使用教程"></a>selenium 使用教程</h1><h2 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><h3 id="Q1：如何加载一个页面？"><a href="#Q1：如何加载一个页面？" class="headerlink" title="Q1：如何加载一个页面？"></a>Q1：如何加载一个页面？</h3><p>我们可以使用 webdriver.Chrome 方法创建一个浏览器对象，后续所有的关于浏览器的自动化操作都将在该对象上完成。</p>
+<h3 id="Q2：如何规避掉-JS-渲染页面不完整的问题？"><a href="#Q2：如何规避掉-JS-渲染页面不完整的问题？" class="headerlink" title="Q2：如何规避掉 JS 渲染页面不完整的问题？"></a>Q2：如何规避掉 JS 渲染页面不完整的问题？</h3><p>get 方法在网页框架加载出来之后就结束执行，并没有等待 JS 渲染，Ajax 请求等等。因此需要设置等待时间。等待可以分为隐式等待和显式等待。</p>
+<p>显式等待更为推荐，可以通过 WebDriverWait 创建实例，在对应条件未满足时不停止加载。</p>
+<h3 id="Q3：获取页面后如何分析页面"><a href="#Q3：获取页面后如何分析页面" class="headerlink" title="Q3：获取页面后如何分析页面"></a>Q3：获取页面后如何分析页面</h3><p>selenium 提供了许多分析页面的方法，如 find_element, find_elements 方法，可以通过 id，class，xpath，等多种方式筛选节点。<br>对于内联页面，可以通过 switch_to.frame 方法来获取，switch_to.parent_frame 方法来跳出。<br>同时对于某个特定的节点，可以通过 get_attribute 方法来获取其属性，可以通过 tag_name, id, text 等属性获取其标签名称，id，文本等内容</p>
+<h3 id="Q4：如何操作页面"><a href="#Q4：如何操作页面" class="headerlink" title="Q4：如何操作页面"></a>Q4：如何操作页面</h3><p>当使用 find_element 找到对应的元素时，可以通过 send_keys, click 等方法完成文本框的输入和按钮的点击。<br>可以使用 execute_script 方法在当前页面执行 JS 语句，完成一些 api 没有提供的动作，例如下拉页面。</p>
+<h2 id="WebDriver-类（Chrome）"><a href="#WebDriver-类（Chrome）" class="headerlink" title="WebDriver 类（Chrome）"></a>WebDriver 类（Chrome）</h2><p><code>from selenium import webdriver</code></p>
+<p>可以用来创建一个浏览器对象，例如，在有 ChromeDriver 的情况下，使用 webdriver.Chrome() 方法可以创建一个 selenium.webdriver.chrome.webdriver.WebDriver 类的对象，即浏览器对象。</p>
+<p>该方法在内部会尝试找到 ChromeDriver 可执行文件。ChromeDriver 是一个独立的服务器，它实现了 WebDriver 协议，用于控制 Chrome 浏览器。</p>
+<p>selenium 包下的 webdriver 子模块的 <code>__init__.py</code> 文件中又 import 了下级 remote 这个模块中的 webdriver.py 这个模块，所以给了我们一种直接 import 到底层的感觉，其实不是。</p>
+<p>返回的 WebDriver 类和上面那个不是同一个类，注意区分。</p>
+<h2 id="WebDriver-类（通用版）"><a href="#WebDriver-类（通用版）" class="headerlink" title="WebDriver 类（通用版）"></a>WebDriver 类（通用版）</h2><h3 id="get-方法"><a href="#get-方法" class="headerlink" title="get 方法"></a>get 方法</h3><p>@params:<br>url：字符串类型，代表需要访问的网址。将弹出 chrome 浏览器并访问对应网页。</p>
+<p>该方法会新建一个标签页</p>
+<h3 id="page-source-属性"><a href="#page-source-属性" class="headerlink" title="page_source 属性"></a>page_source 属性</h3><p>返回页面源代码。</p>
+<h3 id="find-element-方法"><a href="#find-element-方法" class="headerlink" title="find_element 方法"></a>find_element 方法</h3><p>@params<br>By：接受一个 By 类的对象，代表查询方法.<br>str: 代表具体的值.</p>
+<p>例如 By.ID 表示按照元素的 id 属性来查询；字符串代表具体的值，例如可以是 id 属性的值。</p>
+<p>返回一个 selenium.webdriver.remote.webelement.WebElement 类的对象, 代表查找到的元素.</p>
+<p>如果找不到，会抛出 NoSuchElement 异常。</p>
+<h3 id="find-elements-方法"><a href="#find-elements-方法" class="headerlink" title="find_elements 方法"></a>find_elements 方法</h3><p>这个方法大致与 find_element 相同，返回的是所有符合条件的元素，因此数据类型是一个列表，列表中的每一项都是 WebElement 对象。</p>
+<p>如果找不到，会返回一个空列表。</p>
+<h3 id="execute-script-方法"><a href="#execute-script-方法" class="headerlink" title="execute_script 方法"></a>execute_script 方法</h3><p>这个方法可以在当前窗口执行 JS 语句，通过 JS 语句就可以完成很多 api 没有提供的功能，例如下滑网页，新建窗口。</p>
+<p>@params<br>str：这个方法可以接受字符串参数，代表需要执行的 JS 语句。</p>
+<h3 id="switch-to-frame-方法"><a href="#switch-to-frame-方法" class="headerlink" title="switch_to.frame 方法"></a>switch_to.frame 方法</h3><p>内联页面与外部页面的 document tree 时分开的。如果有一个内联页面，是无法用父页面的 selenium 去读取的，需要用该方法先去内联页面中，再访问其节点。</p>
+<h3 id="switch-to-方法"><a href="#switch-to-方法" class="headerlink" title="switch_to 方法"></a>switch_to 方法</h3><p>由于 @property，因此可以按照属性来使用，返回一个 SwitchTo 类，后者可以通过 frame 方法，接受一个 WebElement 参数或者是对应 iframe 标签的 id 属性的值，来切换到对应的内联页面，同时也可以通过 parent_frame 方法回到父页面。</p>
+<h3 id="implicitly-wait-方法"><a href="#implicitly-wait-方法" class="headerlink" title="implicitly_wait 方法"></a>implicitly_wait 方法</h3><p>通过该方法可以设定隐式等待的时间，在查找结点而节点没有立即出现时，将会等待一会再去查找，默认等待时间是0。</p>
+<p>这个设置会在整个 WebDriver 会话中生效，而不需要为每个元素查找操作单独设置。</p>
+<p>@params<br>int: 代表需要等待的时间，以秒为单位。</p>
+<h3 id="forward-方法"><a href="#forward-方法" class="headerlink" title="forward 方法"></a>forward 方法</h3><p>该方法可以实现前进</p>
+<h3 id="back-方法"><a href="#back-方法" class="headerlink" title="back 方法"></a>back 方法</h3><p>该方法可以实现后退</p>
+<h3 id="get-cookies-方法"><a href="#get-cookies-方法" class="headerlink" title="get_cookies 方法"></a>get_cookies 方法</h3><p>获取当前的 cookies。</p>
+<h3 id="window-handles-方法"><a href="#window-handles-方法" class="headerlink" title="window_handles 方法"></a>window_handles 方法</h3><p>@property 使其可以像属性一样使用。<br>@return<br>list: 返回列表类型的数据，代表当前浏览器选项卡里的所有窗口，每一个窗口都有一个代号，该代号时字符串类型</p>
+<p>@return<br>返回一个列表，列表中的每一项都是一个字典，代表一个 cookie。</p>
+<h3 id="add-cookie-方法"><a href="#add-cookie-方法" class="headerlink" title="add_cookie 方法"></a>add_cookie 方法</h3><p>向当前的 cookie 列表中加入一个 cookie。</p>
+<p>@params<br>dic: 接受一个字典，代表一个 cookie。</p>
+<h3 id="delete-all-cookies-方法"><a href="#delete-all-cookies-方法" class="headerlink" title="delete_all_cookies 方法"></a>delete_all_cookies 方法</h3><p>该方法可以删除所有的 cookie。</p>
+<h2 id="SwitchTo-类"><a href="#SwitchTo-类" class="headerlink" title="SwitchTo 类"></a>SwitchTo 类</h2><h3 id="frame-方法"><a href="#frame-方法" class="headerlink" title="frame 方法"></a>frame 方法</h3><p>通过该方法使对应的浏览器对象切换到内联页面</p>
+<p>@params<br>located：接受一个 WebElement 类型或者是字符串类型的参数，代表着内联页面对应标签 iframe 标签的定位，如果传入的是字符串类型的参数，则该参数代表着 iframe 标签的 id 属性的值。</p>
+<h3 id="parent-frame-方法"><a href="#parent-frame-方法" class="headerlink" title="parent_frame 方法"></a>parent_frame 方法</h3><p>通过该方法使对应的浏览器对象从当前的内联页面切换回父页面。</p>
+<h3 id="window-方法"><a href="#window-方法" class="headerlink" title="window 方法"></a>window 方法</h3><p>通过这个方法，使得浏览器可以在不同标签页之间切换</p>
+<p>@params<br>str：接受一个字符串类型的参数，代表对应标签页的代号。</p>
+<h2 id="By-类"><a href="#By-类" class="headerlink" title="By 类"></a>By 类</h2><p>selenium.webdriver.common.by.By</p>
+<p>这个类是来定义查找元素的查找方法的，例如当通过 id，xpath 等来寻找单个元素，就可以向 find_element 方法（WebDriver类）中提供参数：By.ID, By.XPATH。</p>
+<h2 id="WebElement-类"><a href="#WebElement-类" class="headerlink" title="WebElement 类"></a>WebElement 类</h2><p>实际上类中存储的不仅仅是某个 html 结点的信息，还包含了它的子树的信息。因此，再调用查询方法时会查询到其后代的标签。</p>
+<h3 id="send-keys-方法"><a href="#send-keys-方法" class="headerlink" title="send_keys 方法"></a>send_keys 方法</h3><p>使用这个方法可以往一个输入框里输入字符。</p>
+<p>@params:<br>str: 接受一个字符串类型的参数，表示要输入的值。</p>
+<h3 id="clear-方法"><a href="#clear-方法" class="headerlink" title="clear 方法"></a>clear 方法</h3><p>使用这个方法可以清空输入框。</p>
+<h3 id="click-方法"><a href="#click-方法" class="headerlink" title="click 方法"></a>click 方法</h3><p>使用这个方法可以完成点击按钮的操作。</p>
+<h3 id="find-elements-方法-1"><a href="#find-elements-方法-1" class="headerlink" title="find_elements 方法"></a>find_elements 方法</h3><p>@params<br>By: 接受一个 By 类型的参数，代表筛选方法<br>str: 接受一个字符串类型的参数，代表筛选方法对应的值，例如 ID 值等等。</p>
+<p>返回一个列表，每一项都是 WebElement 对象。<br>如果找不到合法的，返回空列表。</p>
+<h3 id="get-attribute-方法"><a href="#get-attribute-方法" class="headerlink" title="get_attribute 方法"></a>get_attribute 方法</h3><p>可以获得某个节点的对应属性。</p>
+<p>@params<br>str：接受一个字符串类型的参数，表示想要获得的属性的名称<br>@return<br>str：返回一个字符串类型的参数，表示参数名称对应的值。</p>
+<h3 id="text-属性"><a href="#text-属性" class="headerlink" title="text 属性"></a>text 属性</h3><p>字符串类型，返回该节点对应的文本内容。</p>
+<h3 id="id-属性"><a href="#id-属性" class="headerlink" title="id 属性"></a>id 属性</h3><p>字符串类型，返回节点对应的 id</p>
+<h3 id="location-属性"><a href="#location-属性" class="headerlink" title="location 属性"></a>location 属性</h3><p>返回节点在页面中的相对位置</p>
+<h3 id="tag-name-属性"><a href="#tag-name-属性" class="headerlink" title="tag_name 属性"></a>tag_name 属性</h3><p>返回节点对应标签的名称</p>
+<h3 id="size-属性"><a href="#size-属性" class="headerlink" title="size 属性"></a>size 属性</h3><p>返回节点的宽高。</p>
+<h2 id="WebDriverWait-类"><a href="#WebDriverWait-类" class="headerlink" title="WebDriverWait 类"></a>WebDriverWait 类</h2><p>selenium.webdriver.support.ui</p>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>@params<br>WebDriver: 接受一个浏览器对象<br>int: 代表最大可以等待的时间，以秒为单位。<br>@return<br>WebDriverWait：返回一个 WebDriverWait 类实例对象。</p>
+<h3 id="until-方法"><a href="#until-方法" class="headerlink" title="until 方法"></a>until 方法</h3><p>@params<br>function：接受一个函数作为参数，这个函数是 expected_conditions.py 中定义的，代表需要满足的条件。<br>@return<br>WebElement：如果条件满足，就返回该条件对应的节点。</p>
+<p>如果超过设置的最大等待时间，抛出 TimeoutException 异常。</p>
+<h2 id="expected-conditions-py-文件"><a href="#expected-conditions-py-文件" class="headerlink" title="expected_conditions.py 文件"></a>expected_conditions.py 文件</h2><p>selenium.webdriver.support</p>
+<p>该文件下定义了许多函数，代表着显式等待需要满足的条件，服务于 WebDriverWait 类中定义的有关于显式等待的 api。</p>
+<p>例如，presence_of_element_located 函数，接受一个参数，参数类型为二元元组，代表着对应节点的定位，例如 <code>(By.ID, &quot;q&quot;)</code>。</p>
+<h2 id="selenium-common-exceptions-模块"><a href="#selenium-common-exceptions-模块" class="headerlink" title="selenium.common.exceptions 模块"></a>selenium.common.exceptions 模块</h2><p>这个模块里定义了一些异常</p>
+<h3 id="NoSuchElementException-异常"><a href="#NoSuchElementException-异常" class="headerlink" title="NoSuchElementException 异常"></a>NoSuchElementException 异常</h3><p>该异常代表没有找到节点。find_element 方法如果没有找到元素就会抛出这个异常。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>HYLTianMeng</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/06/26/chromedriver%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">chromedriver配置教程</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HYLTianMeng | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
